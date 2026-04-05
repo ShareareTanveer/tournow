@@ -1,0 +1,427 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── ENUMS ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  STAFF
+}
+
+enum PackageCategory {
+  FAMILY
+  HONEYMOON
+  SOLO
+  SQUAD
+  CORPORATE
+  SPECIAL
+  HOLIDAY
+}
+
+enum StarRating {
+  THREE
+  FOUR
+  FIVE
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  CONVERTED
+  CLOSED
+}
+
+enum ConsultationMethod {
+  VIDEO_CALL
+  PHONE_CALL
+}
+
+enum ConsultationStatus {
+  PENDING
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PARTIAL
+  PAID
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  STRIPE
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum DonationStatus {
+  PENDING
+  PICKUP_ARRANGED
+  RECEIVED
+  DISTRIBUTED
+}
+
+// ─── USER / AUTH ──────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  password      String
+  role          Role      @default(STAFF)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  assignedInquiries     Inquiry[]      @relation("AssignedStaff")
+  assignedConsultations Consultation[] @relation("AssignedConsultant")
+  sessions              Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// ─── PACKAGE & TOUR ───────────────────────────────────────────────────────────
+
+model Package {
+  id             String          @id @default(cuid())
+  title          String
+  slug           String          @unique
+  category       PackageCategory
+  destinationId  String
+  price          Float
+  oldPrice       Float?
+  duration       Int             // number of days
+  nights         Int
+  starRating     StarRating
+  description    String          @db.Text
+  highlights     String[]
+  inclusions     String[]
+  exclusions     String[]
+  images         String[]
+  isFeatured     Boolean         @default(false)
+  isActive       Boolean         @default(true)
+  paxType        String?         // per person, per couple, etc.
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  // Relations
+  destination    Destination     @relation(fields: [destinationId], references: [id])
+  itinerary      ItineraryDay[]
+  inquiries      Inquiry[]
+  bookings       Booking[]
+  reviews        Review[]
+
+  @@map("packages")
+}
+
+model ItineraryDay {
+  id          String   @id @default(cuid())
+  packageId   String
+  dayNumber   Int
+  title       String
+  description String   @db.Text
+  activities  String[]
+  meals       String[]
+  accommodation String?
+
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  @@map("itinerary_days")
+}
+
+// ─── DESTINATION ──────────────────────────────────────────────────────────────
+
+model Destination {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  region      String   // Southeast Asia, Middle East, Europe, etc.
+  country     String
+  language    String
+  bestSeason  String
+  costLevel   String   // Budget, Moderate, Luxury
+  description String   @db.Text
+  images      String[]
+  isFeatured  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  packages Package[]
+
+  @@map("destinations")
+}
+
+// ─── VISA SERVICES ────────────────────────────────────────────────────────────
+
+model VisaService {
+  id           String   @id @default(cuid())
+  country      String
+  slug         String   @unique
+  isVisaFree   Boolean  @default(false)
+  description  String   @db.Text
+  requirements String[]
+  processingTime String?
+  fee          String?
+  documents    String[]
+  notes        String?
+  image        String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("visa_services")
+}
+
+// ─── INQUIRY ──────────────────────────────────────────────────────────────────
+
+model Inquiry {
+  id           String        @id @default(cuid())
+  name         String
+  email        String
+  phone        String?
+  packageId    String?
+  destination  String?
+  travelDate   DateTime?
+  paxCount     Int?
+  message      String        @db.Text
+  status       InquiryStatus @default(NEW)
+  assignedToId String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  package    Package? @relation(fields: [packageId], references: [id])
+  assignedTo User?    @relation("AssignedStaff", fields: [assignedToId], references: [id])
+
+  @@map("inquiries")
+}
+
+// ─── CONSULTATION ─────────────────────────────────────────────────────────────
+
+model Consultation {
+  id                  String              @id @default(cuid())
+  name                String
+  email               String
+  phone               String?
+  method              ConsultationMethod
+  additionalInfo      String?             @db.Text
+  status              ConsultationStatus  @default(PENDING)
+  assignedConsultantId String?
+  scheduledAt         DateTime?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+
+  assignedConsultant User? @relation("AssignedConsultant", fields: [assignedConsultantId], references: [id])
+
+  @@map("consultations")
+}
+
+// ─── BOOKING ──────────────────────────────────────────────────────────────────
+
+model Booking {
+  id            String        @id @default(cuid())
+  bookingRef    String        @unique @default(cuid())
+  packageId     String
+  customerName  String
+  customerEmail String
+  customerPhone String
+  travelDate    DateTime
+  returnDate    DateTime?
+  paxCount      Int
+  totalPrice    Float
+  status        BookingStatus @default(PENDING)
+  paymentStatus PaymentStatus @default(UNPAID)
+  notes         String?       @db.Text
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  package  Package   @relation(fields: [packageId], references: [id])
+  payments Payment[]
+
+  @@map("bookings")
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  bookingId String
+  amount    Float
+  method    PaymentMethod
+  reference String?
+  status    PaymentStatus @default(UNPAID)
+  stripeId  String?
+  paidAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+// ─── REVIEWS ──────────────────────────────────────────────────────────────────
+
+model Review {
+  id        String       @id @default(cuid())
+  name      String
+  location  String?
+  rating    Int          // 1-5
+  body      String       @db.Text
+  photoUrl  String?
+  videoUrl  String?
+  packageId String?
+  status    ReviewStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  package Package? @relation(fields: [packageId], references: [id])
+
+  @@map("reviews")
+}
+
+// ─── STAFF ────────────────────────────────────────────────────────────────────
+
+model Staff {
+  id          String   @id @default(cuid())
+  name        String
+  role        String
+  bio         String?  @db.Text
+  photoUrl    String?
+  specialties String[]
+  yearsExp    Int?
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("staff")
+}
+
+// ─── NEWS ─────────────────────────────────────────────────────────────────────
+
+model News {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  body        String   @db.Text
+  excerpt     String?
+  source      String?
+  imageUrl    String?
+  publishedAt DateTime @default(now())
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("news")
+}
+
+// ─── BLOG ─────────────────────────────────────────────────────────────────────
+
+model Blog {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  body        String   @db.Text
+  excerpt     String?
+  category    String
+  author      String
+  readingTime Int      // minutes
+  imageUrl    String?
+  publishedAt DateTime @default(now())
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("blogs")
+}
+
+// ─── NEWSLETTER ───────────────────────────────────────────────────────────────
+
+model NewsletterSubscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  whatsapp     String?
+  subscribedAt DateTime @default(now())
+  isActive     Boolean  @default(true)
+
+  @@map("newsletter_subscribers")
+}
+
+// ─── LOYALTY / PRIVILEGE CARD ─────────────────────────────────────────────────
+
+model LoyaltyCard {
+  id             String   @id @default(cuid())
+  customerName   String
+  customerEmail  String   @unique
+  customerPhone  String?
+  pointsEarned   Int      @default(0)
+  pointsRedeemed Int      @default(0)
+  tier           String   @default("BRONZE") // BRONZE, SILVER, GOLD
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("loyalty_cards")
+}
+
+// ─── CHARITY ──────────────────────────────────────────────────────────────────
+
+model CharityDonation {
+  id              String         @id @default(cuid())
+  name            String
+  phone           String
+  email           String
+  pickupRequired  Boolean        @default(false)
+  address         String?
+  notes           String?
+  status          DonationStatus @default(PENDING)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@map("charity_donations")
+}
+
+// ─── SITE SETTINGS ────────────────────────────────────────────────────────────
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@map("site_settings")
+}

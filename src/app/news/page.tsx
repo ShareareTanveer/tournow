@@ -1,10 +1,11 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 
 export const metadata: Metadata = {
   title: 'Travel News',
-  description: 'Latest travel news, destination updates, and industry insights from Halo Holidays.',
+  description: 'Latest travel news, destination updates, and industry insights from Metro Voyage.',
 }
 
 async function getNews() {
@@ -21,37 +22,39 @@ export default async function NewsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="brand-gradient py-16 px-4 text-center text-white">
-        <h1 className="text-3xl md:text-4xl font-bold mb-3">Travel News</h1>
-        <p className="text-white/80">Stay updated with the latest travel insights and destination news</p>
-      </div>
+      <PageHero
+        title="Travel News"
+        subtitle="Stay updated with the latest travel insights and destination news"
+        imageUrl={getPageHeroImage('news')}
+        breadcrumbs={[{ label: 'News' }]}
+      />
 
       <div className="max-w-5xl mx-auto px-4 py-12">
         {news.length > 0 ? (
           <div className="space-y-6">
             {news.map((article: any) => (
-              <div key={article.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 card-hover">
-                <div className="flex items-start gap-5">
-                  {article.imageUrl && (
-                    <div className="relative w-28 h-20 rounded-xl overflow-hidden shrink-0 bg-gray-100">
-                      <Image src={article.imageUrl} alt={article.title} fill className="object-cover" />
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      {article.source && <span className="text-xs bg-[var(--brand-light)] text-[var(--brand)] px-2 py-0.5 rounded-full font-medium">{article.source}</span>}
-                      <span className="text-xs text-gray-400">{new Date(article.publishedAt).toLocaleDateString('en-LK', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
-                    </div>
-                    <h2 className="font-bold text-gray-800 mb-2 hover:text-[var(--brand)] transition-colors">{article.title}</h2>
-                    <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">{article.excerpt ?? article.body?.slice(0, 150)}</p>
+              <Link key={article.id} href={`/news/${article.slug}`} className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-orange-200 transition-all flex items-start gap-5">
+                {article.imageUrl && (
+                  <div className="relative w-28 h-20 rounded-xl overflow-hidden shrink-0 bg-gray-100">
+                    <Image src={article.imageUrl} alt={article.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
                   </div>
+                )}
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-2">
+                    {article.source && <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: 'var(--brand-muted)', color: 'var(--brand-dark)' }}>{article.source}</span>}
+                    <span className="text-xs text-gray-400">{new Date(article.publishedAt).toLocaleDateString('en-LK', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+                  </div>
+                  <h2 className="font-bold text-gray-800 mb-2 group-hover:text-orange-500 transition-colors">{article.title}</h2>
+                  <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">{article.excerpt ?? article.body?.replace(/<[^>]*>/g, '').slice(0, 150)}</p>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         ) : (
           <div className="text-center py-16">
-            <div className="text-6xl mb-4">📰</div>
+            <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-4">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-gray-400"><path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v8a2 2 0 01-2 2z"/><path strokeLinecap="round" strokeLinejoin="round" d="M13 2v6h6M8 12h8M8 16h5"/></svg>
+            </div>
             <p className="text-gray-500">News articles will appear here once connected to the database.</p>
           </div>
         )}

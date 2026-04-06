@@ -39,7 +39,7 @@ export default function LoyaltyRegisterForm({ ctaLabel = 'Register Now' }: { cta
           </svg>
         </div>
         <h3 className="font-bold text-gray-800 text-xl mb-2">You&apos;re Registered!</h3>
-        <p className="text-gray-500 text-sm mb-1">Welcome to the Halo Holidays Privilege Card program.</p>
+        <p className="text-gray-500 text-sm mb-1">Welcome to the Metro Voyage Privilege Card program.</p>
         <p className="text-gray-400 text-xs">Our team will be in touch shortly with your card details.</p>
       </div>
     )

@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import ConsultationForm from './ConsultationForm'
+import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 
 export const metadata: Metadata = {
   title: 'Book a Consultation',
@@ -16,10 +17,12 @@ const CONSULTANTS = [
 export default function ConsultationPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="brand-gradient py-16 px-4 text-center text-white">
-        <h1 className="text-3xl md:text-4xl font-bold mb-3">Book a Free Consultation</h1>
-        <p className="text-white/80 max-w-xl mx-auto">Chat with one of our travel experts via video or phone call. Personalised holiday planning, at no cost.</p>
-      </div>
+      <PageHero
+        title="Book a Free Consultation"
+        subtitle="Chat with one of our travel experts via video or phone call. Personalised holiday planning, at no cost."
+        imageUrl={getPageHeroImage('consultation')}
+        breadcrumbs={[{ label: 'Consultation' }]}
+      />
 
       <div className="max-w-5xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -73,7 +76,7 @@ export default function ConsultationPage() {
               <h3 className="font-semibold text-gray-800 mb-3">Or reach us directly</h3>
               <div className="space-y-2 text-sm">
                 <a href="tel:+94704545455" className="flex items-center gap-2 text-gray-700 hover:text-[var(--brand)]">📞 +94 70 454 5455</a>
-                <a href="mailto:contact@haloholidays.lk" className="flex items-center gap-2 text-gray-700 hover:text-[var(--brand)]">📧 contact@haloholidays.lk</a>
+                <a href="mailto:contact@metrovoyage.com" className="flex items-center gap-2 text-gray-700 hover:text-[var(--brand)]">📧 contact@metrovoyage.com</a>
                 <p className="text-gray-500 text-xs">Open daily 9 AM – 10 PM</p>
               </div>
             </div>

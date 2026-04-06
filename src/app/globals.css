@@ -2,11 +2,16 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #374151;
-  --brand: #e8a045;
-  --brand-dark: #c97f20;
-  --brand-light: #fdf3e3;
-  --dark: #1a1a2e;
+  --foreground: #1e293b;
+  --brand: #f59e0b;
+  --brand-dark: #d97706;
+  --brand-light: #fffbeb;
+  --brand-muted: #fef3c7;
+  --teal: #0d9488;
+  --teal-dark: #0f766e;
+  --dark: #0f172a;
+  --dark-muted: #1e293b;
+  --navy: #1e3a5f;
 }
 
 @theme inline {
@@ -14,7 +19,9 @@
   --color-foreground: var(--foreground);
   --color-brand: var(--brand);
   --color-brand-dark: var(--brand-dark);
+  --color-teal: var(--teal);
   --color-dark: var(--dark);
+  --color-navy: var(--navy);
 }
 
 * { box-sizing: border-box; }
@@ -27,11 +34,57 @@ body {
 }
 
 ::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
 ::-webkit-scrollbar-thumb { background: var(--brand); border-radius: 3px; }
 
-.brand-gradient { background: linear-gradient(135deg, #e8a045 0%, #c97f20 100%); }
+/* Gradients */
+.brand-gradient { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+.teal-gradient { background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%); }
+.hero-gradient { background: linear-gradient(160deg, #0f172a 0%, #1e3a5f 50%, #0d9488 100%); }
+.gold-gradient { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); }
+.card-gradient { background: linear-gradient(180deg, transparent 40%, rgba(15,23,42,0.85) 100%); }
+
+/* Hover effects */
 .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-.card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+.card-hover:hover { transform: translateY(-5px); box-shadow: 0 24px 48px rgba(0,0,0,0.14); }
+
+/* Text clamp */
 .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Section heading decoration */
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--brand-muted);
+  color: var(--brand-dark);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.glass-dark {
+  background: rgba(15,23,42,0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Shimmer animation for skeleton loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}

@@ -1,5 +1,7 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
+import { FiCheckCircle, FiFileText, FiClock, FiDollarSign } from 'react-icons/fi'
 
 export const metadata: Metadata = {
   title: 'Visa Services',
@@ -31,16 +33,18 @@ export default async function VisasPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="brand-gradient py-16 px-4 text-center text-white">
-        <h1 className="text-3xl md:text-4xl font-bold mb-3">Visa Services</h1>
-        <p className="text-white/80 max-w-xl mx-auto">Free visa consultation. We handle your application from start to finish.</p>
-      </div>
+      <PageHero
+        title="Visa Services"
+        subtitle="Free visa consultation. We handle your application from start to finish."
+        imageUrl={getPageHeroImage('visas')}
+        breadcrumbs={[{ label: 'Visas' }]}
+      />
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         {/* Visa-free */}
         <div className="mb-12">
           <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <span className="text-green-500">✅</span> Visa-Free Destinations
+            <FiCheckCircle size={20} className="text-green-500" /> Visa-Free Destinations
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {displayVisas.filter((v: any) => v.isVisaFree).map((visa: any) => (
@@ -49,9 +53,9 @@ export default async function VisasPage() {
                   <h3 className="font-semibold text-gray-800">{visa.country}</h3>
                   <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">Visa Free</span>
                 </div>
-                <div className="space-y-1 text-sm text-gray-500">
-                  <p>⏱ {visa.processingTime}</p>
-                  <p>💰 {visa.fee}</p>
+                <div className="space-y-2 text-sm text-gray-500">
+                  <p className="flex items-center gap-1.5"><FiClock size={12} /> {visa.processingTime}</p>
+                  <p className="flex items-center gap-1.5"><FiDollarSign size={12} /> {visa.fee}</p>
                 </div>
               </Link>
             ))}
@@ -61,7 +65,7 @@ export default async function VisasPage() {
         {/* Visa required */}
         <div>
           <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <span>📋</span> Visa Required — We Assist
+            <FiFileText size={20} className="text-orange-500" /> Visa Required — We Assist
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {displayVisas.filter((v: any) => !v.isVisaFree).map((visa: any) => (
@@ -70,9 +74,9 @@ export default async function VisasPage() {
                   <h3 className="font-semibold text-gray-800">{visa.country}</h3>
                   <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">We Assist</span>
                 </div>
-                <div className="space-y-1 text-sm text-gray-500">
-                  <p>⏱ {visa.processingTime}</p>
-                  <p>💰 {visa.fee}</p>
+                <div className="space-y-2 text-sm text-gray-500">
+                  <p className="flex items-center gap-1.5"><FiClock size={12} /> {visa.processingTime}</p>
+                  <p className="flex items-center gap-1.5"><FiDollarSign size={12} /> {visa.fee}</p>
                 </div>
               </Link>
             ))}
@@ -80,7 +84,7 @@ export default async function VisasPage() {
         </div>
 
         {/* CTA */}
-        <div className="mt-12 bg-[var(--brand-light)] rounded-2xl p-8 text-center border border-[var(--brand)]/20">
+        <div className="mt-12 rounded-2xl p-8 text-center" style={{ background: 'var(--brand-muted)', border: '1px solid color-mix(in srgb, var(--brand) 20%, transparent)' }}>
           <h3 className="text-xl font-bold text-gray-800 mb-2">Free Visa Consultation</h3>
           <p className="text-gray-600 mb-6">Not sure about your visa requirements? Our experts will guide you through the entire process.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

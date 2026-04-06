@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
       amount: Math.round(booking.totalPrice * 100), // convert to cents
       currency: 'lkr',
       metadata: { bookingId: booking.id, bookingRef: booking.bookingRef },
-      description: `Halo Holidays – ${booking.package.title}`,
+      description: `Metro Voyage – ${booking.package.title}`,
     })
 
     // Create payment record

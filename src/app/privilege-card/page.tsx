@@ -5,7 +5,7 @@ import LoyaltyRegisterForm from './LoyaltyRegisterForm'
 
 export const metadata: Metadata = {
   title: 'Privilege – Holiday Loyalty Points Program',
-  description: 'Earn exclusive rewards every time you travel with Halo Holidays. Register for the Privilege Card loyalty program.',
+  description: 'Earn exclusive rewards every time you travel with Metro Voyage. Register for the Privilege Card loyalty program.',
 }
 
 async function getLoyaltySettings(): Promise<Record<string, string>> {
@@ -29,18 +29,18 @@ const DEFAULTS: Record<string, string> = {
   loyalty_hero_description: 'Book once, register, and start earning points on every future holiday booking. Redeem your points for discounts, free upgrades, tours, and other premium perks.',
   loyalty_cta_label: 'Register Now',
   loyalty_how_step1_title: 'Book a Holiday',
-  loyalty_how_step1_desc: 'Make your first holiday package purchase with Halo Holidays.',
+  loyalty_how_step1_desc: 'Make your first holiday package purchase with Metro Voyage.',
   loyalty_how_step2_title: 'Register for Privilege',
   loyalty_how_step2_desc: 'Complete your registration after your first booking to join the program.',
   loyalty_how_step3_title: 'Earn & Redeem',
   loyalty_how_step3_desc: 'Accumulate points on future bookings and redeem for discounts, upgrades, and more.',
   loyalty_eligibility_note: 'You must have booked at least one holiday package with us before registering for the Privilege Card.',
-  loyalty_terms_eligibility: 'The Privilege Card is available to customers who have completed at least one holiday booking with Halo Holidays.',
+  loyalty_terms_eligibility: 'The Privilege Card is available to customers who have completed at least one holiday booking with Metro Voyage.',
   loyalty_terms_points: 'Points are earned on the net package price, excluding taxes, visa fees, and third-party surcharges.',
   loyalty_terms_redemption: 'Points may be redeemed for discounts on future bookings, complimentary upgrades, or excursions. Minimum redemption threshold applies.',
   loyalty_terms_validity: 'Points are valid for 24 months from the date of issue. Expired points cannot be reinstated.',
-  loyalty_terms_modification: 'Halo Holidays reserves the right to modify, suspend, or terminate the Privilege Card program at any time with reasonable notice.',
-  loyalty_terms_liability: 'Halo Holidays is not liable for any loss resulting from the use or inability to use earned points.',
+  loyalty_terms_modification: 'Metro Voyage reserves the right to modify, suspend, or terminate the Privilege Card program at any time with reasonable notice.',
+  loyalty_terms_liability: 'Metro Voyage is not liable for any loss resulting from the use or inability to use earned points.',
 }
 
 export default async function PrivilegeCardPage() {
@@ -76,7 +76,7 @@ export default async function PrivilegeCardPage() {
           {/* Left: Text */}
           <div className="relative z-10">
             <span className="inline-flex items-center gap-2 text-xs font-bold text-pink-600 bg-pink-100 px-3 py-1.5 rounded-full mb-5 uppercase tracking-wider">
-              🎁 {s.loyalty_hero_badge}
+              {s.loyalty_hero_badge}
             </span>
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
               {s.loyalty_hero_title}
@@ -106,7 +106,7 @@ export default async function PrivilegeCardPage() {
               <div className="p-5 h-full flex flex-col justify-between">
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-pink-400 font-bold text-sm tracking-wider">+halo holidays</p>
+                    <p className="text-pink-400 font-bold text-sm tracking-wider">Metro Voyage</p>
                     <p className="text-white/60 text-xs italic mt-0.5">Privilege</p>
                   </div>
                   <div className="w-8 h-8 rounded-full bg-pink-500/20 border border-pink-500/30 flex items-center justify-center">

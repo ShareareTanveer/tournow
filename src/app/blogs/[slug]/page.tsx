@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
+import PageHero from '@/components/ui/PageHero'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -27,12 +27,12 @@ export default async function BlogDetailPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {blog.imageUrl && (
-        <div className="relative h-72 md:h-96">
-          <Image src={blog.imageUrl} alt={blog.title} fill className="object-cover" priority />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        </div>
-      )}
+      <PageHero
+        title={blog.title}
+        subtitle={blog.excerpt}
+        imageUrl={blog.imageUrl}
+        breadcrumbs={[{ label: 'Blog', href: '/blogs' }, { label: blog.title }]}
+      />
 
       <div className="max-w-3xl mx-auto px-4 py-10">
         <div className="flex items-center gap-3 mb-4 text-sm text-gray-500">

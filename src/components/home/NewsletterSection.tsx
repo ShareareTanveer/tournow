@@ -1,67 +1,177 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
+import { useState } from "react";
+import { FiMail, FiPhone, FiSend, FiCheckCircle } from "react-icons/fi";
+import { MdFlightTakeoff } from "react-icons/md";
 
 export default function NewsletterSection() {
-  const [form, setForm] = useState({ email: '', whatsapp: '' })
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [form, setForm] = useState({ email: "", whatsapp: "" });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
     try {
-      await fetch('/api/newsletter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
-      })
-      setSuccess(true)
+      });
+      setSuccess(true);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <section className="py-20" style={{ background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' }}>
-      <div className="max-w-2xl mx-auto px-4 text-center">
-        <div className="text-4xl mb-4">✈️</div>
-        <h2 className="text-3xl font-bold text-white mb-4">
-          Get <span style={{ color: 'var(--brand)' }}>Exclusive Deals</span> First
-        </h2>
-        <p className="text-gray-400 mb-8">Subscribe to receive early access to flash sales, travel tips, and holiday inspiration.</p>
+    <section
+      className="relative py-24 overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(135deg, var(--background), var(--brandLight))",
+      }}
+    >
+      {/* Glow */}
+      <div
+        className="absolute top-0 left-0 w-72 h-72 rounded-full blur-3xl opacity-30"
+        style={{ background: "var(--brand)" }}
+      />
+      <div
+        className="absolute bottom-0 right-0 w-72 h-72 rounded-full blur-3xl opacity-30"
+        style={{ background: "var(--teal)" }}
+      />
 
-        {success ? (
-          <div className="bg-green-500/20 border border-green-500/30 rounded-2xl p-6 text-green-300">
-            🎉 You&apos;re subscribed! Watch out for amazing deals coming your way.
+      <div className="relative max-w-5xl mx-auto px-4">
+        <div
+          className="rounded-[28px] p-8 md:p-12 text-center "
+          style={{
+            background: "rgba(255,255,255,0.8)",
+            borderColor: "var(--brandMuted)",
+          }}
+        >
+          {/* Icon */}
+          <div
+            className="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-2xl text-white text-2xl shadow-md"
+            style={{
+              background: "linear-gradient(135deg, var(--brand), var(--teal))",
+            }}
+          >
+            <MdFlightTakeoff size={28} />
           </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex flex-col sm:flex-row gap-3">
-              <input
-                type="email" required value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                placeholder="Your email address"
-                className="flex-1 px-5 py-4 rounded-2xl text-gray-800 text-sm focus:outline-none"
-              />
-              <input
-                type="tel" value={form.whatsapp}
-                onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
-                placeholder="WhatsApp number (optional)"
-                className="flex-1 px-5 py-4 rounded-2xl text-gray-800 text-sm focus:outline-none"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="brand-gradient text-white font-semibold px-10 py-4 rounded-2xl hover:opacity-90 transition-opacity w-full sm:w-auto"
+
+          {/* Heading */}
+          <h2
+            className="text-3xl md:text-4xl font-bold mb-4 leading-tight"
+            style={{ color: "var(--foreground)" }}
+          >
+            Get{" "}
+            <span
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--brand), var(--teal))",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
             >
-              {loading ? 'Subscribing...' : 'Subscribe for Free'}
-            </button>
-            <p className="text-xs text-gray-500">No spam, unsubscribe anytime.</p>
-          </form>
-        )}
+              Exclusive Travel Deals
+            </span>
+          </h2>
+
+          <p
+            className="max-w-xl mx-auto mb-10"
+            style={{ color: "var(--darkMuted)" }}
+          >
+            Discover hidden destinations, flash offers, and curated travel
+            experiences — straight to your inbox.
+          </p>
+
+          {success ? (
+            <div
+              className="rounded-2xl p-6 border flex items-center justify-center gap-3"
+              style={{
+                background: "var(--brandLight)",
+                borderColor: "var(--brand)",
+                color: "var(--brandDark)",
+              }}
+            >
+              <FiCheckCircle size={22} />
+              <span className="text-lg font-medium">
+                You’re subscribed! Check your inbox for deals.
+              </span>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Inputs */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Email */}
+                <div className="relative">
+                  <FiMail
+                    className="absolute left-4 top-1/2 -translate-y-1/2"
+                    style={{ color: "var(--darkMuted)" }}
+                  />
+                  <input
+                    type="email"
+                    required
+                    value={form.email}
+                    onChange={(e) =>
+                      setForm({ ...form, email: e.target.value })
+                    }
+                    placeholder="Enter your email"
+                    className="w-full pl-12 pr-4 py-4 rounded-2xl outline-none transition"
+                    style={{
+                      background: "#fff",
+                      color: "var(--foreground)",
+                      border: "1px solid var(--brandMuted)",
+                    }}
+                  />
+                </div>
+
+                {/* WhatsApp */}
+                <div className="relative">
+                  <FiPhone
+                    className="absolute left-4 top-1/2 -translate-y-1/2"
+                    style={{ color: "var(--darkMuted)" }}
+                  />
+                  <input
+                    type="tel"
+                    value={form.whatsapp}
+                    onChange={(e) =>
+                      setForm({ ...form, whatsapp: e.target.value })
+                    }
+                    placeholder="WhatsApp (optional)"
+                    className="w-full pl-12 pr-4 py-4 rounded-2xl outline-none transition"
+                    style={{
+                      background: "#fff",
+                      color: "var(--foreground)",
+                      border: "1px solid var(--brandMuted)",
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Button */}
+              <button
+                type="submit"
+                disabled={loading}
+                  className="mx-auto flex items-center justify-center gap-2 text-white text-sm font-bold px-5 py-3.5 rounded-xl transition-all"
+              style={{
+                background:
+                  "linear-gradient(135deg, var(--brand), var(--brand-dark))",
+                boxShadow: "0 4px 20px",
+              }}
+              >
+                {loading ? "Subscribing..." : "Get Deals Now"}
+                <FiSend className="transition-transform group-hover:translate-x-1" />
+              </button>
+
+              <p className="text-xs" style={{ color: "var(--darkMuted)" }}>
+                No spam. Only premium travel deals
+              </p>
+            </form>
+          )}
+        </div>
       </div>
     </section>
-  )
+  );
 }

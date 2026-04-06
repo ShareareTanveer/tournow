@@ -14,6 +14,11 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
           orderBy: [{ isFeatured: 'desc' }, { price: 'asc' }],
           take: 12,
         },
+        tours: {
+          where: { isActive: true },
+          orderBy: [{ isFeatured: 'desc' }, { price: 'asc' }],
+          take: 12,
+        },
       },
     })
     if (!dest) return NextResponse.json({ error: 'Destination not found' }, { status: 404 })

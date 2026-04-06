@@ -1,15 +1,26 @@
 import { Metadata } from 'next'
 import ContactForm from './ContactForm'
+import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
+import { FiPhone, FiMail, FiMessageSquare, FiMapPin, FiClock } from 'react-icons/fi'
+import { FaWhatsapp } from 'react-icons/fa'
 
-export const metadata: Metadata = { title: 'Contact Us', description: 'Get in touch with Halo Holidays. Call, WhatsApp, or visit our office in Colombo.' }
+export const metadata: Metadata = { title: 'Contact Us', description: 'Get in touch with Metro Voyage. Call, WhatsApp, or visit our office in Colombo.' }
+
+const CONTACT_ITEMS = [
+  { Icon: FiPhone,        iconBg: '#eff6ff', iconColor: '#3b82f6', title: 'Phone',    content: '+94 70 454 5455',          href: 'tel:+94704545455' },
+  { Icon: FiMail,         iconBg: '#fef3c7', iconColor: '#f59e0b', title: 'Email',    content: 'contact@metrovoyage.com',  href: 'mailto:contact@metrovoyage.com' },
+  { Icon: FaWhatsapp,     iconBg: '#dcfce7', iconColor: '#22c55e', title: 'WhatsApp', content: '+94 70 454 5455',          href: 'https://wa.me/94704545455' },
+]
 
 export default function ContactPage() {
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="brand-gradient py-16 px-4 text-center text-white">
-        <h1 className="text-3xl md:text-4xl font-bold mb-3">Contact Us</h1>
-        <p className="text-white/80">We are here to help plan your dream holiday</p>
-      </div>
+      <PageHero
+        title="Contact Us"
+        subtitle="We are here to help plan your dream holiday"
+        imageUrl={getPageHeroImage('contact')}
+        breadcrumbs={[{ label: 'Contact' }]}
+      />
 
       <div className="max-w-5xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -20,30 +31,34 @@ export default function ContactPage() {
           </div>
 
           {/* Info */}
-          <div className="space-y-5">
-            {[
-              { icon: '📞', title: 'Phone', content: '+94 70 454 5455', href: 'tel:+94704545455' },
-              { icon: '📧', title: 'Email', content: 'contact@haloholidays.lk', href: 'mailto:contact@haloholidays.lk' },
-              { icon: '💬', title: 'WhatsApp', content: '+94 70 454 5455', href: 'https://wa.me/94704545455' },
-            ].map((item) => (
-              <a key={item.title} href={item.href} target={item.href.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer"
-                className="flex gap-4 bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow card-hover">
-                <div className="text-3xl">{item.icon}</div>
+          <div className="space-y-4">
+            {CONTACT_ITEMS.map((item) => (
+              <a key={item.title} href={item.href}
+                target={item.href.startsWith('http') ? '_blank' : undefined}
+                rel="noopener noreferrer"
+                className="flex gap-4 bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-all card-hover items-center">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: item.iconBg }}>
+                  <item.Icon size={20} style={{ color: item.iconColor }} />
+                </div>
                 <div>
-                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{item.title}</p>
+                  <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">{item.title}</p>
                   <p className="font-semibold text-gray-800 mt-0.5">{item.content}</p>
                 </div>
               </a>
             ))}
 
             <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-              <div className="flex gap-4">
-                <div className="text-3xl">📍</div>
+              <div className="flex gap-4 items-start">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-orange-50">
+                  <FiMapPin size={20} style={{ color: 'var(--brand)' }} />
+                </div>
                 <div>
-                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Office Address</p>
+                  <p className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Office Address</p>
                   <p className="font-semibold text-gray-800 mt-0.5">Level 2, 9/1, Deal Place A</p>
                   <p className="text-gray-500 text-sm">Kollupitiya, Colombo 03</p>
-                  <p className="text-gray-500 text-sm mt-1">🕐 Open daily: 9 AM – 10 PM</p>
+                  <p className="text-gray-500 text-sm mt-1 flex items-center gap-1.5">
+                    <FiClock size={12} /> Open daily: 9 AM – 10 PM
+                  </p>
                 </div>
               </div>
             </div>

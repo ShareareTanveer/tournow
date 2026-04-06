@@ -67,9 +67,33 @@ export const PackageSchema = z.object({
   inclusions: z.array(z.string()).default([]),
   exclusions: z.array(z.string()).default([]),
   images: z.array(z.string()).default([]),
+  galleryLayout: z.enum(['grid-2x2', 'grid-3col', 'featured-left', 'featured-right', 'strip']).default('grid-2x2'),
   isFeatured: z.boolean().default(false),
   isActive: z.boolean().default(true),
   paxType: z.string().optional(),
+})
+
+export const TourSchema = z.object({
+  title: z.string().min(3),
+  slug: z.string().min(3),
+  region: z.string().min(2),
+  multiDestinations: z.array(z.string()).default([]),
+  primaryDestinationId: z.string(),
+  price: z.number().positive(),
+  oldPrice: z.number().positive().optional(),
+  duration: z.number().int().positive(),
+  nights: z.number().int().positive(),
+  starRating: z.enum(['THREE', 'FOUR', 'FIVE']),
+  description: z.string().min(10),
+  highlights: z.array(z.string()).default([]),
+  inclusions: z.array(z.string()).default([]),
+  exclusions: z.array(z.string()).default([]),
+  images: z.array(z.string()).default([]),
+  galleryLayout: z.enum(['grid-2x2', 'grid-3col', 'featured-left', 'featured-right', 'strip']).default('grid-2x2'),
+  isFeatured: z.boolean().default(false),
+  isActive: z.boolean().default(true),
+  paxType: z.string().optional(),
+  visaNotes: z.string().optional(),
 })
 
 export const DestinationSchema = z.object({

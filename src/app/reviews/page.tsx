@@ -1,9 +1,10 @@
 import { Metadata } from 'next'
 import ReviewSubmitForm from './ReviewSubmitForm'
+import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 
 export const metadata: Metadata = {
   title: 'Reviews',
-  description: 'Read what thousands of happy travellers say about Halo Holidays.',
+  description: 'Read what thousands of happy travellers say about Metro Voyage.',
 }
 
 async function getReviews() {
@@ -16,7 +17,7 @@ async function getReviews() {
 }
 
 const FALLBACK_REVIEWS = [
-  { name: 'Sanduni Nimeshika Gunawardana', location: 'Colombo', rating: 5, body: 'Our Dubai trip was absolutely incredible! The Marina Dhow Cruise, Burj Khalifa visit, and the Desert Safari were all perfectly organized. Halo Holidays took care of every detail.' },
+  { name: 'Sanduni Nimeshika Gunawardana', location: 'Colombo', rating: 5, body: 'Our Dubai trip was absolutely incredible! The Marina Dhow Cruise, Burj Khalifa visit, and the Desert Safari were all perfectly organized. Metro Voyage took care of every detail.' },
   { name: 'Sajjaad Ahamed', location: 'Kandy', rating: 5, body: 'The customer service was exceptional. Naveed helped us with our visa and made the whole process stress-free. The Singapore tour was well-organized.' },
   { name: 'Shashika Radalage', location: 'Galle', rating: 5, body: 'I was amazed by how well the Singapore tour was organized. Every transfer was on time, the guides were knowledgeable and friendly.' },
 ]
@@ -27,13 +28,12 @@ export default async function ReviewsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="brand-gradient py-16 px-4 text-center text-white">
-        <h1 className="text-3xl md:text-4xl font-bold mb-3">What Our Travellers Say</h1>
-        <p className="text-white/80">Thousands of happy travellers trust Halo Holidays</p>
-        <div className="flex justify-center gap-1 mt-4">
-          {[1,2,3,4,5].map((i) => <span key={i} className="text-yellow-400 text-2xl">★</span>)}
-        </div>
-      </div>
+      <PageHero
+        title="What Our Travellers Say"
+        subtitle="Thousands of happy travellers trust Metro Voyage"
+        imageUrl={getPageHeroImage('reviews')}
+        breadcrumbs={[{ label: 'Reviews' }]}
+      />
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
@@ -49,7 +49,7 @@ export default async function ReviewsPage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-800">{review.name}</p>
-                  {review.location && <p className="text-xs text-gray-400">📍 {review.location}</p>}
+                  {review.location && <p className="text-xs text-gray-400 flex items-center gap-1"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 21s-8-6.75-8-12a8 8 0 1116 0c0 5.25-8 12-8 12z"/><circle cx="12" cy="9" r="3"/></svg> {review.location}</p>}
                 </div>
               </div>
             </div>

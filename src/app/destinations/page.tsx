@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import DestinationCard from '@/components/ui/DestinationCard'
+import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 
 export const metadata: Metadata = {
   title: 'Destinations',
@@ -21,10 +22,12 @@ export default async function DestinationsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="brand-gradient py-16 px-4 text-center text-white">
-        <h1 className="text-3xl md:text-4xl font-bold mb-3">Explore Destinations</h1>
-        <p className="text-white/80 max-w-xl mx-auto">Discover amazing destinations across Asia, Europe, Middle East, Africa & beyond</p>
-      </div>
+      <PageHero
+        title="Explore Destinations"
+        subtitle="Discover amazing destinations across Asia, Europe, Middle East, Africa & beyond"
+        imageUrl={getPageHeroImage('destinations')}
+        breadcrumbs={[{ label: 'Destinations' }]}
+      />
 
       <div className="max-w-7xl mx-auto px-4 py-10">
         {/* Featured */}

@@ -14,6 +14,7 @@ enum Role {
   ADMIN
   EDITOR
   STAFF
+  CUSTOMER
 }
 
 enum PackageCategory {
@@ -85,6 +86,13 @@ enum DonationStatus {
   DISTRIBUTED
 }
 
+enum DifficultyLevel {
+  EASY
+  MODERATE
+  CHALLENGING
+  EXTREME
+}
+
 // ─── USER / AUTH ──────────────────────────────────────────────────────────────
 
 model User {
@@ -97,10 +105,12 @@ model User {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
-  // Relations
   assignedInquiries     Inquiry[]      @relation("AssignedStaff")
+  assignedTourInquiries TourInquiry[]  @relation("AssignedTourStaff")
   assignedConsultations Consultation[] @relation("AssignedConsultant")
   sessions              Session[]
+  claimedPerks          ClaimedPerk[]
+  loyaltyCard           LoyaltyCard?
 
   @@map("users")
 }
@@ -117,7 +127,7 @@ model Session {
   @@map("sessions")
 }
 
-// ─── PACKAGE & TOUR ───────────────────────────────────────────────────────────
+// ─── PACKAGE ─────────────────────────────────────────────────────────────────
 
 model Package {
   id             String          @id @default(cuid())
@@ -127,43 +137,287 @@ model Package {
   destinationId  String
   price          Float
   oldPrice       Float?
-  duration       Int             // number of days
+  duration       Int
   nights         Int
   starRating     StarRating
   description    String          @db.Text
+  summary        String?         @db.Text
+
   highlights     String[]
   inclusions     String[]
   exclusions     String[]
   images         String[]
+  galleryLayout  String   @default("grid-2x2") // grid-2x2 | grid-3col | featured-left | featured-right | strip
+
+  isFoodIncluded        Boolean  @default(false)
+  isTransportIncluded   Boolean  @default(false)
+  meetingPoint          String?  @db.Text
+  dropOff               String?  @db.Text
+  hostLanguage          String[]
+  audioGuideLanguage    String[]
+  bookletLanguage       String[]
+  inclusionService      String[]
+  exclusionService      String[]
+  emergencyContact      String?
+  notSuitable           String[]
+  notAllowed            String[]
+  mustCarryItem         String[]
+  difficulty            DifficultyLevel @default(EASY)
+  minAge                Int?
+  maxGroupSize          Int?
+  cancellationPolicy    String?  @db.Text
+  importantInfo         String?  @db.Text
+  isCustomizable        Boolean  @default(false)
+  customizationNotes    String?  @db.Text
+
   isFeatured     Boolean         @default(false)
   isActive       Boolean         @default(true)
-  paxType        String?         // per person, per couple, etc.
+  paxType        String?
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
-  // Relations
-  destination    Destination     @relation(fields: [destinationId], references: [id])
+  destination    Destination          @relation(fields: [destinationId], references: [id])
   itinerary      ItineraryDay[]
   inquiries      Inquiry[]
   bookings       Booking[]
   reviews        Review[]
+  accommodations PackageAccommodation[]
 
   @@map("packages")
 }
 
 model ItineraryDay {
-  id          String   @id @default(cuid())
-  packageId   String
-  dayNumber   Int
-  title       String
-  description String   @db.Text
-  activities  String[]
-  meals       String[]
+  id            String   @id @default(cuid())
+  packageId     String
+  dayNumber     Int
+  title         String
+  description   String   @db.Text
+  activities    String[]
+  meals         String[]
   accommodation String?
+  imageUrl      String?
 
   package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
 
   @@map("itinerary_days")
+}
+
+model PackageAccommodation {
+  id          String  @id @default(cuid())
+  packageId   String
+  name        String
+  starRating  Int?
+  location    String?
+  imageUrl    String?
+  description String? @db.Text
+  nightsStay  Int     @default(1)
+  sortOrder   Int     @default(0)
+
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  @@map("package_accommodations")
+}
+
+// ─── TOUR ─────────────────────────────────────────────────────────────────────
+
+model Tour {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  region        String   // e.g. "South East Asia"
+  multiDestinations String[] // e.g. ["Singapore", "Malaysia", "Thailand"]
+  primaryDestinationId String
+  price         Float
+  oldPrice      Float?
+  duration      Int
+  nights        Int
+  starRating    StarRating
+  description   String   @db.Text
+  summary       String?  @db.Text
+
+  highlights    String[]
+  inclusions    String[]
+  exclusions    String[]
+  images        String[]
+  galleryLayout String   @default("grid-2x2") // grid-2x2 | grid-3col | featured-left | featured-right | strip
+
+  // Tour-specific detail fields
+  isFoodIncluded        Boolean  @default(false)
+  isTransportIncluded   Boolean  @default(false)
+  meetingPoint          String?  @db.Text
+  dropOff               String?  @db.Text
+  hostLanguage          String[]
+  audioGuideLanguage    String[]
+  bookletLanguage       String[]
+  inclusionService      String[]
+  exclusionService      String[]
+  emergencyContact      String?
+  notSuitable           String[]
+  notAllowed            String[]
+  mustCarryItem         String[]
+  difficulty            DifficultyLevel @default(EASY)
+  minAge                Int?
+  maxGroupSize          Int?
+  cancellationPolicy    String?  @db.Text
+  importantInfo         String?  @db.Text
+
+  // Tour-specific: customizable group/private tours
+  isCustomizable        Boolean  @default(false)
+  customizationNotes    String?  @db.Text
+
+  // Tour-specific: visa notes across multiple countries
+  visaNotes             String?  @db.Text
+
+  isFeatured    Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  paxType       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  primaryDestination Destination      @relation(fields: [primaryDestinationId], references: [id])
+  itinerary          TourItineraryDay[]
+  accommodations     TourAccommodation[]
+  inquiries          TourInquiry[]
+  bookings           TourBooking[]
+  reviews            TourReview[]
+  customizations     TourCustomization[]
+
+  @@map("tours")
+}
+
+model TourItineraryDay {
+  id            String   @id @default(cuid())
+  tourId        String
+  dayNumber     Int
+  title         String
+  description   String   @db.Text
+  country       String?  // which country this day is in
+  activities    String[]
+  meals         String[]
+  accommodation String?
+  imageUrl      String?
+
+  tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@map("tour_itinerary_days")
+}
+
+model TourAccommodation {
+  id          String  @id @default(cuid())
+  tourId      String
+  name        String
+  starRating  Int?
+  location    String?
+  country     String?
+  imageUrl    String?
+  description String? @db.Text
+  nightsStay  Int     @default(1)
+  sortOrder   Int     @default(0)
+
+  tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@map("tour_accommodations")
+}
+
+model TourCustomization {
+  id            String   @id @default(cuid())
+  tourId        String
+  customerName  String
+  customerEmail String
+  customerPhone String?
+  travelDate    DateTime?
+  paxCount      Int
+  requests      String   @db.Text
+  budget        Float?
+  currency      String   @default("LKR")
+  status        String   @default("PENDING") // PENDING, REVIEWED, QUOTED, CONFIRMED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  tour Tour @relation(fields: [tourId], references: [id])
+
+  @@map("tour_customizations")
+}
+
+// Tour-specific inquiry, booking, review (keeps clean separation)
+model TourInquiry {
+  id           String        @id @default(cuid())
+  name         String
+  email        String
+  phone        String?
+  tourId       String?
+  destination  String?
+  travelDate   DateTime?
+  paxCount     Int?
+  message      String        @db.Text
+  status       InquiryStatus @default(NEW)
+  assignedToId String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  tour       Tour? @relation(fields: [tourId], references: [id])
+  assignedTo User? @relation("AssignedTourStaff", fields: [assignedToId], references: [id])
+
+  @@map("tour_inquiries")
+}
+
+model TourBooking {
+  id            String        @id @default(cuid())
+  bookingRef    String        @unique @default(cuid())
+  tourId        String
+  customerName  String
+  customerEmail String
+  customerPhone String
+  travelDate    DateTime
+  returnDate    DateTime?
+  paxCount      Int
+  totalPrice    Float
+  currency      String        @default("LKR")
+  status        BookingStatus @default(PENDING)
+  paymentStatus PaymentStatus @default(UNPAID)
+  notes         String?       @db.Text
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  tour     Tour     @relation(fields: [tourId], references: [id])
+  payments TourPayment[]
+
+  @@map("tour_bookings")
+}
+
+model TourPayment {
+  id          String        @id @default(cuid())
+  tourBookingId String
+  amount      Float
+  currency    String        @default("LKR")
+  method      PaymentMethod
+  reference   String?
+  status      PaymentStatus @default(UNPAID)
+  stripeId    String?
+  paidAt      DateTime?
+  createdAt   DateTime      @default(now())
+
+  tourBooking TourBooking @relation(fields: [tourBookingId], references: [id], onDelete: Cascade)
+
+  @@map("tour_payments")
+}
+
+model TourReview {
+  id        String       @id @default(cuid())
+  name      String
+  location  String?
+  rating    Int
+  body      String       @db.Text
+  photoUrl  String?
+  videoUrl  String?
+  tourId    String?
+  status    ReviewStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  tour Tour? @relation(fields: [tourId], references: [id])
+
+  @@map("tour_reviews")
 }
 
 // ─── DESTINATION ──────────────────────────────────────────────────────────────
@@ -172,19 +426,21 @@ model Destination {
   id          String   @id @default(cuid())
   name        String
   slug        String   @unique
-  region      String   // Southeast Asia, Middle East, Europe, etc.
+  region      String
   country     String
   language    String
   bestSeason  String
-  costLevel   String   // Budget, Moderate, Luxury
+  costLevel   String
   description String   @db.Text
   images      String[]
+  imageUrl    String?  // Primary featured image
   isFeatured  Boolean  @default(false)
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   packages Package[]
+  tours    Tour[]
 
   @@map("destinations")
 }
@@ -192,20 +448,20 @@ model Destination {
 // ─── VISA SERVICES ────────────────────────────────────────────────────────────
 
 model VisaService {
-  id           String   @id @default(cuid())
-  country      String
-  slug         String   @unique
-  isVisaFree   Boolean  @default(false)
-  description  String   @db.Text
-  requirements String[]
+  id             String   @id @default(cuid())
+  country        String
+  slug           String   @unique
+  isVisaFree     Boolean  @default(false)
+  description    String   @db.Text
+  requirements   String[]
   processingTime String?
-  fee          String?
-  documents    String[]
-  notes        String?
-  image        String?
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  fee            String?
+  documents      String[]
+  notes          String?
+  image          String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@map("visa_services")
 }
@@ -236,17 +492,17 @@ model Inquiry {
 // ─── CONSULTATION ─────────────────────────────────────────────────────────────
 
 model Consultation {
-  id                  String              @id @default(cuid())
-  name                String
-  email               String
-  phone               String?
-  method              ConsultationMethod
-  additionalInfo      String?             @db.Text
-  status              ConsultationStatus  @default(PENDING)
+  id                   String             @id @default(cuid())
+  name                 String
+  email                String
+  phone                String?
+  method               ConsultationMethod
+  additionalInfo       String?            @db.Text
+  status               ConsultationStatus @default(PENDING)
   assignedConsultantId String?
-  scheduledAt         DateTime?
-  createdAt           DateTime            @default(now())
-  updatedAt           DateTime            @updatedAt
+  scheduledAt          DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
 
   assignedConsultant User? @relation("AssignedConsultant", fields: [assignedConsultantId], references: [id])
 
@@ -266,6 +522,7 @@ model Booking {
   returnDate    DateTime?
   paxCount      Int
   totalPrice    Float
+  currency      String        @default("LKR")
   status        BookingStatus @default(PENDING)
   paymentStatus PaymentStatus @default(UNPAID)
   notes         String?       @db.Text
@@ -282,6 +539,7 @@ model Payment {
   id        String        @id @default(cuid())
   bookingId String
   amount    Float
+  currency  String        @default("LKR")
   method    PaymentMethod
   reference String?
   status    PaymentStatus @default(UNPAID)
@@ -300,7 +558,7 @@ model Review {
   id        String       @id @default(cuid())
   name      String
   location  String?
-  rating    Int          // 1-5
+  rating    Int
   body      String       @db.Text
   photoUrl  String?
   videoUrl  String?
@@ -360,7 +618,7 @@ model Blog {
   excerpt     String?
   category    String
   author      String
-  readingTime Int      // minutes
+  readingTime Int
   imageUrl    String?
   publishedAt DateTime @default(now())
   isActive    Boolean  @default(true)
@@ -386,14 +644,18 @@ model NewsletterSubscriber {
 
 model LoyaltyCard {
   id             String   @id @default(cuid())
+  // Optional link to a registered User account
+  userId         String?  @unique
   customerName   String
   customerEmail  String   @unique
   customerPhone  String?
   pointsEarned   Int      @default(0)
   pointsRedeemed Int      @default(0)
-  tier           String   @default("BRONZE") // BRONZE, SILVER, GOLD
+  tier           String   @default("BRONZE")
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@map("loyalty_cards")
 }
@@ -401,18 +663,69 @@ model LoyaltyCard {
 // ─── CHARITY ──────────────────────────────────────────────────────────────────
 
 model CharityDonation {
-  id              String         @id @default(cuid())
-  name            String
-  phone           String
-  email           String
-  pickupRequired  Boolean        @default(false)
-  address         String?
-  notes           String?
-  status          DonationStatus @default(PENDING)
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id             String         @id @default(cuid())
+  name           String
+  phone          String
+  email          String
+  pickupRequired Boolean        @default(false)
+  address        String?
+  notes          String?
+  status         DonationStatus @default(PENDING)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 
   @@map("charity_donations")
+}
+
+// ─── PERKS ────────────────────────────────────────────────────────────────────
+
+model Perk {
+  id          String        @id @default(cuid())
+  title       String
+  description String        @db.Text
+  iconName    String
+  iconColor   String        @default("#f59e0b")
+  bgColor     String        @default("#fffbeb")
+  imageUrl    String?
+  ctaLink     String?
+  sortOrder   Int           @default(0)
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  claimedPerks ClaimedPerk[]
+
+  @@map("perks")
+}
+
+model ClaimedPerk {
+  id        String   @id @default(cuid())
+  userId    String
+  perkId    String
+  claimedAt DateTime @default(now())
+  status    String   @default("PENDING") // PENDING | APPROVED | USED | EXPIRED
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  perk Perk @relation(fields: [perkId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, perkId])
+  @@map("claimed_perks")
+}
+
+// ─── CATEGORY (with image) ────────────────────────────────────────────────────
+
+model PackageCategoryConfig {
+  id          String   @id @default(cuid())
+  slug        String   @unique  // matches PackageCategory enum lowercase
+  label       String
+  description String?
+  imageUrl    String?
+  iconName    String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+
+  @@map("package_category_configs")
 }
 
 // ─── SITE SETTINGS ────────────────────────────────────────────────────────────
@@ -424,4 +737,20 @@ model SiteSetting {
   updatedAt DateTime @updatedAt
 
   @@map("site_settings")
+}
+
+// ─── MEDIA ────────────────────────────────────────────────────────────────────
+
+model Media {
+  id        String   @id @default(cuid())
+  filename  String
+  url       String
+  size      Int?     // bytes
+  mimeType  String?
+  storage   String   @default("local") // local, s3, cloudinary
+  folder    String?
+  altText   String?
+  createdAt DateTime @default(now())
+
+  @@map("media")
 }

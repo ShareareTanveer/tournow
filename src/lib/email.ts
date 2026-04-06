@@ -18,19 +18,19 @@ export async function sendInquiryConfirmation(to: string, name: string, packageT
   await transporter.sendMail({
     from: FROM,
     to,
-    subject: 'We received your inquiry – Halo Holidays',
+    subject: 'We received your inquiry – Metro Voyage',
     html: `
       <h2>Hi ${name},</h2>
-      <p>Thank you for reaching out to <strong>Halo Holidays</strong>!</p>
+      <p>Thank you for reaching out to <strong>Metro Voyage</strong>!</p>
       ${packageTitle ? `<p>We've received your inquiry about <strong>${packageTitle}</strong>.</p>` : ''}
       <p>One of our travel experts will contact you shortly to discuss your dream holiday.</p>
       <p>In the meantime, feel free to reach us at:</p>
       <ul>
         <li>📞 +94 70 454 5455</li>
-        <li>📧 contact@haloholidays.lk</li>
+        <li>📧 contact@metrovoyage.com</li>
         <li>💬 WhatsApp: +94 70 454 5455</li>
       </ul>
-      <p>Warm regards,<br/>The Halo Holidays Team</p>
+      <p>Warm regards,<br/>The Metro Voyage Team</p>
     `,
   })
 }
@@ -65,13 +65,13 @@ export async function sendConsultationConfirmation(to: string, name: string, met
   await transporter.sendMail({
     from: FROM,
     to,
-    subject: 'Consultation Request Received – Halo Holidays',
+    subject: 'Consultation Request Received – Metro Voyage',
     html: `
       <h2>Hi ${name},</h2>
       <p>We've received your request for a <strong>${method}</strong> consultation.</p>
       <p>Our team will get back to you shortly to schedule your session.</p>
-      <p>Contact us anytime: +94 70 454 5455 | contact@haloholidays.lk</p>
-      <p>Warm regards,<br/>The Halo Holidays Team</p>
+      <p>Contact us anytime: +94 70 454 5455 | contact@metrovoyage.com</p>
+      <p>Warm regards,<br/>The Metro Voyage Team</p>
     `,
   })
 }
@@ -114,7 +114,7 @@ export async function sendBookingConfirmation(booking: {
   await transporter.sendMail({
     from: FROM,
     to: booking.customerEmail,
-    subject: `Booking Confirmed – ${booking.bookingRef} | Halo Holidays`,
+    subject: `Booking Confirmed – ${booking.bookingRef} | Metro Voyage`,
     html: `
       <h2>Booking Confirmation</h2>
       <p>Dear ${booking.customerName},</p>
@@ -127,7 +127,7 @@ export async function sendBookingConfirmation(booking: {
         <tr><td><strong>Total Price:</strong></td><td>LKR ${booking.totalPrice.toLocaleString()}</td></tr>
       </table>
       <p>Our team will be in touch with further details.</p>
-      <p>Warm regards,<br/>The Halo Holidays Team</p>
+      <p>Warm regards,<br/>The Metro Voyage Team</p>
     `,
   })
 }

@@ -1,9 +1,11 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
+import { FiHeart, FiGlobe, FiNavigation, FiShield } from 'react-icons/fi'
 
 export const metadata: Metadata = {
   title: 'About Us',
-  description: 'Learn about Halo Holidays — Sri Lanka\'s trusted SLTDA-licensed travel agency, serving travellers since 2018.',
+  description: 'Learn about Metro Voyage — Sri Lanka\'s trusted SLTDA-licensed travel agency, serving travellers since 2018.',
 }
 
 async function getStaff() {
@@ -27,17 +29,19 @@ export default async function AboutPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="brand-gradient py-16 px-4 text-center text-white">
-        <h1 className="text-3xl md:text-4xl font-bold mb-3">About Halo Holidays</h1>
-        <p className="text-white/80 max-w-xl mx-auto">Your trusted travel partner from Sri Lanka since 2018</p>
-      </div>
+      <PageHero
+        title="About Metro Voyage"
+        subtitle="Your trusted travel partner from Sri Lanka since 2018"
+        imageUrl={getPageHeroImage('about')}
+        breadcrumbs={[{ label: 'About Us' }]}
+      />
 
       <div className="max-w-5xl mx-auto px-4 py-12 space-y-12">
         {/* Story */}
         <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
           <h2 className="text-2xl font-bold text-gray-800 mb-5">Our Story</h2>
           <div className="prose prose-gray max-w-none text-gray-600 space-y-4">
-            <p>Halo Holidays was born in 2018 from a simple belief: every holiday should be extraordinary. What started as crafting trips for friends and family across Southeast Asia has grown into a full-service travel agency serving 50+ countries by 2025.</p>
+            <p>Metro Voyage was born in 2018 from a simple belief: every holiday should be extraordinary. What started as crafting trips for friends and family across Southeast Asia has grown into a full-service travel agency serving 50+ countries by 2025.</p>
             <p>We are not a &ldquo;one-size-fits-all&rdquo; agency. We take the time to understand your travel style, budget, and dreams — then craft an itinerary that is uniquely yours. Whether it&apos;s a romantic Maldives honeymoon, a family adventure in Japan, or a corporate retreat in Dubai, we handle every detail.</p>
             <p>Our team regularly visits the destinations we sell, ensuring our recommendations come from first-hand experience — not just brochures.</p>
           </div>
@@ -45,14 +49,16 @@ export default async function AboutPage() {
 
         {/* Values */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {[
-            { icon: '❤️', title: 'Customer First', desc: 'Your satisfaction is our priority. We are available until 10 PM, every day.' },
-            { icon: '🌍', title: 'Destination Experts', desc: 'We visit every destination we recommend to give you first-hand insights.' },
-            { icon: '✈️', title: 'Passion for Travel', desc: 'We are travellers ourselves. That passion shows in every package we create.' },
-            { icon: '🛡️', title: 'Trust & Reliability', desc: 'SLTDA licensed, Civil Aviation certified, and fully bonded & insured.' },
-          ].map((v) => (
-            <div key={v.title} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex gap-4">
-              <div className="text-3xl">{v.icon}</div>
+          {([
+            { Icon: FiHeart,     iconBg: '#fef2f2', iconColor: '#ef4444', title: 'Customer First',      desc: 'Your satisfaction is our priority. We are available until 10 PM, every day.' },
+            { Icon: FiGlobe,     iconBg: '#eef2ff', iconColor: '#6366f1', title: 'Destination Experts', desc: 'We visit every destination we recommend to give you first-hand insights.' },
+            { Icon: FiNavigation,iconBg: '#f0fdf9', iconColor: '#0d9488', title: 'Passion for Travel',  desc: 'We are travellers ourselves. That passion shows in every package we create.' },
+            { Icon: FiShield,    iconBg: '#fffbeb', iconColor: '#f59e0b', title: 'Trust & Reliability', desc: 'SLTDA licensed, Civil Aviation certified, and fully bonded & insured.' },
+          ] as const).map((v) => (
+            <div key={v.title} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex gap-4 items-start">
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: v.iconBg }}>
+                <v.Icon size={20} style={{ color: v.iconColor }} />
+              </div>
               <div>
                 <h3 className="font-bold text-gray-800 mb-1">{v.title}</h3>
                 <p className="text-sm text-gray-500">{v.desc}</p>

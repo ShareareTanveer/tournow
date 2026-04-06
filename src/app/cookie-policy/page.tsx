@@ -34,7 +34,7 @@ export default function CookiePolicyPage() {
           </section>
           <section>
             <h2 className="text-xl font-bold text-gray-800">Contact</h2>
-            <p>Questions? Email <a href="mailto:contact@haloholidays.lk" className="text-[var(--brand)]">contact@haloholidays.lk</a></p>
+            <p>Questions? Email <a href="mailto:contact@metrovoyage.com" className="text-[var(--brand)]">contact@metrovoyage.com</a></p>
           </section>
         </div>
       </div>

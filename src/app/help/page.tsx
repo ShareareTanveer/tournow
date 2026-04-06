@@ -13,7 +13,7 @@ const FAQS = [
   { q: 'How do I contact you during my trip?', a: 'Our 24/7 toll-free support line is always available. You can call +94 70 454 5455 or message us on WhatsApp. We are here until 10 PM every day.' },
   { q: 'Do you offer group discounts?', a: 'Yes! We offer special rates for groups of 10+ travellers. Contact us for a custom group quotation.' },
   { q: 'What is your cancellation policy?', a: 'Cancellation policies vary by package and travel dates. Our team will clearly outline the terms when you book. We always try to offer the most flexible options available.' },
-  { q: 'Are you a licensed travel agency?', a: 'Yes, Halo Holidays is fully licensed by the Sri Lanka Tourism Development Authority (SLTDA) with registration number PV 00250114, and certified by the Civil Aviation Authority. We are fully bonded and insured.' },
+  { q: 'Are you a licensed travel agency?', a: 'Yes, Metro Voyage is fully licensed by the Sri Lanka Tourism Development Authority (SLTDA) with registration number PV 00250114, and certified by the Civil Aviation Authority. We are fully bonded and insured.' },
 ]
 
 export default function HelpPage() {

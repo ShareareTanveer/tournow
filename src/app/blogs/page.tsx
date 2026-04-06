@@ -1,10 +1,11 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
+import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 
 export const metadata: Metadata = {
   title: 'Travel Blog',
-  description: 'Travel stories, tips and inspiration from the Halo Holidays team.',
+  description: 'Travel stories, tips and inspiration from the Metro Voyage team.',
 }
 
 async function getBlogs() {
@@ -29,10 +30,12 @@ export default async function BlogsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="brand-gradient py-16 px-4 text-center text-white">
-        <h1 className="text-3xl md:text-4xl font-bold mb-3">Travel Blog</h1>
-        <p className="text-white/80">Stories, tips and inspiration from our travellers and team</p>
-      </div>
+      <PageHero
+        title="Travel Blog"
+        subtitle="Stories, tips and inspiration from our travellers and team"
+        imageUrl={getPageHeroImage('blogs')}
+        breadcrumbs={[{ label: 'Blog' }]}
+      />
 
       <div className="max-w-7xl mx-auto px-4 py-12">
         {blogs.length > 0 ? (

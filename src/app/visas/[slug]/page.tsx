@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import InquiryForm from '@/components/forms/InquiryForm'
+import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -27,12 +28,15 @@ export default async function VisaDetailPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="brand-gradient py-14 px-4 text-center text-white">
-        <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full mb-3 ${visa.isVisaFree ? 'bg-green-500' : 'bg-orange-500'}`}>
-          {visa.isVisaFree ? '✅ Visa Free' : '📋 Visa Required'}
+      <PageHero
+        title={`${visa.country} Visa Guide`}
+        imageUrl={getPageHeroImage('visas')}
+        breadcrumbs={[{ label: 'Visas', href: '/visas' }, { label: visa.country }]}
+      >
+        <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full mt-3 ${visa.isVisaFree ? 'bg-green-500' : 'bg-orange-500'} text-white`}>
+          {visa.isVisaFree ? 'Visa Free' : 'Visa Required'}
         </span>
-        <h1 className="text-3xl md:text-4xl font-bold">{visa.country} Visa Guide</h1>
-      </div>
+      </PageHero>
 
       <div className="max-w-5xl mx-auto px-4 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

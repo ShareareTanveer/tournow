@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import PackageCard from '@/components/ui/PackageCard'
+import TourCard from '@/components/ui/TourCard'
+import PageHero from '@/components/ui/PageHero'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -28,21 +29,12 @@ export default async function DestinationDetailPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero */}
-      <div className="relative h-72 md:h-96 bg-gray-300">
-        {dest.images?.[0] ? (
-          <Image src={dest.images[0]} alt={dest.name} fill className="object-cover" priority />
-        ) : (
-          <div className="w-full h-full brand-gradient flex items-center justify-center">
-            <span className="text-white text-7xl">🌍</span>
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-        <div className="absolute bottom-6 left-6 text-white">
-          <p className="text-white/70 text-sm mb-1">{dest.region}</p>
-          <h1 className="text-3xl md:text-5xl font-bold">{dest.name}</h1>
-        </div>
-      </div>
+      <PageHero
+        title={dest.name}
+        subtitle={dest.region}
+        imageUrl={dest.images?.[0] ?? dest.imageUrl}
+        breadcrumbs={[{ label: 'Destinations', href: '/destinations' }, { label: dest.name }]}
+      />
 
       <div className="max-w-7xl mx-auto px-4 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -54,11 +46,23 @@ export default async function DestinationDetailPage({ params }: Props) {
             </div>
 
             {dest.packages?.length > 0 && (
-              <div>
+              <div className="mb-10">
                 <h2 className="text-xl font-bold text-gray-800 mb-5">Packages to {dest.name}</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   {dest.packages.map((pkg: any) => (
                     <PackageCard key={pkg.id} {...pkg} destination={{ name: dest.name, region: dest.region }} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {dest.tours?.length > 0 && (
+              <div>
+                <h2 className="text-xl font-bold text-gray-800 mb-1">Tours including {dest.name}</h2>
+                <p className="text-sm text-gray-500 mb-5">Multi-destination tours that feature {dest.name}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {dest.tours.map((tour: any) => (
+                    <TourCard key={tour.id} {...tour} primaryDestination={{ name: dest.name, region: dest.region }} />
                   ))}
                 </div>
               </div>

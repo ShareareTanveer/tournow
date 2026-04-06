@@ -34,7 +34,7 @@ export default function PrivacyPolicyPage() {
           </section>
           <section>
             <h2 className="text-xl font-bold text-gray-800">Contact Us</h2>
-            <p>For privacy-related questions, contact us at <a href="mailto:contact@haloholidays.lk" className="text-[var(--brand)]">contact@haloholidays.lk</a> or call +94 70 454 5455.</p>
+            <p>For privacy-related questions, contact us at <a href="mailto:contact@metrovoyage.com" className="text-[var(--brand)]">contact@metrovoyage.com</a> or call +94 70 454 5455.</p>
           </section>
         </div>
       </div>

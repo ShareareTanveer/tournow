@@ -20,14 +20,45 @@ export const ConsultationSchema = z.object({
 })
 
 export const BookingSchema = z.object({
-  packageId: z.string(),
+  packageId: z.string().optional(),
+  tourId: z.string().optional(),
+  customerId: z.string().optional(),
   customerName: z.string().min(2),
   customerEmail: z.string().email(),
   customerPhone: z.string(),
   travelDate: z.string(),
   returnDate: z.string().optional(),
-  paxCount: z.number().int().positive(),
+  paxAdult: z.number().int().min(1).default(1),
+  paxChild: z.number().int().min(0).default(0),
+  paxInfant: z.number().int().min(0).default(0),
+  roomType: z.enum(['SINGLE', 'TWIN', 'DOUBLE', 'TRIPLE']).optional(),
+  pricePerPerson: z.number().positive().optional(),
+  priceTwin: z.number().positive().optional(),
+  extraNights: z.number().int().min(0).default(0),
+  extraNightPrice: z.number().positive().optional(),
+  selectedOptions: z.array(z.object({ label: z.string(), price: z.number() })).default([]),
+  totalPrice: z.number().positive(),
+  discount: z.number().min(0).default(0),
   notes: z.string().optional(),
+})
+
+export const CustomerRegisterSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email(),
+  password: z.string().min(6),
+  phone: z.string().optional(),
+})
+
+export const CustomerLoginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+})
+
+export const ReceiptUploadSchema = z.object({
+  bookingId: z.string(),
+  bookingType: z.enum(['package', 'tour']),
+  receiptUrl: z.string().url(),
+  receiptNote: z.string().optional(),
 })
 
 export const ReviewSchema = z.object({
@@ -52,6 +83,38 @@ export const CharityDonationSchema = z.object({
   notes: z.string().optional(),
 })
 
+const PricingFields = {
+  priceTwin: z.number().positive().optional(),
+  priceChild: z.number().positive().optional(),
+  extraNightPrice: z.number().positive().optional(),
+  options: z.array(z.object({ label: z.string(), price: z.number(), isDefault: z.boolean().optional() })).optional(),
+  cancellationTiers: z.array(z.object({ daysBeforeDep: z.number(), refundPercent: z.number(), label: z.string() })).optional(),
+  cancellationPolicy: z.string().optional(),
+}
+
+const DetailFields = {
+  isFoodIncluded: z.boolean().optional(),
+  isTransportIncluded: z.boolean().optional(),
+  meetingPoint: z.string().optional(),
+  dropOff: z.string().optional(),
+  hostLanguage: z.array(z.string()).optional(),
+  audioGuideLanguage: z.array(z.string()).optional(),
+  bookletLanguage: z.array(z.string()).optional(),
+  inclusionService: z.array(z.string()).optional(),
+  exclusionService: z.array(z.string()).optional(),
+  emergencyContact: z.string().optional(),
+  notSuitable: z.array(z.string()).optional(),
+  notAllowed: z.array(z.string()).optional(),
+  mustCarryItem: z.array(z.string()).optional(),
+  difficulty: z.string().optional(),
+  minAge: z.number().int().min(0).optional(),
+  maxGroupSize: z.number().int().positive().optional(),
+  importantInfo: z.string().optional(),
+  summary: z.string().optional(),
+  isCustomizable: z.boolean().optional(),
+  customizationNotes: z.string().optional(),
+}
+
 export const PackageSchema = z.object({
   title: z.string().min(3),
   slug: z.string().min(3),
@@ -71,6 +134,8 @@ export const PackageSchema = z.object({
   isFeatured: z.boolean().default(false),
   isActive: z.boolean().default(true),
   paxType: z.string().optional(),
+  ...PricingFields,
+  ...DetailFields,
 })
 
 export const TourSchema = z.object({
@@ -94,6 +159,8 @@ export const TourSchema = z.object({
   isActive: z.boolean().default(true),
   paxType: z.string().optional(),
   visaNotes: z.string().optional(),
+  ...PricingFields,
+  ...DetailFields,
 })
 
 export const DestinationSchema = z.object({

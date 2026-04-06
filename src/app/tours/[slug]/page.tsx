@@ -4,6 +4,7 @@ import Link from 'next/link'
 import InquiryForm from '@/components/forms/InquiryForm'
 import PackageGallery from '@/components/packages/PackageGallery'
 import PackageTabs from '@/components/packages/PackageTabs'
+import BookNowButton from '@/components/booking/BookNowButton'
 import {
   FiMapPin, FiClock, FiStar, FiUsers, FiPhone, FiCheckCircle, FiXCircle,
   FiShield, FiGlobe, FiArrowRight, FiFlag,
@@ -198,8 +199,32 @@ export default async function TourDetailPage({ params }: Props) {
                 </div>
               )}
 
+              {/* Book Now CTA */}
+              <div className="px-5 pt-4 pb-2">
+                <BookNowButton target={{
+                  id: tour.id,
+                  type: 'tour',
+                  title: tour.title,
+                  price: tour.price,
+                  priceTwin: tour.priceTwin,
+                  priceChild: tour.priceChild,
+                  extraNightPrice: tour.extraNightPrice,
+                  duration: tour.duration,
+                  nights: tour.nights,
+                  paxType: tour.paxType,
+                  options: tour.options,
+                  cancellationTiers: tour.cancellationTiers,
+                  cancellationPolicy: tour.cancellationPolicy,
+                }} />
+              </div>
+
               {/* Inquiry form */}
-              <div className="p-5">
+              <div className="px-5 pb-5">
+                <div className="relative flex items-center gap-3 my-3">
+                  <div className="flex-1 border-t border-gray-100" />
+                  <span className="text-xs text-gray-400">or send an inquiry</span>
+                  <div className="flex-1 border-t border-gray-100" />
+                </div>
                 <InquiryForm packageId={tour.id} packageTitle={tour.title} />
               </div>
             </div>

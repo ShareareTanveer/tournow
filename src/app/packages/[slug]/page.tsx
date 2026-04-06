@@ -5,6 +5,7 @@ import InquiryForm from '@/components/forms/InquiryForm'
 import PackageTabs from '@/components/packages/PackageTabs'
 import PackageGallery from '@/components/packages/PackageGallery'
 import CustomizeTourButton from '@/components/packages/CustomizeTourButton'
+import BookNowButton from '@/components/booking/BookNowButton'
 import {
   FiMapPin, FiClock, FiStar, FiUsers, FiPhone, FiCheckCircle, FiXCircle,
   FiShield, FiGlobe, FiArrowRight,
@@ -190,8 +191,32 @@ export default async function PackageDetailPage({ params }: Props) {
                 </div>
               )}
 
+              {/* Book Now CTA */}
+              <div className="px-5 pt-4 pb-2">
+                <BookNowButton target={{
+                  id: pkg.id,
+                  type: 'package',
+                  title: pkg.title,
+                  price: pkg.price,
+                  priceTwin: pkg.priceTwin,
+                  priceChild: pkg.priceChild,
+                  extraNightPrice: pkg.extraNightPrice,
+                  duration: pkg.duration,
+                  nights: pkg.nights,
+                  paxType: pkg.paxType,
+                  options: pkg.options,
+                  cancellationTiers: pkg.cancellationTiers,
+                  cancellationPolicy: pkg.cancellationPolicy,
+                }} />
+              </div>
+
               {/* Inquiry form */}
-              <div className="p-5">
+              <div className="px-5 pb-5">
+                <div className="relative flex items-center gap-3 my-3">
+                  <div className="flex-1 border-t border-gray-100" />
+                  <span className="text-xs text-gray-400">or send an inquiry</span>
+                  <div className="flex-1 border-t border-gray-100" />
+                </div>
                 <InquiryForm packageId={pkg.id} packageTitle={pkg.title} />
               </div>
             </div>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import PublicLayout from '@/components/layout/PublicLayout'
+import { CustomerAuthProvider } from '@/lib/customerAuth'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,7 +28,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className="h-full antialiased">
       <body className={`${inter.className} min-h-full flex flex-col bg-white`}>
-        <PublicLayout>{children}</PublicLayout>
+        <CustomerAuthProvider>
+          <PublicLayout>{children}</PublicLayout>
+        </CustomerAuthProvider>
       </body>
     </html>
   )

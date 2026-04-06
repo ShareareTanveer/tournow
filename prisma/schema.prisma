@@ -53,8 +53,18 @@ enum ConsultationStatus {
 }
 
 enum BookingStatus {
-  PENDING
-  CONFIRMED
+  // Customer-side flow
+  REQUESTED          // Customer submitted booking form
+  CALL_REQUIRED      // Staff needs to call & finalise
+  EDIT_RESEND        // Staff edited quote, resent to customer
+  AWAITING_CONFIRM   // Waiting for customer confirmation
+  // Confirmed flow
+  CONFIRMED          // Customer confirmed
+  RECEIPT_UPLOADED   // Customer uploaded payment receipt
+  ADMIN_CONFIRMING   // Admin reviewing receipt / finalising
+  ALL_CONFIRMED      // Fully confirmed by admin
+  MAIL_SENT          // Confirmation + tickets emailed
+  // Terminal states
   CANCELLED
   COMPLETED
 }
@@ -127,6 +137,37 @@ model Session {
   @@map("sessions")
 }
 
+// ─── CUSTOMER ACCOUNTS (separate from admin Users) ────────────────────────────
+
+model Customer {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  password     String
+  phone        String?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  bookings     Booking[]
+  tourBookings TourBooking[]
+  sessions     CustomerSession[]
+
+  @@map("customers")
+}
+
+model CustomerSession {
+  id         String   @id @default(cuid())
+  customerId String
+  token      String   @unique
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@map("customer_sessions")
+}
+
 // ─── PACKAGE ─────────────────────────────────────────────────────────────────
 
 model Package {
@@ -169,6 +210,15 @@ model Package {
   importantInfo         String?  @db.Text
   isCustomizable        Boolean  @default(false)
   customizationNotes    String?  @db.Text
+
+  // Pricing options
+  priceTwin          Float?    // per person twin-sharing price
+  priceChild         Float?    // child price
+  extraNightPrice    Float?    // per extra night
+  options            Json?     // [{label, price, isDefault}] add-on options
+
+  // Cancellation policy (structured)
+  cancellationTiers  Json?     // [{daysBeforeDep, refundPercent, label}]
 
   isFeatured     Boolean         @default(false)
   isActive       Boolean         @default(true)
@@ -268,6 +318,13 @@ model Tour {
   // Tour-specific: visa notes across multiple countries
   visaNotes             String?  @db.Text
 
+  // Pricing options
+  priceTwin          Float?
+  priceChild         Float?
+  extraNightPrice    Float?
+  options            Json?     // [{label, price, isDefault}]
+  cancellationTiers  Json?     // [{daysBeforeDep, refundPercent, label}]
+
   isFeatured    Boolean  @default(false)
   isActive      Boolean  @default(true)
   paxType       String?
@@ -365,21 +422,43 @@ model TourBooking {
   id            String        @id @default(cuid())
   bookingRef    String        @unique @default(cuid())
   tourId        String
+  customerId    String?
+
   customerName  String
   customerEmail String
   customerPhone String
+
   travelDate    DateTime
   returnDate    DateTime?
-  paxCount      Int
+  paxAdult      Int           @default(1)
+  paxChild      Int           @default(0)
+  paxInfant     Int           @default(0)
+  roomType      String?
+
+  pricePerPerson   Float?
+  priceTwin        Float?
+  extraNights      Int        @default(0)
+  extraNightPrice  Float?
+  selectedOptions  Json?
+
   totalPrice    Float
   currency      String        @default("LKR")
-  status        BookingStatus @default(PENDING)
+  discount      Float         @default(0)
+
+  status        BookingStatus @default(REQUESTED)
   paymentStatus PaymentStatus @default(UNPAID)
+
+  adminNotes    String?       @db.Text
+  staffQuote    Json?
+  receiptUrl    String?
+  receiptNote   String?
+
   notes         String?       @db.Text
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
-  tour     Tour     @relation(fields: [tourId], references: [id])
+  tour     Tour        @relation(fields: [tourId], references: [id])
+  customer Customer?   @relation(fields: [customerId], references: [id])
   payments TourPayment[]
 
   @@map("tour_bookings")
@@ -515,21 +594,48 @@ model Booking {
   id            String        @id @default(cuid())
   bookingRef    String        @unique @default(cuid())
   packageId     String
+  customerId    String?       // linked Customer account (if logged in)
+
+  // Traveller info
   customerName  String
   customerEmail String
   customerPhone String
+
+  // Travel dates & pax
   travelDate    DateTime
   returnDate    DateTime?
-  paxCount      Int
+  paxAdult      Int           @default(1)
+  paxChild      Int           @default(0)
+  paxInfant     Int           @default(0)
+  roomType      String?       // SINGLE | TWIN | DOUBLE | TRIPLE
+
+  // Pricing breakdown
+  pricePerPerson   Float?     // adult per-person price
+  priceTwin        Float?     // twin-sharing price per person
+  extraNights      Int        @default(0)
+  extraNightPrice  Float?
+  selectedOptions  Json?      // array of {label, price} add-ons
+
   totalPrice    Float
   currency      String        @default("LKR")
-  status        BookingStatus @default(PENDING)
+  discount      Float         @default(0)
+
+  // Pipeline status
+  status        BookingStatus @default(REQUESTED)
   paymentStatus PaymentStatus @default(UNPAID)
+
+  // Admin workflow
+  adminNotes    String?       @db.Text
+  staffQuote    Json?         // detailed quote JSON sent to customer
+  receiptUrl    String?       // customer-uploaded payment receipt
+  receiptNote   String?
+
   notes         String?       @db.Text
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
   package  Package   @relation(fields: [packageId], references: [id])
+  customer Customer? @relation(fields: [customerId], references: [id])
   payments Payment[]
 
   @@map("bookings")

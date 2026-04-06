@@ -9,10 +9,10 @@ export async function GET(req: NextRequest, { params }: Params) {
   const adminUser = await getAuthUser(req)
   if (!adminUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const booking = await prisma.booking.findUnique({
+  const booking = await prisma.tourBooking.findUnique({
     where: { id },
     include: {
-      package: { select: { title: true, slug: true, images: true } },
+      tour: { select: { title: true, slug: true, images: true } },
       payments: true,
     },
   })
@@ -24,7 +24,6 @@ export async function PUT(req: NextRequest, { params }: Params) {
   const { id } = await params
   const adminUser = await getAuthUser(req)
 
-  // Customer can only upload receipt
   if (!adminUser) {
     const token = req.cookies.get('customer_token')?.value
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -34,33 +33,26 @@ export async function PUT(req: NextRequest, { params }: Params) {
     const body = await req.json()
     if (!body.receiptUrl) return NextResponse.json({ error: 'receiptUrl required' }, { status: 400 })
 
-    const booking = await prisma.booking.findFirst({ where: { id, customerId: payload.userId } })
+    const booking = await prisma.tourBooking.findFirst({ where: { id, customerId: payload.userId } })
     if (!booking) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-    const updated = await prisma.booking.update({
+    const updated = await prisma.tourBooking.update({
       where: { id },
-      data: {
-        receiptUrl: body.receiptUrl,
-        receiptNote: body.receiptNote,
-        status: 'RECEIPT_UPLOADED',
-      },
+      data: { receiptUrl: body.receiptUrl, receiptNote: body.receiptNote, status: 'RECEIPT_UPLOADED' },
     })
     return NextResponse.json(updated)
   }
 
-  // Admin: update any field
   const body = await req.json()
-  const updated = await prisma.booking.update({
+  const updated = await prisma.tourBooking.update({
     where: { id },
     data: {
       ...(body.status && { status: body.status }),
       ...(body.paymentStatus && { paymentStatus: body.paymentStatus }),
       ...(body.adminNotes !== undefined && { adminNotes: body.adminNotes }),
-      ...(body.staffQuote !== undefined && { staffQuote: body.staffQuote }),
       ...(body.discount !== undefined && { discount: body.discount }),
       ...(body.totalPrice !== undefined && { totalPrice: body.totalPrice }),
     },
-    include: { package: { select: { title: true } } },
   })
   return NextResponse.json(updated)
 }

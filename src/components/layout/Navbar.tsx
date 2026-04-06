@@ -129,6 +129,7 @@ export default function Navbar() {
   const [activeRegion, setActiveRegion] = useState("Asia");
   const [activeTourRegion, setActiveTourRegion] = useState("South East Asia");
   const [authUser, setAuthUser] = useState<{ name: string; role: string } | null>(null);
+  const [customerUser, setCustomerUser] = useState<{ name: string } | null>(null);
   const pathname = usePathname();
 
   const pkgTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -170,7 +171,11 @@ export default function Navbar() {
       .then(r => r.ok ? r.json() : null)
       .then(data => setAuthUser(data?.user ?? null))
       .catch(() => setAuthUser(null))
-  }, []);
+    fetch('/api/customer/me')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => setCustomerUser(data ?? null))
+      .catch(() => setCustomerUser(null))
+  }, [pathname]);
 
   const activeRegionData = DESTINATION_REGIONS.find(
     (r) => r.region === activeRegion,
@@ -635,7 +640,7 @@ export default function Navbar() {
             <CurrencySelector dark={false} />
             {authUser ? (
               <Link
-                href={['SUPER_ADMIN','ADMIN','EDITOR','STAFF'].includes(authUser.role) ? '/admin/dashboard' : '/my'}
+                href={['SUPER_ADMIN','ADMIN','EDITOR','STAFF'].includes(authUser.role) ? '/admin/dashboard' : '/my/bookings'}
                 className="flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition-all text-gray-700"
               >
                 <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0"
@@ -643,6 +648,17 @@ export default function Navbar() {
                   {authUser.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                 </div>
                 <span className="hidden xl:inline">{authUser.name.split(' ')[0]}</span>
+              </Link>
+            ) : customerUser ? (
+              <Link
+                href="/my/bookings"
+                className="flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition-all text-gray-700"
+              >
+                <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0"
+                  style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)' }}>
+                  {customerUser.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+                </div>
+                <span className="hidden xl:inline">{customerUser.name.split(' ')[0]}</span>
               </Link>
             ) : (
               <Link
@@ -652,7 +668,7 @@ export default function Navbar() {
                 <FiUser size={14} /> Log In
               </Link>
             )}
-  
+
           </div>
 
           {/* Mobile hamburger */}

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { FiPlus, FiX } from 'react-icons/fi'
 import MultiImageUploader, { GalleryLayout } from '@/components/admin/MultiImageUploader'
 
 const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor'), { ssr: false })
@@ -10,17 +11,190 @@ const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor')
 interface Destination { id: string; name: string; region: string }
 interface Props { destinations: Destination[]; pkg?: any }
 
+interface OptionItem { label: string; price: number; isDefault?: boolean }
+interface CancellationTier { daysBeforeDep: number; refundPercent: number; label: string }
+
 const CATEGORIES = ['FAMILY', 'HONEYMOON', 'SOLO', 'SQUAD', 'CORPORATE', 'SPECIAL', 'HOLIDAY']
 const STARS = ['THREE', 'FOUR', 'FIVE']
 const DIFFICULTIES = ['EASY', 'MODERATE', 'CHALLENGING', 'EXTREME']
 
+const INCLUSION_PRESETS = [
+  'Return airfare', 'Hotel accommodation', 'Hotel breakfast', 'All meals', 'Airport transfers',
+  'AC transport', 'Tour guide', 'Entrance fees', 'Travel insurance', 'Visa assistance',
+  'Sightseeing tours', 'Boat transfers', 'Snorkeling equipment', 'Diving equipment',
+  'Wi-Fi on board', 'Mineral water', 'Welcome drink', 'City tour', 'Safari',
+]
+const EXCLUSION_PRESETS = [
+  'Visa fees', 'Travel insurance', 'Personal expenses', 'Tips & gratuities',
+  'Optional activities', 'International flights', 'Laundry', 'Alcohol',
+  'Room service', 'Porterage', 'Camera fees at monuments', 'Medical expenses',
+]
+
 function toArr(s: string) { return s.split('\n').map((l) => l.trim()).filter(Boolean) }
 function fromArr(a: string[] | undefined | null) { return (a ?? []).join('\n') }
+
+function ChipList({ label, items, presets, onChange }: {
+  label: string; items: string[]; presets: string[]; onChange: (v: string[]) => void
+}) {
+  const [input, setInput] = useState('')
+  const available = presets.filter(p => !items.includes(p))
+
+  function add(val: string) {
+    const v = val.trim()
+    if (v && !items.includes(v)) onChange([...items, v])
+    setInput('')
+  }
+
+  return (
+    <div>
+      <label className="block text-xs font-semibold text-gray-500 mb-1.5">{label}</label>
+      <div className="border border-gray-200 rounded-xl p-3 space-y-2 focus-within:border-orange-400 transition-colors">
+        <div className="flex flex-wrap gap-1.5 min-h-[24px]">
+          {items.map(item => (
+            <span key={item} className="flex items-center gap-1 text-xs bg-orange-50 text-orange-700 px-2.5 py-1 rounded-full font-medium">
+              {item}
+              <button type="button" onClick={() => onChange(items.filter(i => i !== item))}
+                className="hover:text-red-500 ml-0.5"><FiX size={10} /></button>
+            </span>
+          ))}
+          {items.length === 0 && <span className="text-xs text-gray-300">None added yet</span>}
+        </div>
+        <div className="flex gap-2">
+          <input value={input} onChange={e => setInput(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); add(input) } }}
+            placeholder="Type custom item or pick below…"
+            className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-orange-400" />
+          <button type="button" onClick={() => add(input)}
+            className="text-xs bg-orange-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-orange-600 flex items-center gap-1">
+            <FiPlus size={11} /> Add
+          </button>
+        </div>
+        {available.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {available.slice(0, 10).map(p => (
+              <button key={p} type="button" onClick={() => add(p)}
+                className="text-[10px] bg-gray-100 hover:bg-orange-50 hover:text-orange-600 text-gray-500 px-2 py-0.5 rounded-full transition-colors">
+                + {p}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function OptionsEditor({ options, onChange }: { options: OptionItem[]; onChange: (v: OptionItem[]) => void }) {
+  const [newLabel, setNewLabel] = useState('')
+  const [newPrice, setNewPrice] = useState('')
+
+  function add() {
+    if (!newLabel.trim()) return
+    onChange([...options, { label: newLabel.trim(), price: Number(newPrice) || 0 }])
+    setNewLabel(''); setNewPrice('')
+  }
+
+  return (
+    <div>
+      <label className="block text-xs font-semibold text-gray-500 mb-1.5">Add-on Options / Extras</label>
+      <p className="text-xs text-gray-400 mb-2">Customers can select these during booking (e.g. airport pickup, travel insurance, single supplement)</p>
+      <div className="border border-gray-200 rounded-xl p-3 space-y-2 focus-within:border-orange-400">
+        {options.length > 0 && (
+          <div className="space-y-1">
+            {options.map((opt, i) => (
+              <div key={i} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2">
+                <span className="flex-1 text-xs text-gray-700 font-medium">{opt.label}</span>
+                <span className="text-xs text-green-600 font-semibold">LKR {opt.price.toLocaleString()}</span>
+                <label className="flex items-center gap-1 text-[10px] text-gray-400">
+                  <input type="checkbox" checked={!!opt.isDefault}
+                    onChange={e => { const updated = [...options]; updated[i] = { ...opt, isDefault: e.target.checked }; onChange(updated) }}
+                    className="w-3 h-3 accent-orange-500" /> Default
+                </label>
+                <button type="button" onClick={() => onChange(options.filter((_, j) => j !== i))}
+                  className="text-gray-300 hover:text-red-400"><FiX size={13} /></button>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="flex gap-2">
+          <input value={newLabel} onChange={e => setNewLabel(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); add() } }}
+            placeholder="Option name (e.g. Airport pickup)"
+            className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-orange-400" />
+          <input value={newPrice} onChange={e => setNewPrice(e.target.value)} type="number" min="0"
+            placeholder="Price"
+            className="w-24 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-orange-400" />
+          <button type="button" onClick={add}
+            className="text-xs bg-orange-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-orange-600 flex items-center gap-1">
+            <FiPlus size={11} /> Add
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function CancellationTiersEditor({ tiers, onChange }: { tiers: CancellationTier[]; onChange: (v: CancellationTier[]) => void }) {
+  const [days, setDays] = useState('')
+  const [refund, setRefund] = useState('')
+  const [tierLabel, setTierLabel] = useState('')
+
+  function add() {
+    if (!days || !refund) return
+    const d = Number(days), r = Number(refund)
+    const lbl = tierLabel.trim() || (r === 100 ? 'Full refund' : r === 0 ? 'No refund' : `${r}% refund`)
+    const sorted = [...tiers, { daysBeforeDep: d, refundPercent: r, label: lbl }]
+      .sort((a, b) => b.daysBeforeDep - a.daysBeforeDep)
+    onChange(sorted)
+    setDays(''); setRefund(''); setTierLabel('')
+  }
+
+  return (
+    <div>
+      <label className="block text-xs font-semibold text-gray-500 mb-1.5">Cancellation Tiers</label>
+      <p className="text-xs text-gray-400 mb-2">Define refund rules based on days before departure (sorted automatically)</p>
+      <div className="border border-gray-200 rounded-xl p-3 space-y-2">
+        {tiers.length > 0 && (
+          <div className="space-y-1">
+            {tiers.map((t, i) => (
+              <div key={i} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2">
+                <span className="text-xs font-semibold text-gray-600 w-20 shrink-0">≥ {t.daysBeforeDep}d</span>
+                <span className={`text-xs font-bold ${t.refundPercent >= 75 ? 'text-green-600' : t.refundPercent >= 25 ? 'text-orange-500' : 'text-red-500'}`}>
+                  {t.refundPercent}% refund
+                </span>
+                <span className="flex-1 text-xs text-gray-400 italic">{t.label}</span>
+                <button type="button" onClick={() => onChange(tiers.filter((_, j) => j !== i))}
+                  className="text-gray-300 hover:text-red-400"><FiX size={13} /></button>
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="flex gap-2 flex-wrap">
+          <input value={days} onChange={e => setDays(e.target.value)} type="number" min="0"
+            placeholder="Days before"
+            className="w-24 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-orange-400" />
+          <select value={refund} onChange={e => setRefund(e.target.value)}
+            className="w-28 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-orange-400 bg-white">
+            <option value="">% Refund</option>
+            {[100, 75, 50, 25, 0].map(r => <option key={r} value={r}>{r}%</option>)}
+          </select>
+          <input value={tierLabel} onChange={e => setTierLabel(e.target.value)}
+            placeholder="Label (optional)"
+            className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-orange-400" />
+          <button type="button" onClick={add}
+            className="text-xs bg-orange-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-orange-600 flex items-center gap-1">
+            <FiPlus size={11} /> Add
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
 
 export default function PackageForm({ destinations, pkg }: Props) {
   const router = useRouter()
   const isEdit = !!pkg
-  const [tab, setTab] = useState<'basic' | 'content' | 'details' | 'media' | 'flags'>('basic')
+  const [tab, setTab] = useState<'basic' | 'content' | 'details' | 'pricing' | 'media' | 'flags'>('basic')
 
   const [form, setForm] = useState({
     title: pkg?.title ?? '',
@@ -29,14 +203,18 @@ export default function PackageForm({ destinations, pkg }: Props) {
     destinationId: pkg?.destinationId ?? (destinations[0]?.id ?? ''),
     price: pkg?.price ?? '',
     oldPrice: pkg?.oldPrice ?? '',
+    priceTwin: pkg?.priceTwin ?? '',
+    priceChild: pkg?.priceChild ?? '',
+    extraNightPrice: pkg?.extraNightPrice ?? '',
     duration: pkg?.duration ?? '',
     nights: pkg?.nights ?? '',
     starRating: pkg?.starRating ?? 'FOUR',
     paxType: pkg?.paxType ?? 'per person',
     description: pkg?.description ?? '',
     highlights: fromArr(pkg?.highlights),
-    inclusions: fromArr(pkg?.inclusions),
-    exclusions: fromArr(pkg?.exclusions),
+    inclusions: (pkg?.inclusions ?? []) as string[],
+    exclusions: (pkg?.exclusions ?? []) as string[],
+    cancellationPolicy: pkg?.cancellationPolicy ?? '',
     // GYG-style detail fields
     isFoodIncluded: pkg?.isFoodIncluded ?? false,
     isTransportIncluded: pkg?.isTransportIncluded ?? false,
@@ -54,7 +232,6 @@ export default function PackageForm({ destinations, pkg }: Props) {
     difficulty: pkg?.difficulty ?? 'EASY',
     minAge: pkg?.minAge ?? '',
     maxGroupSize: pkg?.maxGroupSize ?? '',
-    cancellationPolicy: pkg?.cancellationPolicy ?? '',
     importantInfo: pkg?.importantInfo ?? '',
     summary: pkg?.summary ?? '',
     isCustomizable: pkg?.isCustomizable ?? false,
@@ -63,6 +240,15 @@ export default function PackageForm({ destinations, pkg }: Props) {
     galleryLayout: (pkg?.galleryLayout ?? 'grid-2x2') as GalleryLayout,
     isFeatured: pkg?.isFeatured ?? false,
     isActive: pkg?.isActive ?? true,
+  })
+
+  const [options, setOptions] = useState<OptionItem[]>(() => {
+    try { return Array.isArray(pkg?.options) ? pkg.options : (pkg?.options ? JSON.parse(pkg.options) : []) }
+    catch { return [] }
+  })
+  const [cancellationTiers, setCancellationTiers] = useState<CancellationTier[]>(() => {
+    try { return Array.isArray(pkg?.cancellationTiers) ? pkg.cancellationTiers : (pkg?.cancellationTiers ? JSON.parse(pkg.cancellationTiers) : []) }
+    catch { return [] }
   })
 
   const [loading, setLoading] = useState(false)
@@ -77,13 +263,14 @@ export default function PackageForm({ destinations, pkg }: Props) {
         ...form,
         price: Number(form.price),
         oldPrice: form.oldPrice ? Number(form.oldPrice) : undefined,
+        priceTwin: form.priceTwin ? Number(form.priceTwin) : undefined,
+        priceChild: form.priceChild ? Number(form.priceChild) : undefined,
+        extraNightPrice: form.extraNightPrice ? Number(form.extraNightPrice) : undefined,
         duration: Number(form.duration),
         nights: Number(form.nights),
         minAge: form.minAge ? Number(form.minAge) : undefined,
         maxGroupSize: form.maxGroupSize ? Number(form.maxGroupSize) : undefined,
         highlights: toArr(form.highlights),
-        inclusions: toArr(form.inclusions),
-        exclusions: toArr(form.exclusions),
         hostLanguage: toArr(form.hostLanguage),
         audioGuideLanguage: toArr(form.audioGuideLanguage),
         bookletLanguage: toArr(form.bookletLanguage),
@@ -92,6 +279,8 @@ export default function PackageForm({ destinations, pkg }: Props) {
         notSuitable: toArr(form.notSuitable),
         notAllowed: toArr(form.notAllowed),
         mustCarryItem: toArr(form.mustCarryItem),
+        options,
+        cancellationTiers,
       }
 
       const url = isEdit ? `/api/packages/${pkg.slug}` : '/api/packages'
@@ -153,11 +342,12 @@ export default function PackageForm({ destinations, pkg }: Props) {
   )
 
   const TABS = [
-    { id: 'basic', label: 'Basic Info' },
-    { id: 'content', label: 'Description' },
-    { id: 'details', label: 'Tour Details' },
-    { id: 'media', label: 'Media' },
-    { id: 'flags', label: 'Visibility' },
+    { id: 'basic',    label: 'Basic Info' },
+    { id: 'pricing',  label: 'Pricing' },
+    { id: 'content',  label: 'Description' },
+    { id: 'details',  label: 'Tour Details' },
+    { id: 'media',    label: 'Media' },
+    { id: 'flags',    label: 'Visibility' },
   ] as const
 
   return (
@@ -207,8 +397,6 @@ export default function PackageForm({ destinations, pkg }: Props) {
                   {STARS.map((s) => <option key={s} value={s}>{s === 'THREE' ? '3 Star' : s === 'FOUR' ? '4 Star' : '5 Star'}</option>)}
                 </select>
               </div>
-              {inp('price', 'Price (LKR) *', 'number', '120000', true)}
-              {inp('oldPrice', 'Old Price (LKR)', 'number', '150000')}
               {inp('duration', 'Duration (Days) *', 'number', '5', true)}
               {inp('nights', 'Nights *', 'number', '4', true)}
               <div>
@@ -227,6 +415,35 @@ export default function PackageForm({ destinations, pkg }: Props) {
               </div>
               {inp('minAge', 'Minimum Age', 'number', '0')}
               {inp('maxGroupSize', 'Max Group Size', 'number', '20')}
+            </div>
+          </div>
+        )}
+
+        {/* ── PRICING ── */}
+        {tab === 'pricing' && (
+          <div className="space-y-5">
+            <h3 className="font-bold text-gray-800 mb-2">Pricing</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {inp('price', 'Base Price / Single (LKR) *', 'number', '120000', true)}
+              {inp('oldPrice', 'Old Price / Strikethrough (LKR)', 'number', '150000')}
+              {inp('priceTwin', 'Twin Sharing Price (LKR)', 'number', '95000')}
+              {inp('priceChild', 'Child Price (LKR)', 'number', '60000')}
+              {inp('extraNightPrice', 'Extra Night Price (LKR)', 'number', '8000')}
+            </div>
+
+            <hr className="border-gray-100" />
+            <OptionsEditor options={options} onChange={setOptions} />
+
+            <hr className="border-gray-100" />
+            <CancellationTiersEditor tiers={cancellationTiers} onChange={setCancellationTiers} />
+
+            <div>
+              <label className="block text-xs font-semibold text-gray-500 mb-1.5">Cancellation Policy Text</label>
+              <p className="text-xs text-gray-400 mb-1">Shown on the booking panel — a brief human-readable summary</p>
+              <textarea rows={2} value={form.cancellationPolicy}
+                onChange={(e) => setForm({ ...form, cancellationPolicy: e.target.value })}
+                placeholder="e.g. Free cancellation up to 30 days before departure"
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none" />
             </div>
           </div>
         )}
@@ -253,14 +470,20 @@ export default function PackageForm({ destinations, pkg }: Props) {
             <hr className="border-gray-100" />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {area('highlights', 'Highlights (one per line)', 5)}
-              {area('inclusions', 'Inclusions (one per line)', 5, 'e.g. Return airfare, Hotel breakfast')}
-              {area('exclusions', 'Exclusions (one per line)', 5, 'e.g. Visa fees, Travel insurance')}
-              <div>
-                <label className="block text-xs font-semibold text-gray-500 mb-1.5">Cancellation Policy</label>
-                <textarea rows={5} value={form.cancellationPolicy}
-                  onChange={(e) => setForm({ ...form, cancellationPolicy: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none" />
-              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <ChipList
+                label="Inclusions"
+                items={form.inclusions}
+                presets={INCLUSION_PRESETS}
+                onChange={v => setForm({ ...form, inclusions: v })}
+              />
+              <ChipList
+                label="Exclusions"
+                items={form.exclusions}
+                presets={EXCLUSION_PRESETS}
+                onChange={v => setForm({ ...form, exclusions: v })}
+              />
             </div>
           </div>
         )}

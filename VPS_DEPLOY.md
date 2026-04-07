@@ -1,7 +1,7 @@
 # Metro Voyage — VPS Deployment Guide
 
 ## Stack
-Next.js 15 · PostgreSQL · Node.js 20 · Nginx · PM2 · Ubuntu 22.04
+Next.js 15 · PostgreSQL · Node.js 22 · Nginx · PM2 · Ubuntu 22.04
 
 ---
 
@@ -11,8 +11,8 @@ Next.js 15 · PostgreSQL · Node.js 20 · Nginx · PM2 · Ubuntu 22.04
 # Update system
 sudo apt update && sudo apt upgrade -y
 
-# Install Node.js 20
-curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+# Install Node.js 22 (LTS)
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt install -y nodejs
 
 # Install PostgreSQL
@@ -22,10 +22,8 @@ sudo apt install -y postgresql postgresql-contrib
 sudo apt install -y nginx
 
 # Install PM2 (process manager)
-sudo npm install -g pm2
+sudo npm install --legacy-peer-deps -g pm2
 
-# Install pnpm or use npm
-npm install -g pnpm
 ```
 
 ---
@@ -53,11 +51,11 @@ sudo chown $USER:$USER /var/www/metrovoyage
 
 # Clone or upload your project
 cd /var/www/metrovoyage
-git clone https://github.com/yourrepo/halo-holidays.git .
+git clone https://github.com/ShareareTanveer/tournow.git .
 # OR use scp/rsync to upload the folder
 
 # Install dependencies
-npm install
+npm install --legacy-peer-deps
 
 # Create .env file
 nano .env
@@ -197,7 +195,7 @@ sudo ufw status
 ```bash
 cd /var/www/metrovoyage
 git pull origin main
-npm install
+npm install --legacy-peer-deps
 npm run build
 pm2 restart metrovoyage
 ```
@@ -206,7 +204,7 @@ pm2 restart metrovoyage
 
 ## 10. Quick Checklist
 
-- [ ] Node 20 + PostgreSQL installed
+- [ ] Node 22 + PostgreSQL installed
 - [ ] Database created and `.env` configured
 - [ ] `prisma db push` + seed run
 - [ ] `npm run build` succeeds

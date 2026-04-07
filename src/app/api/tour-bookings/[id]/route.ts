@@ -32,89 +32,87 @@ export async function PUT(req: NextRequest, { params }: Params) {
   const body = await req.json()
   const { action } = body
 
-  // ── Customer actions ──────────────────────────────────────────────────────
-  const adminUser = await getAuthUser(req)
-  if (!adminUser) {
-    const token = req.cookies.get('customer_token')?.value
-    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    const payload = verifyToken(token)
-    if (!payload) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  // ── Customer actions — check customer_token FIRST before admin ───────────
+  const customerToken = req.cookies.get('customer_token')?.value
+  if (customerToken) {
+    const payload = verifyToken(customerToken)
+    if (payload) {
+      const customer = await prisma.customer.findUnique({ where: { id: payload.userId }, select: { email: true } })
 
-    const customer = await prisma.customer.findUnique({ where: { id: payload.userId }, select: { email: true } })
-
-    const booking = await prisma.tourBooking.findFirst({
-      where: {
-        id,
-        OR: [
-          { customerId: payload.userId },
-          ...(customer ? [{ customerEmail: customer.email }] : []),
-        ],
-      },
-      include: { tour: { select: { title: true } } },
-    })
-    if (!booking) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-
-    if (!booking.customerId && payload.userId) {
-      await prisma.tourBooking.update({ where: { id }, data: { customerId: payload.userId } })
-    }
-
-    if (action === 'upload_receipt' || body.receiptUrl) {
-      const updated = await prisma.tourBooking.update({
-        where: { id },
-        data: { receiptUrl: body.receiptUrl, receiptNote: body.receiptNote, status: 'RECEIPT_UPLOADED' },
-      })
-      try {
-        await sendReceiptUploadedAdmin({
-          bookingRef: booking.bookingRef,
-          customerName: booking.customerName,
-          customerEmail: booking.customerEmail,
-          receiptNote: body.receiptNote,
-        })
-      } catch {}
-      return NextResponse.json(updated)
-    }
-
-    if (action === 'accept_quote') {
-      if (booking.status !== 'AWAITING_CONFIRM') {
-        return NextResponse.json({ error: 'Cannot accept quote at this stage' }, { status: 400 })
-      }
-      const quote = booking.staffQuote as { totalPrice?: number } | null
-      const updated = await prisma.tourBooking.update({
-        where: { id },
-        data: {
-          status: 'CONFIRMED',
-          totalPrice: quote?.totalPrice ?? booking.totalPrice,
+      const booking = await prisma.tourBooking.findFirst({
+        where: {
+          id,
+          OR: [
+            { customerId: payload.userId },
+            ...(customer ? [{ customerEmail: customer.email }] : []),
+          ],
         },
+        include: { tour: { select: { title: true } } },
       })
-      try {
-        await sendBookingConfirmedToCustomer({
-          customerEmail: booking.customerEmail,
-          customerName: booking.customerName,
-          bookingRef: booking.bookingRef,
-          title: booking.tour.title,
-          travelDate: booking.travelDate,
-          totalPrice: updated.totalPrice,
-        })
-        await sendCustomerConfirmedAdmin({
-          bookingRef: booking.bookingRef,
-          customerName: booking.customerName,
-          customerEmail: booking.customerEmail,
-          totalPrice: updated.totalPrice,
-        })
-      } catch {}
-      return NextResponse.json(updated)
-    }
+      if (!booking) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
-    if (action === 'request_changes') {
-      const updated = await prisma.tourBooking.update({
-        where: { id },
-        data: { status: 'REQUESTED', customerNote: body.customerNote ?? null },
-      })
-      return NextResponse.json(updated)
-    }
+      if (!booking.customerId) {
+        await prisma.tourBooking.update({ where: { id }, data: { customerId: payload.userId } })
+      }
 
-    return NextResponse.json({ error: 'Unknown action' }, { status: 400 })
+      if (action === 'upload_receipt' || body.receiptUrl) {
+        const updated = await prisma.tourBooking.update({
+          where: { id },
+          data: { receiptUrl: body.receiptUrl, receiptNote: body.receiptNote, status: 'RECEIPT_UPLOADED' },
+        })
+        try {
+          await sendReceiptUploadedAdmin({
+            bookingRef: booking.bookingRef,
+            customerName: booking.customerName,
+            customerEmail: booking.customerEmail,
+            receiptNote: body.receiptNote,
+          })
+        } catch {}
+        return NextResponse.json(updated)
+      }
+
+      if (action === 'accept_quote') {
+        if (booking.status !== 'AWAITING_CONFIRM') {
+          return NextResponse.json({ error: `Cannot accept at status: ${booking.status}` }, { status: 400 })
+        }
+        const quote = booking.staffQuote as { totalPrice?: number } | null
+        const updated = await prisma.tourBooking.update({
+          where: { id },
+          data: { status: 'CONFIRMED', totalPrice: quote?.totalPrice ?? booking.totalPrice },
+        })
+        try {
+          await sendBookingConfirmedToCustomer({
+            customerEmail: booking.customerEmail,
+            customerName: booking.customerName,
+            bookingRef: booking.bookingRef,
+            title: booking.tour.title,
+            travelDate: booking.travelDate,
+            totalPrice: updated.totalPrice,
+          })
+          await sendCustomerConfirmedAdmin({
+            bookingRef: booking.bookingRef,
+            customerName: booking.customerName,
+            customerEmail: booking.customerEmail,
+            totalPrice: updated.totalPrice,
+          })
+        } catch {}
+        return NextResponse.json(updated)
+      }
+
+      if (action === 'request_changes') {
+        const updated = await prisma.tourBooking.update({
+          where: { id },
+          data: { status: 'REQUESTED', customerNote: body.customerNote ?? null },
+        })
+        return NextResponse.json(updated)
+      }
+
+      return NextResponse.json({ error: 'Unknown action' }, { status: 400 })
+    }
   }
+
+  const adminUser = await getAuthUser(req)
+  if (!adminUser) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   // ── Admin actions ─────────────────────────────────────────────────────────
   const booking = await prisma.tourBooking.findUnique({

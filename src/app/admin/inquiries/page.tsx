@@ -4,19 +4,21 @@ import InquiriesTable from './InquiriesTable'
 
 async function getData() {
   try {
-    const [inquiries, staff] = await Promise.all([
+    const [inquiries, staff, packages, tours] = await Promise.all([
       prisma.inquiry.findMany({
         include: { package: { select: { title: true } }, assignedTo: { select: { id: true, name: true } } },
         orderBy: { createdAt: 'desc' },
       }),
       prisma.user.findMany({ select: { id: true, name: true } }),
+      prisma.package.findMany({ where: { isActive: true }, select: { id: true, title: true }, orderBy: { title: 'asc' } }),
+      prisma.tour.findMany({ where: { isActive: true }, select: { id: true, title: true }, orderBy: { title: 'asc' } }),
     ])
-    return { inquiries, staff }
-  } catch { return { inquiries: [], staff: [] } }
+    return { inquiries, staff, packages, tours }
+  } catch { return { inquiries: [], staff: [], packages: [], tours: [] } }
 }
 
 export default async function InquiriesPage() {
-  const { inquiries, staff } = await getData()
+  const { inquiries, staff, packages, tours } = await getData()
   return (
     <AdminShell title="Inquiries">
       <div className="mb-4 flex gap-3 text-sm">
@@ -26,7 +28,7 @@ export default async function InquiriesPage() {
           </span>
         ))}
       </div>
-      <InquiriesTable inquiries={inquiries} staff={staff} />
+      <InquiriesTable inquiries={inquiries} staff={staff} packages={packages} tours={tours} />
     </AdminShell>
   )
 }

@@ -304,6 +304,72 @@ export async function sendTicketToCustomer(data: {
   })
 }
 
+/** Sent to customer when admin converts their inquiry into a booking (may include new account credentials) */
+export async function sendInquiryConverted(data: {
+  customerEmail: string
+  customerName: string
+  bookingRef: string
+  title: string
+  travelDate: Date
+  lineItems: { label: string; price: number }[]
+  totalPrice: number
+  notes?: string | null
+  isNewAccount: boolean
+  tempPassword?: string | null
+  loginUrl: string
+}) {
+  const itemsHtml = data.lineItems.map(item =>
+    `<tr><td style="padding:4px 8px">${item.label}</td><td style="padding:4px 8px;text-align:right">LKR ${item.price.toLocaleString()}</td></tr>`
+  ).join('')
+
+  const credentialsSection = data.isNewAccount && data.tempPassword ? `
+    <div style="background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:16px;margin:16px 0">
+      <h3 style="margin:0 0 8px;color:#92400e">Your Account Has Been Created</h3>
+      <p style="margin:0 0 4px">We've created a Metro Voyage account for you so you can track your booking online.</p>
+      <table style="margin-top:8px">
+        <tr><td style="padding:2px 8px"><strong>Login Email:</strong></td><td style="padding:2px 8px">${data.customerEmail}</td></tr>
+        <tr><td style="padding:2px 8px"><strong>Temporary Password:</strong></td><td style="padding:2px 8px;font-family:monospace;font-size:16px;color:#d97706">${data.tempPassword}</td></tr>
+      </table>
+      <p style="margin-top:8px;color:#92400e;font-size:13px">Please change your password after first login.</p>
+    </div>
+  ` : ''
+
+  await transporter.sendMail({
+    from: FROM,
+    to: data.customerEmail,
+    subject: `Your Booking is Ready – ${data.bookingRef} | Metro Voyage`,
+    html: `
+      <h2>Hi ${data.customerName},</h2>
+      <p>Following our conversation, we've prepared your booking for <strong>${data.title}</strong>. Please review the quote below and confirm.</p>
+      ${credentialsSection}
+      <h3>Quote Details</h3>
+      <table style="border-collapse:collapse;width:100%;margin:12px 0">
+        <tr style="background:#f59e0b;color:white">
+          <th style="padding:8px;text-align:left">Item</th>
+          <th style="padding:8px;text-align:right">Price</th>
+        </tr>
+        ${itemsHtml}
+        <tr style="border-top:2px solid #f59e0b">
+          <td style="padding:8px"><strong>Total</strong></td>
+          <td style="padding:8px;text-align:right"><strong>LKR ${data.totalPrice.toLocaleString()}</strong></td>
+        </tr>
+      </table>
+      <table style="border-collapse:collapse;width:100%;margin:8px 0">
+        <tr><td style="padding:4px 8px"><strong>Booking Ref:</strong></td><td style="padding:4px 8px">${data.bookingRef}</td></tr>
+        <tr><td style="padding:4px 8px"><strong>Travel Date:</strong></td><td style="padding:4px 8px">${new Date(data.travelDate).toDateString()}</td></tr>
+      </table>
+      ${data.notes ? `<p><strong>Notes:</strong> ${data.notes}</p>` : ''}
+      <p style="margin-top:20px">
+        <a href="${data.loginUrl}/my/bookings" style="background:#f59e0b;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block">
+          Review &amp; Confirm Your Booking
+        </a>
+      </p>
+      <p>Questions? Call us: <strong>+94 70 454 5455</strong></p>
+      <p>Warm regards,<br/>The Metro Voyage Team</p>
+    `,
+  })
+}
+
 // ─── Legacy ───────────────────────────────────────────────────────────────────
 
 export async function sendBookingConfirmation(booking: {

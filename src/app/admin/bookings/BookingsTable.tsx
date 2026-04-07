@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { FiExternalLink, FiFileText, FiChevronDown, FiChevronUp, FiCheck } from 'react-icons/fi'
+import Link from 'next/link'
+import { FiExternalLink, FiFileText, FiEdit2, FiAlertCircle } from 'react-icons/fi'
 
 const PIPELINE = [
   { status: 'REQUESTED',        label: 'Requested',        color: 'text-blue-600',   bg: 'bg-blue-50' },
@@ -25,19 +26,32 @@ const PAY_STATUS = [
 ]
 
 interface Booking {
-  id: string; bookingRef: string; _type: 'package' | 'tour'; title: string; image?: string
-  customerName: string; customerEmail: string; customerPhone: string
-  travelDate: string; paxAdult: number; paxChild: number
-  totalPrice: number; discount: number; status: string; paymentStatus: string
-  adminNotes?: string | null; receiptUrl?: string | null; receiptNote?: string | null
-  notes?: string | null; selectedOptions?: any; roomType?: string | null; createdAt: string
+  id: string
+  bookingRef: string
+  _type: 'package' | 'tour'
+  title: string
+  image?: string
+  customerName: string
+  customerEmail: string
+  customerPhone: string
+  travelDate: string
+  paxAdult: number
+  paxChild: number
+  totalPrice: number
+  discount: number
+  status: string
+  paymentStatus: string
+  adminNotes?: string | null
+  receiptUrl?: string | null
+  ticketUrl?: string | null
+  staffQuote?: { totalPrice?: number } | null
+  customerNote?: string | null
+  createdAt: string
 }
 
 export default function BookingsTable({ bookings: initial }: { bookings: Booking[] }) {
   const [bookings, setBookings] = useState(initial)
-  const [expanded, setExpanded] = useState<string | null>(null)
   const [updating, setUpdating] = useState<string | null>(null)
-  const [adminNotes, setAdminNotes] = useState<Record<string, string>>({})
 
   async function update(id: string, type: string, data: object) {
     setUpdating(id)
@@ -59,7 +73,7 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
       {/* Pipeline strip */}
       <div className="px-5 py-3 border-b border-gray-100 overflow-x-auto">
         <div className="flex gap-1.5 min-w-max text-[11px]">
-          {PIPELINE.slice(0, 9).map((p, i) => {
+          {PIPELINE.slice(0, 9).map(p => {
             const n = bookings.filter(b => b.status === p.status).length
             return (
               <span key={p.status} className={`px-2.5 py-1 rounded-full font-semibold ${p.bg} ${p.color}`}>
@@ -74,126 +88,124 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-100 text-[11px] text-gray-400 font-semibold uppercase tracking-wide">
-              {['Booking', 'Customer', 'Travel', 'Total', 'Status', 'Payment', ''].map(h => (
-                <th key={h} className={`px-4 py-3 ${h === 'Total' ? 'text-right' : 'text-left'}`}>{h}</th>
-              ))}
+              <th className="px-4 py-3 text-left">Booking</th>
+              <th className="px-4 py-3 text-left">Customer</th>
+              <th className="px-4 py-3 text-left">Travel</th>
+              <th className="px-4 py-3 text-right">Original</th>
+              <th className="px-4 py-3 text-right">Quote</th>
+              <th className="px-4 py-3 text-left">Status</th>
+              <th className="px-4 py-3 text-left">Payment</th>
+              <th className="px-4 py-3 text-left">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {bookings.map((b) => {
-              const s = si(b.status), p = pi(b.paymentStatus), open = expanded === b.id
+            {bookings.map(b => {
+              const s = si(b.status)
+              const p = pi(b.paymentStatus)
+              const hasQuote = !!b.staffQuote?.totalPrice
+              const quotedTotal = b.staffQuote?.totalPrice
+              const isNew = b.status === 'REQUESTED'
+
               return (
-                <>
-                  <tr key={b.id} className="border-b border-gray-50 hover:bg-gray-50/40 transition-colors">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-2.5">
-                        {b.image && <img src={b.image} className="w-10 h-8 rounded-lg object-cover shrink-0" alt="" />}
-                        <div>
-                          <p className="font-semibold text-xs text-gray-800 line-clamp-1 max-w-[150px]">{b.title}</p>
-                          <p className="text-[10px] font-mono text-gray-400">{b.bookingRef.slice(-8).toUpperCase()}</p>
-                          <span className={`text-[9px] font-bold uppercase px-1 py-0.5 rounded ${b._type === 'tour' ? 'bg-sky-100 text-sky-600' : 'bg-orange-100 text-orange-600'}`}>{b._type}</span>
-                        </div>
+                <tr key={b.id}
+                  className={`border-b border-gray-50 hover:bg-gray-50/60 transition-colors ${isNew ? 'bg-blue-50/40' : ''}`}>
+                  {/* Booking */}
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2.5">
+                      {b.image && <img src={b.image} className="w-10 h-8 rounded-lg object-cover shrink-0" alt="" />}
+                      <div>
+                        <p className="font-semibold text-xs text-gray-800 line-clamp-1 max-w-[150px]">{b.title}</p>
+                        <p className="text-[10px] font-mono text-gray-400">{b.bookingRef.slice(-8).toUpperCase()}</p>
+                        <span className={`text-[9px] font-bold uppercase px-1 py-0.5 rounded ${b._type === 'tour' ? 'bg-sky-100 text-sky-600' : 'bg-orange-100 text-orange-600'}`}>{b._type}</span>
                       </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <p className="font-medium text-gray-800 text-xs">{b.customerName}</p>
-                      <p className="text-[10px] text-gray-400">{b.customerPhone}</p>
-                    </td>
-                    <td className="px-4 py-3 text-xs text-gray-600 whitespace-nowrap">
-                      <p>{new Date(b.travelDate).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'2-digit' })}</p>
-                      <p className="text-gray-400">{b.paxAdult}A{b.paxChild > 0 ? ` ${b.paxChild}C` : ''}</p>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <p className="font-bold text-gray-800 text-xs">LKR {b.totalPrice.toLocaleString()}</p>
-                      {b.discount > 0 && <p className="text-[10px] text-green-600">-{b.discount.toLocaleString()}</p>}
-                    </td>
-                    <td className="px-4 py-3">
-                      <select value={b.status} disabled={updating === b.id}
-                        onChange={e => update(b.id, b._type, { status: e.target.value })}
-                        className={`text-xs font-semibold px-2 py-1 rounded-lg border-0 cursor-pointer ${s.bg} ${s.color} disabled:opacity-50`}>
-                        {PIPELINE.map(pp => <option key={pp.status} value={pp.status}>{pp.label}</option>)}
-                      </select>
-                    </td>
-                    <td className="px-4 py-3">
-                      <select value={b.paymentStatus} disabled={updating === b.id}
-                        onChange={e => update(b.id, b._type, { paymentStatus: e.target.value })}
-                        className={`text-xs font-semibold px-2 py-1 rounded-lg border-0 cursor-pointer ${p.bg} ${p.color} disabled:opacity-50`}>
-                        {PAY_STATUS.map(pp => <option key={pp.value} value={pp.value}>{pp.label}</option>)}
-                      </select>
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-1">
-                        {b.receiptUrl && (
-                          <a href={b.receiptUrl} target="_blank" rel="noopener noreferrer"
-                            className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100" title="Receipt">
-                            <FiFileText size={13} />
-                          </a>
+                    </div>
+                  </td>
+
+                  {/* Customer */}
+                  <td className="px-4 py-3">
+                    <p className="font-medium text-gray-800 text-xs">{b.customerName}</p>
+                    <p className="text-[10px] text-gray-400">{b.customerPhone}</p>
+                    {b.customerNote && (
+                      <span className="inline-flex items-center gap-0.5 text-[9px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-semibold mt-0.5">
+                        <FiAlertCircle size={8} /> Note
+                      </span>
+                    )}
+                  </td>
+
+                  {/* Travel */}
+                  <td className="px-4 py-3 text-xs text-gray-600 whitespace-nowrap">
+                    <p>{new Date(b.travelDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}</p>
+                    <p className="text-gray-400">{b.paxAdult}A{b.paxChild > 0 ? ` ${b.paxChild}C` : ''}</p>
+                  </td>
+
+                  {/* Original total */}
+                  <td className="px-4 py-3 text-right">
+                    <p className="text-xs font-semibold text-gray-500">LKR {b.totalPrice.toLocaleString()}</p>
+                  </td>
+
+                  {/* Quoted total */}
+                  <td className="px-4 py-3 text-right">
+                    {hasQuote && quotedTotal != null ? (
+                      <div>
+                        <p className="text-xs font-bold text-orange-600">LKR {quotedTotal.toLocaleString()}</p>
+                        {quotedTotal !== b.totalPrice && (
+                          <p className={`text-[10px] font-semibold ${quotedTotal < b.totalPrice ? 'text-green-600' : 'text-red-500'}`}>
+                            {quotedTotal < b.totalPrice ? '↓' : '↑'} {Math.abs(quotedTotal - b.totalPrice).toLocaleString()}
+                          </p>
                         )}
-                        <button onClick={() => setExpanded(open ? null : b.id)}
-                          className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-400">
-                          {open ? <FiChevronUp size={14} /> : <FiChevronDown size={14} />}
-                        </button>
                       </div>
-                    </td>
-                  </tr>
+                    ) : (
+                      <span className="text-[10px] text-gray-300 italic">no quote</span>
+                    )}
+                  </td>
 
-                  {open && (
-                    <tr key={b.id + '_x'} className="bg-gray-50/60">
-                      <td colSpan={7} className="px-5 py-4">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                          <div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">Details</p>
-                            <div className="space-y-1 text-xs text-gray-600">
-                              <p><span className="text-gray-400">Email: </span>{b.customerEmail}</p>
-                              {b.roomType && <p><span className="text-gray-400">Room: </span>{b.roomType}</p>}
-                              {b.selectedOptions?.length > 0 && (
-                                <p><span className="text-gray-400">Extras: </span>{b.selectedOptions.map((o: any) => o.label).join(', ')}</p>
-                              )}
-                              {b.notes && <p><span className="text-gray-400">Note: </span>{b.notes}</p>}
-                              <p className="text-gray-400 mt-1">{new Date(b.createdAt).toLocaleString()}</p>
-                            </div>
-                          </div>
+                  {/* Status */}
+                  <td className="px-4 py-3">
+                    <select value={b.status} disabled={updating === b.id}
+                      onChange={e => update(b.id, b._type, { status: e.target.value })}
+                      className={`text-xs font-semibold px-2 py-1 rounded-lg border-0 cursor-pointer ${s.bg} ${s.color} disabled:opacity-50`}>
+                      {PIPELINE.map(pp => <option key={pp.status} value={pp.status}>{pp.label}</option>)}
+                    </select>
+                  </td>
 
-                          <div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">Receipt</p>
-                            {b.receiptUrl ? (
-                              <div className="space-y-2">
-                                <a href={b.receiptUrl} target="_blank" rel="noopener noreferrer"
-                                  className="flex items-center gap-1.5 text-xs text-indigo-600 font-semibold hover:underline">
-                                  <FiExternalLink size={12} /> View Receipt
-                                </a>
-                                {b.receiptNote && <p className="text-xs text-gray-500 italic">{b.receiptNote}</p>}
-                                <button onClick={() => update(b.id, b._type, { status: 'ADMIN_CONFIRMING' })}
-                                  className="flex items-center gap-1 text-xs bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-indigo-600">
-                                  <FiCheck size={11} /> Mark Admin Confirming
-                                </button>
-                              </div>
-                            ) : (
-                              <p className="text-xs text-gray-400 italic">No receipt yet</p>
-                            )}
-                          </div>
+                  {/* Payment */}
+                  <td className="px-4 py-3">
+                    <select value={b.paymentStatus} disabled={updating === b.id}
+                      onChange={e => update(b.id, b._type, { paymentStatus: e.target.value })}
+                      className={`text-xs font-semibold px-2 py-1 rounded-lg border-0 cursor-pointer ${p.bg} ${p.color} disabled:opacity-50`}>
+                      {PAY_STATUS.map(pp => <option key={pp.value} value={pp.value}>{pp.label}</option>)}
+                    </select>
+                  </td>
 
-                          <div>
-                            <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">Admin Notes</p>
-                            <textarea rows={3} placeholder="Notes, quote, payment ref…"
-                              value={adminNotes[b.id] ?? b.adminNotes ?? ''}
-                              onChange={e => setAdminNotes(n => ({ ...n, [b.id]: e.target.value }))}
-                              className="w-full text-xs border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400 resize-none" />
-                            <button onClick={() => update(b.id, b._type, { adminNotes: adminNotes[b.id] ?? b.adminNotes })}
-                              disabled={updating === b.id}
-                              className="mt-1.5 text-xs bg-orange-500 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-orange-600 disabled:opacity-50">
-                              Save Note
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </>
+                  {/* Actions */}
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-1.5">
+                      {/* View detail */}
+                      <Link href={`/admin/bookings/${b.id}`}
+                        className="p-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-orange-100 hover:text-orange-600 transition-colors" title="View Detail">
+                        <FiExternalLink size={13} />
+                      </Link>
+                      {/* Edit quote */}
+                      <Link href={`/admin/bookings/${b.id}/edit`}
+                        className={`p-1.5 rounded-lg transition-colors ${hasQuote ? 'bg-orange-100 text-orange-600 hover:bg-orange-200' : 'bg-gray-100 text-gray-500 hover:bg-orange-50 hover:text-orange-500'}`}
+                        title={hasQuote ? 'Edit Quote' : 'Build Quote'}>
+                        <FiEdit2 size={13} />
+                      </Link>
+                      {/* Receipt link */}
+                      {b.receiptUrl && (
+                        <a href={b.receiptUrl} target="_blank" rel="noopener noreferrer"
+                          className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors" title="Receipt">
+                          <FiFileText size={13} />
+                        </a>
+                      )}
+                    </div>
+                  </td>
+                </tr>
               )
             })}
           </tbody>
         </table>
+
         {bookings.length === 0 && (
           <p className="text-center py-12 text-sm text-gray-400">No bookings yet</p>
         )}

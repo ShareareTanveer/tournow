@@ -19,6 +19,12 @@ export const ConsultationSchema = z.object({
   additionalInfo: z.string().optional(),
 })
 
+export const RoomSelectionSchema = z.object({
+  type: z.string(),   // e.g. SINGLE | TWIN | DOUBLE | TRIPLE
+  qty: z.number().int().min(1),
+  label: z.string().optional(),
+})
+
 export const BookingSchema = z.object({
   packageId: z.string().optional(),
   tourId: z.string().optional(),
@@ -31,7 +37,8 @@ export const BookingSchema = z.object({
   paxAdult: z.number().int().min(1).default(1),
   paxChild: z.number().int().min(0).default(0),
   paxInfant: z.number().int().min(0).default(0),
-  roomType: z.enum(['SINGLE', 'TWIN', 'DOUBLE', 'TRIPLE']).optional(),
+  roomType: z.enum(['SINGLE', 'TWIN', 'DOUBLE', 'TRIPLE']).optional(),  // legacy
+  rooms: z.array(RoomSelectionSchema).optional(),
   pricePerPerson: z.number().positive().optional(),
   priceTwin: z.number().positive().optional(),
   extraNights: z.number().int().min(0).default(0),
@@ -40,6 +47,20 @@ export const BookingSchema = z.object({
   totalPrice: z.number().positive(),
   discount: z.number().min(0).default(0),
   notes: z.string().optional(),
+  customerNote: z.string().optional(),
+})
+
+export const StaffQuoteSchema = z.object({
+  rooms: z.array(z.object({ label: z.string(), qty: z.number(), unitPrice: z.number() })).optional(),
+  lineItems: z.array(z.object({ label: z.string(), price: z.number() })).default([]),
+  totalPrice: z.number().positive(),
+  notes: z.string().optional(),
+  validUntil: z.string().optional(),  // ISO date string
+})
+
+export const CustomerQuoteResponseSchema = z.object({
+  action: z.enum(['accept', 'request_changes']),
+  customerNote: z.string().optional(),
 })
 
 export const CustomerRegisterSchema = z.object({

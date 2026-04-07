@@ -16,6 +16,23 @@ export async function POST(req: NextRequest) {
     const tour = await prisma.tour.findUnique({ where: { id: d.tourId } })
     if (!tour) return NextResponse.json({ error: 'Tour not found' }, { status: 404 })
 
+    const snapshot = {
+      rooms: d.rooms ?? [],
+      roomType: d.roomType,
+      paxAdult: d.paxAdult,
+      paxChild: d.paxChild,
+      paxInfant: d.paxInfant,
+      travelDate: d.travelDate,
+      returnDate: d.returnDate,
+      pricePerPerson: d.pricePerPerson,
+      priceTwin: d.priceTwin,
+      extraNights: d.extraNights,
+      extraNightPrice: d.extraNightPrice,
+      selectedOptions: d.selectedOptions,
+      totalPrice: d.totalPrice,
+      notes: d.notes,
+    }
+
     const booking = await prisma.tourBooking.create({
       data: {
         tourId: d.tourId,
@@ -29,6 +46,7 @@ export async function POST(req: NextRequest) {
         paxChild: d.paxChild,
         paxInfant: d.paxInfant,
         roomType: d.roomType,
+        rooms: d.rooms as any,
         pricePerPerson: d.pricePerPerson,
         priceTwin: d.priceTwin,
         extraNights: d.extraNights,
@@ -37,6 +55,7 @@ export async function POST(req: NextRequest) {
         totalPrice: d.totalPrice,
         discount: d.discount,
         notes: d.notes,
+        originalSnapshot: snapshot as any,
         status: 'REQUESTED',
       },
       include: { tour: { select: { title: true } } },
@@ -77,8 +96,15 @@ export async function GET(req: NextRequest) {
   const payload = verifyToken(token)
   if (!payload) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const customer = await prisma.customer.findUnique({ where: { id: payload.userId }, select: { email: true } })
+
   const bookings = await prisma.tourBooking.findMany({
-    where: { customerId: payload.userId },
+    where: {
+      OR: [
+        { customerId: payload.userId },
+        ...(customer ? [{ customerEmail: customer.email }] : []),
+      ],
+    },
     include: { tour: { select: { title: true, slug: true, images: true } } },
     orderBy: { createdAt: 'desc' },
   })

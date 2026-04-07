@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   FiGrid, FiPackage, FiMapPin, FiInbox, FiVideo, FiBookOpen,
   FiStar, FiFileText, FiEdit3, FiShield, FiUsers, FiMail,
@@ -14,6 +14,7 @@ type NavItem = {
   label: string
   href: string
   icon: React.ReactNode
+  badge?: number
 }
 
 type NavGroup = {
@@ -105,7 +106,12 @@ function NavGroup({ group, pathname }: { group: NavGroup; pathname: string }) {
                 }`}
               >
                 <span className={active ? 'text-white' : 'text-gray-500'}>{item.icon}</span>
-                {item.label}
+                <span className="flex-1">{item.label}</span>
+                {item.badge != null && item.badge > 0 && (
+                  <span className="bg-orange-500 text-white text-[10px] font-black px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none">
+                    {item.badge}
+                  </span>
+                )}
               </Link>
             )
           })}
@@ -119,6 +125,22 @@ export default function Sidebar() {
   const pathname = usePathname()
   const router = useRouter()
   const [loggingOut, setLoggingOut] = useState(false)
+  const [bookingBadge, setBookingBadge] = useState(0)
+
+  useEffect(() => {
+    async function fetchBadge() {
+      try {
+        const res = await fetch('/api/admin/bookings/badge')
+        if (res.ok) {
+          const data = await res.json()
+          setBookingBadge(data.count ?? 0)
+        }
+      } catch {}
+    }
+    fetchBadge()
+    const interval = setInterval(fetchBadge, 60_000)
+    return () => clearInterval(interval)
+  }, [])
 
   const handleLogout = async () => {
     setLoggingOut(true)
@@ -158,9 +180,16 @@ export default function Sidebar() {
         </Link>
 
         <div className="pt-1 space-y-1">
-          {GROUPS.map(group => (
-            <NavGroup key={group.label} group={group} pathname={pathname} />
-          ))}
+          {GROUPS.map(group => {
+            // Inject live badge count into the Bookings item
+            const enriched = {
+              ...group,
+              items: group.items.map(item =>
+                item.href === '/admin/bookings' ? { ...item, badge: bookingBadge } : item
+              ),
+            }
+            return <NavGroup key={group.label} group={enriched} pathname={pathname} />
+          })}
         </div>
       </nav>
 

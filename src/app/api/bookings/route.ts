@@ -43,8 +43,15 @@ export async function GET(req: NextRequest) {
   const payload = verifyToken(token)
   if (!payload) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
+  const customer = await prisma.customer.findUnique({ where: { id: payload.userId }, select: { email: true } })
+
   const bookings = await prisma.booking.findMany({
-    where: { customerId: payload.userId },
+    where: {
+      OR: [
+        { customerId: payload.userId },
+        ...(customer ? [{ customerEmail: customer.email }] : []),
+      ],
+    },
     include: { package: { select: { title: true, slug: true, images: true } } },
     orderBy: { createdAt: 'desc' },
   })
@@ -63,6 +70,23 @@ export async function POST(req: NextRequest) {
     const pkg = await prisma.package.findUnique({ where: { id: d.packageId } })
     if (!pkg) return NextResponse.json({ error: 'Package not found' }, { status: 404 })
 
+    const snapshot = {
+      rooms: d.rooms ?? [],
+      roomType: d.roomType,
+      paxAdult: d.paxAdult,
+      paxChild: d.paxChild,
+      paxInfant: d.paxInfant,
+      travelDate: d.travelDate,
+      returnDate: d.returnDate,
+      pricePerPerson: d.pricePerPerson,
+      priceTwin: d.priceTwin,
+      extraNights: d.extraNights,
+      extraNightPrice: d.extraNightPrice,
+      selectedOptions: d.selectedOptions,
+      totalPrice: d.totalPrice,
+      notes: d.notes,
+    }
+
     const booking = await prisma.booking.create({
       data: {
         packageId: d.packageId,
@@ -76,6 +100,7 @@ export async function POST(req: NextRequest) {
         paxChild: d.paxChild,
         paxInfant: d.paxInfant,
         roomType: d.roomType,
+        rooms: d.rooms as any,
         pricePerPerson: d.pricePerPerson,
         priceTwin: d.priceTwin,
         extraNights: d.extraNights,
@@ -84,6 +109,7 @@ export async function POST(req: NextRequest) {
         totalPrice: d.totalPrice,
         discount: d.discount,
         notes: d.notes,
+        originalSnapshot: snapshot as any,
         status: 'REQUESTED',
       },
       include: { package: { select: { title: true } } },

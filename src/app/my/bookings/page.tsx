@@ -2,15 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { FiCalendar, FiMapPin, FiUpload, FiPhone, FiCheckCircle, FiClock, FiAlertCircle } from 'react-icons/fi'
+import { FiCalendar, FiMapPin, FiUpload, FiPhone, FiCheckCircle, FiClock, FiAlertCircle, FiDownload, FiSend } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa'
 import { useCustomerAuth } from '@/lib/customerAuth'
 import AuthModal from '@/components/auth/AuthModal'
 
 const PIPELINE_STEPS = [
   { status: 'REQUESTED',        label: 'Requested' },
-  { status: 'CALL_REQUIRED',    label: 'Call Required' },
-  { status: 'AWAITING_CONFIRM', label: 'Awaiting Confirm' },
+  { status: 'AWAITING_CONFIRM', label: 'Quote Ready' },
   { status: 'CONFIRMED',        label: 'Confirmed' },
   { status: 'RECEIPT_UPLOADED', label: 'Receipt Sent' },
   { status: 'ALL_CONFIRMED',    label: 'All Confirmed' },
@@ -20,13 +19,13 @@ const PIPELINE_STEPS = [
 const STATUS_LABELS: Record<string, string> = {
   REQUESTED: 'Requested',
   CALL_REQUIRED: 'Call Required',
-  EDIT_RESEND: 'Edit & Resend',
-  AWAITING_CONFIRM: 'Awaiting Confirm',
+  EDIT_RESEND: 'Being Updated',
+  AWAITING_CONFIRM: 'Quote Ready — Review Now',
   CONFIRMED: 'Confirmed',
   RECEIPT_UPLOADED: 'Receipt Uploaded',
   ADMIN_CONFIRMING: 'Admin Confirming',
   ALL_CONFIRMED: 'All Confirmed',
-  MAIL_SENT: 'Mail Sent',
+  MAIL_SENT: 'Complete ✓',
   CANCELLED: 'Cancelled',
   COMPLETED: 'Completed',
 }
@@ -35,7 +34,7 @@ const STATUS_COLOR: Record<string, string> = {
   REQUESTED: 'text-blue-600 bg-blue-50',
   CALL_REQUIRED: 'text-purple-600 bg-purple-50',
   EDIT_RESEND: 'text-yellow-600 bg-yellow-50',
-  AWAITING_CONFIRM: 'text-orange-600 bg-orange-50',
+  AWAITING_CONFIRM: 'text-orange-600 bg-orange-100 ring-1 ring-orange-300',
   CONFIRMED: 'text-teal-600 bg-teal-50',
   RECEIPT_UPLOADED: 'text-indigo-600 bg-indigo-50',
   ADMIN_CONFIRMING: 'text-pink-600 bg-pink-50',
@@ -60,18 +59,16 @@ function StatusTimeline({ status }: { status: string }) {
   return (
     <div className="flex items-center gap-0.5 w-full overflow-x-auto">
       {PIPELINE_STEPS.map((step, i) => {
-        const done = i < currentIdx || (currentIdx !== -1 && i === currentIdx)
+        const done = currentIdx !== -1 && i <= currentIdx
         const active = i === currentIdx
         return (
           <div key={step.status} className="flex items-center gap-0.5 min-w-0">
-            <div className={`h-1.5 rounded-full transition-all ${
-              done ? 'bg-brand w-6' : 'bg-gray-200 w-4'
-            } ${active ? 'ring-1 ring-offset-1 ring-brand' : ''}`}
-              style={done ? { background: 'var(--brand)' } : undefined}
+            <div className={`h-1.5 rounded-full transition-all ${done ? 'w-6' : 'bg-gray-200 w-4'}`}
+              style={done ? { background: 'var(--brand)', width: active ? '1.75rem' : '1.5rem' } : undefined}
             />
             {i < PIPELINE_STEPS.length - 1 && (
-              <div className={`h-px w-2 ${i < currentIdx ? 'bg-brand' : 'bg-gray-200'}`}
-                style={i < currentIdx ? { background: 'var(--brand)' } : undefined}
+              <div className="h-px w-2"
+                style={i < currentIdx ? { background: 'var(--brand)' } : { background: '#e5e7eb' }}
               />
             )}
           </div>
@@ -84,13 +81,141 @@ function StatusTimeline({ status }: { status: string }) {
   )
 }
 
+interface StaffQuote {
+  rooms?: { type: string; qty: number; label: string; unitPrice?: number }[]
+  lineItems: { label: string; price: number }[]
+  totalPrice: number
+  notes?: string
+  validUntil?: string
+}
+
 interface Booking {
   id: string; bookingRef: string; _type: 'package' | 'tour'; title: string; image?: string
   travelDate: string; paxAdult: number; paxChild: number
   totalPrice: number; status: string; paymentStatus: string
-  adminNotes?: string | null; receiptUrl?: string | null
-  notes?: string | null; createdAt: string
+  adminNotes?: string | null; receiptUrl?: string | null; receiptNote?: string | null
+  notes?: string | null; customerNote?: string | null
+  staffQuote?: StaffQuote | null
+  ticketUrl?: string | null
+  createdAt: string
 }
+
+// ── Quote Review ──────────────────────────────────────────────────────────────
+
+function QuoteReview({ booking, onAction }: { booking: Booking; onAction: () => void }) {
+  const [requestNote, setRequestNote] = useState('')
+  const [showRequestForm, setShowRequestForm] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const quote = booking.staffQuote
+
+  if (booking.status !== 'AWAITING_CONFIRM') return null
+
+  async function respond(action: 'accept_quote' | 'request_changes') {
+    setLoading(true)
+    setError('')
+    try {
+      const url = booking._type === 'tour' ? `/api/tour-bookings/${booking.id}` : `/api/bookings/${booking.id}`
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, customerNote: requestNote || undefined }),
+      })
+      const d = await res.json()
+      if (res.ok) {
+        // Always reload from server to get fresh status
+        await onAction()
+      } else {
+        setError(d.error || `Server error (${res.status}). Status in response: ${d.status ?? 'unknown'}`)
+      }
+    } catch (e: any) {
+      setError('Network error — please try again.')
+    }
+    setLoading(false)
+  }
+
+  // Safe line items — may be absent if admin only set a total price
+  const lineItems = quote?.lineItems ?? []
+
+  return (
+    <div className="mx-4 mb-4 p-4 bg-orange-50 border-2 border-orange-200 rounded-2xl">
+      <p className="text-xs font-black text-orange-700 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+        <FiCheckCircle size={13} /> Your Quote is Ready — Action Required
+      </p>
+
+      {/* Price breakdown — only if quote has line items or a total */}
+      <div className="bg-white rounded-xl overflow-hidden mb-3">
+        <table className="w-full text-xs">
+          <tbody>
+            {lineItems.map((item, i) => (
+              <tr key={i} className="border-b border-gray-50 last:border-0">
+                <td className="px-3 py-2 text-gray-700">{item.label}</td>
+                <td className="px-3 py-2 text-right font-semibold text-gray-800">LKR {item.price.toLocaleString()}</td>
+              </tr>
+            ))}
+            <tr className="bg-orange-50">
+              <td className="px-3 py-2.5 font-black text-orange-700">
+                {lineItems.length === 0 ? 'Confirmed Total' : 'Total'}
+              </td>
+              <td className="px-3 py-2.5 text-right font-black text-orange-700 text-sm">
+                LKR {(quote?.totalPrice ?? booking.totalPrice).toLocaleString()}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      {quote?.notes && (
+        <div className="mb-3 p-2.5 bg-white rounded-xl">
+          <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">Team Note</p>
+          <p className="text-xs text-gray-600">{quote.notes}</p>
+        </div>
+      )}
+
+      {quote?.validUntil && (
+        <p className="text-[11px] text-red-500 font-semibold mb-3">
+          Quote valid until: {new Date(quote.validUntil).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+        </p>
+      )}
+
+      {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
+
+      {/* Request changes form */}
+      {showRequestForm && (
+        <div className="mb-3 space-y-2">
+          <textarea rows={3} placeholder="Describe what you'd like changed (rooms, price, dates, extras…)"
+            value={requestNote} onChange={e => setRequestNote(e.target.value)}
+            className="w-full text-xs border border-orange-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400 resize-none bg-white" />
+          <div className="flex gap-2">
+            <button onClick={() => respond('request_changes')} disabled={loading || !requestNote.trim()}
+              className="flex items-center gap-1.5 text-xs bg-gray-700 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-gray-800 disabled:opacity-50">
+              <FiSend size={11} /> {loading ? 'Sending…' : 'Send Request'}
+            </button>
+            <button onClick={() => { setShowRequestForm(false); setRequestNote('') }}
+              className="text-xs text-gray-500 hover:text-gray-700 px-2 py-1.5">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {!showRequestForm && (
+        <div className="flex gap-2 flex-wrap">
+          <button onClick={() => respond('accept_quote')} disabled={loading}
+            className="flex items-center gap-1.5 text-sm bg-green-500 text-white px-4 py-2 rounded-xl font-semibold hover:bg-green-600 disabled:opacity-50 transition-colors">
+            <FiCheckCircle size={14} /> {loading ? 'Confirming…' : 'Accept & Confirm'}
+          </button>
+          <button onClick={() => setShowRequestForm(true)} disabled={loading}
+            className="flex items-center gap-1.5 text-sm bg-white border border-orange-300 text-orange-600 px-4 py-2 rounded-xl font-semibold hover:bg-orange-50 disabled:opacity-50 transition-colors">
+            Request Changes
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Receipt Upload ────────────────────────────────────────────────────────────
 
 function ReceiptUpload({ booking, onUploaded }: { booking: Booking; onUploaded: () => void }) {
   const [file, setFile] = useState<File | null>(null)
@@ -98,47 +223,40 @@ function ReceiptUpload({ booking, onUploaded }: { booking: Booking; onUploaded: 
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
 
-  const canUpload = ['CONFIRMED', 'AWAITING_CONFIRM', 'ALL_CONFIRMED'].includes(booking.status) && !booking.receiptUrl
-
+  const canUpload = booking.status === 'CONFIRMED' && !booking.receiptUrl
   if (!canUpload) return null
 
   async function handleUpload() {
     if (!file) return
     setUploading(true)
     setError('')
-    try {
-      // Convert file to base64 for simple upload
-      const reader = new FileReader()
-      reader.onload = async (e) => {
-        const base64 = e.target?.result as string
-        const url = booking._type === 'tour' ? `/api/tour-bookings/${booking.id}` : `/api/bookings/${booking.id}`
-        const res = await fetch(url, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ receiptUrl: base64, receiptNote: note, status: 'RECEIPT_UPLOADED' }),
-        })
-        if (res.ok) {
-          onUploaded()
-        } else {
-          setError('Upload failed. Please try again.')
-        }
-        setUploading(false)
+    const reader = new FileReader()
+    reader.onload = async (e) => {
+      const base64 = e.target?.result as string
+      const url = booking._type === 'tour' ? `/api/tour-bookings/${booking.id}` : `/api/bookings/${booking.id}`
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'upload_receipt', receiptUrl: base64, receiptNote: note }),
+      })
+      if (res.ok) {
+        onUploaded()
+      } else {
+        setError('Upload failed. Please try again.')
       }
-      reader.readAsDataURL(file)
-    } catch {
-      setError('Upload failed.')
       setUploading(false)
     }
+    reader.readAsDataURL(file)
   }
 
   return (
-    <div className="mt-3 p-3 bg-teal-50 border border-teal-100 rounded-xl">
+    <div className="mx-4 mb-4 p-3 bg-teal-50 border border-teal-100 rounded-xl">
       <p className="text-xs font-semibold text-teal-700 mb-2 flex items-center gap-1">
         <FiUpload size={11} /> Upload Payment Receipt
       </p>
       <input type="file" accept="image/*,.pdf" onChange={e => setFile(e.target.files?.[0] ?? null)}
         className="text-xs text-gray-600 w-full mb-2" />
-      <input type="text" placeholder="Optional note (e.g. bank name, ref no)"
+      <input type="text" placeholder="Optional note (bank name, reference no, etc.)"
         value={note} onChange={e => setNote(e.target.value)}
         className="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 mb-2 focus:outline-none focus:border-teal-400" />
       {error && <p className="text-xs text-red-500 mb-1">{error}</p>}
@@ -149,6 +267,25 @@ function ReceiptUpload({ booking, onUploaded }: { booking: Booking; onUploaded: 
     </div>
   )
 }
+
+// ── Ticket Download ───────────────────────────────────────────────────────────
+
+function TicketDownload({ booking }: { booking: Booking }) {
+  if (!booking.ticketUrl) return null
+  return (
+    <div className="mx-4 mb-4 p-3 bg-green-50 border border-green-200 rounded-xl">
+      <p className="text-xs font-black text-green-700 uppercase tracking-wide mb-2 flex items-center gap-1.5">
+        <FiCheckCircle size={12} /> Your Ticket is Ready!
+      </p>
+      <a href={booking.ticketUrl} target="_blank" rel="noopener noreferrer"
+        className="flex items-center gap-2 text-sm bg-green-500 text-white px-4 py-2 rounded-xl font-semibold hover:bg-green-600 transition-colors w-fit">
+        <FiDownload size={14} /> Download Ticket / Voucher
+      </a>
+    </div>
+  )
+}
+
+// ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function MyBookingsPage() {
   const { customer, loading } = useCustomerAuth()
@@ -186,7 +323,7 @@ export default function MyBookingsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24">
-        <div className="w-8 h-8 border-2 border-gray-200 border-t-brand rounded-full animate-spin"
+        <div className="w-8 h-8 border-2 border-gray-200 rounded-full animate-spin"
           style={{ borderTopColor: 'var(--brand)' }} />
       </div>
     )
@@ -211,16 +348,26 @@ export default function MyBookingsPage() {
     )
   }
 
+  const pendingQuotes = bookings.filter(b => b.status === 'AWAITING_CONFIRM').length
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-6">
-      <div>
-        <h1 className="text-2xl font-black text-gray-900">My Bookings</h1>
-        <p className="text-sm text-gray-500 mt-1">Welcome back, {customer.name}. Your trips are below.</p>
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-black text-gray-900">My Bookings</h1>
+          <p className="text-sm text-gray-500 mt-1">Welcome back, {customer.name}.</p>
+        </div>
+        {pendingQuotes > 0 && (
+          <div className="flex items-center gap-2 bg-orange-100 border border-orange-300 text-orange-700 px-4 py-2 rounded-xl text-sm font-semibold">
+            <FiAlertCircle size={15} />
+            {pendingQuotes} quote{pendingQuotes > 1 ? 's' : ''} awaiting your confirmation
+          </div>
+        )}
       </div>
 
       {fetching && (
         <div className="flex items-center justify-center py-12">
-          <div className="w-7 h-7 border-2 border-gray-200 border-t-brand rounded-full animate-spin"
+          <div className="w-7 h-7 border-2 border-gray-200 rounded-full animate-spin"
             style={{ borderTopColor: 'var(--brand)' }} />
         </div>
       )}
@@ -244,7 +391,10 @@ export default function MyBookingsPage() {
 
       <div className="space-y-4">
         {bookings.map(b => (
-          <div key={b.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div key={b.id} className={`bg-white rounded-2xl border shadow-sm overflow-hidden ${
+            b.status === 'AWAITING_CONFIRM' ? 'border-orange-300' : 'border-gray-100'
+          }`}>
+            {/* Card header */}
             <div className="flex gap-4 p-4">
               {b.image && (
                 <img src={b.image} alt={b.title}
@@ -279,8 +429,14 @@ export default function MyBookingsPage() {
               </div>
             </div>
 
+            {/* Quote review (shown when AWAITING_CONFIRM) */}
+            <QuoteReview booking={b} onAction={loadBookings} />
+
+            {/* Ticket download */}
+            <TicketDownload booking={b} />
+
             {/* Admin message */}
-            {b.adminNotes && (
+            {b.adminNotes && b.status !== 'AWAITING_CONFIRM' && (
               <div className="mx-4 mb-3 p-3 bg-orange-50 border border-orange-100 rounded-xl">
                 <p className="text-[10px] font-bold text-orange-600 uppercase mb-1 flex items-center gap-1">
                   <FiCheckCircle size={10} /> Message from our team
@@ -290,9 +446,16 @@ export default function MyBookingsPage() {
             )}
 
             {/* Receipt upload */}
-            <div className="px-4 pb-4">
-              <ReceiptUpload booking={b} onUploaded={loadBookings} />
-            </div>
+            <ReceiptUpload booking={b} onUploaded={loadBookings} />
+
+            {/* Receipt uploaded confirmation */}
+            {b.receiptUrl && b.status === 'RECEIPT_UPLOADED' && (
+              <div className="mx-4 mb-4 p-3 bg-indigo-50 border border-indigo-100 rounded-xl">
+                <p className="text-xs font-semibold text-indigo-700 flex items-center gap-1.5">
+                  <FiCheckCircle size={12} /> Receipt received — our team will confirm shortly.
+                </p>
+              </div>
+            )}
           </div>
         ))}
       </div>

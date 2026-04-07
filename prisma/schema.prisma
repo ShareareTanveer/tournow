@@ -433,7 +433,10 @@ model TourBooking {
   paxAdult      Int           @default(1)
   paxChild      Int           @default(0)
   paxInfant     Int           @default(0)
-  roomType      String?
+  roomType      String?       // legacy
+  rooms         Json?         // [{type, qty, label}] multi-room selection
+  customerNote  String?       @db.Text  // customer counter-request note
+  ticketUrl     String?       // admin-uploaded voucher/ticket URL
 
   pricePerPerson   Float?
   priceTwin        Float?
@@ -448,10 +451,11 @@ model TourBooking {
   status        BookingStatus @default(REQUESTED)
   paymentStatus PaymentStatus @default(UNPAID)
 
-  adminNotes    String?       @db.Text
-  staffQuote    Json?
-  receiptUrl    String?
-  receiptNote   String?
+  adminNotes       String?       @db.Text
+  staffQuote       Json?
+  originalSnapshot Json?         // snapshot of customer's original request
+  receiptUrl       String?
+  receiptNote      String?
 
   notes         String?       @db.Text
   createdAt     DateTime      @default(now())
@@ -607,7 +611,10 @@ model Booking {
   paxAdult      Int           @default(1)
   paxChild      Int           @default(0)
   paxInfant     Int           @default(0)
-  roomType      String?       // SINGLE | TWIN | DOUBLE | TRIPLE
+  roomType      String?       // SINGLE | TWIN | DOUBLE | TRIPLE (legacy)
+  rooms         Json?         // [{type, qty, label}] multi-room selection
+  customerNote  String?       @db.Text  // customer counter-request note
+  ticketUrl     String?       // admin-uploaded voucher/ticket URL
 
   // Pricing breakdown
   pricePerPerson   Float?     // adult per-person price
@@ -625,10 +632,11 @@ model Booking {
   paymentStatus PaymentStatus @default(UNPAID)
 
   // Admin workflow
-  adminNotes    String?       @db.Text
-  staffQuote    Json?         // detailed quote JSON sent to customer
-  receiptUrl    String?       // customer-uploaded payment receipt
-  receiptNote   String?
+  adminNotes       String?       @db.Text
+  staffQuote       Json?         // detailed quote JSON sent to customer
+  originalSnapshot Json?         // snapshot of customer's original request (rooms, pax, totalPrice, options)
+  receiptUrl       String?       // customer-uploaded payment receipt
+  receiptNote      String?
 
   notes         String?       @db.Text
   createdAt     DateTime      @default(now())

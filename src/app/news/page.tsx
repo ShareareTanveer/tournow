@@ -1,20 +1,14 @@
+export const dynamic = 'force-dynamic'
+
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
+import { getNews } from '@/lib/data'
 
 export const metadata: Metadata = {
   title: 'Travel News',
   description: 'Latest travel news, destination updates, and industry insights from Metro Voyage.',
-}
-
-async function getNews() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/news`, { next: { revalidate: 1800 } })
-    if (!res.ok) return []
-    const data = await res.json()
-    return data.news ?? []
-  } catch { return [] }
 }
 
 export default async function NewsPage() {

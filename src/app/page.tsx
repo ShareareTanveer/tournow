@@ -10,57 +10,16 @@ import DestinationCard from '@/components/ui/DestinationCard'
 import { FiArrowRight, FiStar, FiClock, FiBookOpen } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa'
 
-async function getFeaturedPackages() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/packages?featured=true&limit=8`, { next: { revalidate: 3600 } })
-    if (!res.ok) return []
-    const data = await res.json()
-    return data.packages ?? []
-  } catch { return [] }
-}
+export const dynamic = 'force-dynamic'
 
-async function getFeaturedDestinations() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/destinations?featured=true`, { next: { revalidate: 3600 } })
-    if (!res.ok) return []
-    return (await res.json()) ?? []
-  } catch { return [] }
-}
-
-async function getReviews() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/reviews?limit=3`, { next: { revalidate: 3600 } })
-    if (!res.ok) return []
-    const data = await res.json()
-    return data.reviews ?? []
-  } catch { return [] }
-}
-
-async function getHeroImage(): Promise<string | undefined> {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/settings`, { next: { revalidate: 3600 } })
-    if (!res.ok) return undefined
-    const data = await res.json()
-    return data.hero_image || undefined
-  } catch { return undefined }
-}
-
-async function getPerks() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/perks`, { next: { revalidate: 3600 } })
-    if (!res.ok) return []
-    return await res.json()
-  } catch { return [] }
-}
-
-async function getFeaturedBlogs() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blogs?limit=4`, { next: { revalidate: 3600 } })
-    if (!res.ok) return []
-    const data = await res.json()
-    return data.blogs ?? []
-  } catch { return [] }
-}
+import {
+  getFeaturedPackages,
+  getFeaturedDestinations,
+  getReviews,
+  getHeroImage,
+  getPerks,
+  getBlogs,
+} from '@/lib/data'
 
 export default async function HomePage() {
   const [packages, destinations, reviews, heroImageUrl, perks, blogs] = await Promise.all([
@@ -69,7 +28,7 @@ export default async function HomePage() {
     getReviews(),
     getHeroImage(),
     getPerks(),
-    getFeaturedBlogs(),
+    getBlogs(4),
   ])
 
   const displayPackages = packages.length > 0 ? packages : SAMPLE_PACKAGES

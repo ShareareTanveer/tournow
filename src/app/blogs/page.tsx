@@ -1,20 +1,14 @@
+export const dynamic = 'force-dynamic'
+
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
+import { getBlogs } from '@/lib/data'
 
 export const metadata: Metadata = {
   title: 'Travel Blog',
   description: 'Travel stories, tips and inspiration from the Metro Voyage team.',
-}
-
-async function getBlogs() {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/blogs`, { next: { revalidate: 1800 } })
-    if (!res.ok) return []
-    const data = await res.json()
-    return data.blogs ?? []
-  } catch { return [] }
 }
 
 const CATEGORY_COLORS: Record<string, string> = {

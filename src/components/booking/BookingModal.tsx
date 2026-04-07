@@ -159,10 +159,10 @@ export default function BookingModal({ open, onClose, target }: Props) {
 
   return (
     <>
-      <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+      <div className="fixed inset-0  flex items-center justify-center p-4">
         <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
 
-        <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[92vh]">
+        <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[92vh] mt-12">
           {/* Header */}
           <div className="flex items-start justify-between px-6 pt-5 pb-4 border-b border-gray-100 shrink-0">
             <div>
@@ -198,7 +198,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                     <div>
                       <label className="text-xs font-semibold text-gray-500 block mb-1">Departure Date *</label>
                       <input type="date" required
-                        min={new Date().toISOString().split('T')[0]}
+                        min={new Date().toISOString()?.split('T')[0]}
                         value={form.travelDate}
                         onChange={e => setForm(f => ({ ...f, travelDate: e.target.value }))}
                         className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400" />
@@ -206,7 +206,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                     <div>
                       <label className="text-xs font-semibold text-gray-500 block mb-1">Return Date</label>
                       <input type="date"
-                        min={form.travelDate || new Date().toISOString().split('T')[0]}
+                        min={form.travelDate || new Date().toISOString()?.split('T')[0]}
                         value={form.returnDate}
                         onChange={e => setForm(f => ({ ...f, returnDate: e.target.value }))}
                         className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400" />

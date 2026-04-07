@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const parsed = CharityDonationSchema.safeParse(body)
+    const parsed: any = CharityDonationSchema.safeParse(body)
     if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
 
     const donation = await prisma.charityDonation.create({ data: parsed.data })

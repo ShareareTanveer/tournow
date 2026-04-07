@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
   const customization = await prisma.tourCustomization.create({
     data: {
-      packageId,
+      tourId:packageId,
       customerName,
       customerEmail,
       customerPhone,
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
   const [items, total] = await Promise.all([
     prisma.tourCustomization.findMany({
       where: status ? { status } : undefined,
-      include: { package: { select: { title: true, slug: true } } },
+      include: { tour: { select: { title: true, slug: true } } },
       orderBy: { createdAt: 'desc' },
       take, skip,
     }),

@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json()
-    const parsed = DestinationSchema.safeParse(body)
+    const parsed: any = DestinationSchema.safeParse(body)
     if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
 
     const dest = await prisma.destination.create({ data: parsed.data })

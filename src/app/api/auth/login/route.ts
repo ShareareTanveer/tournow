@@ -6,7 +6,7 @@ import { LoginSchema } from '@/lib/validations'
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const parsed = LoginSchema.safeParse(body)
+    const parsed: any = LoginSchema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json({ error: 'Invalid input' }, { status: 400 })
     }

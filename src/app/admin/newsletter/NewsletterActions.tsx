@@ -24,7 +24,7 @@ export default function NewsletterActions({ subscribers }: { subscribers: any[] 
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `newsletter-subscribers-${new Date().toISOString().split('T')[0]}.csv`
+    a.download = `newsletter-subscribers-${new Date().toISOString()?.split('T')[0]}.csv`
     a.click()
     URL.revokeObjectURL(url)
   }

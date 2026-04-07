@@ -35,7 +35,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
   try {
     const { slug } = await params
     const body = await req.json()
-    const parsed = DestinationSchema.partial().safeParse(body)
+    const parsed: any = DestinationSchema.partial().safeParse(body)
     if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
 
     const dest = await prisma.destination.update({ where: { slug }, data: parsed.data })

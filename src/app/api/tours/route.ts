@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json()
-    const parsed = TourSchema.safeParse(body)
+    const parsed: any = TourSchema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
     }

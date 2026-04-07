@@ -645,9 +645,9 @@ export default function Navbar() {
               >
                 <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0"
                   style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
-                  {authUser.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+                  {authUser.name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                 </div>
-                <span className="hidden xl:inline">{authUser.name.split(' ')[0]}</span>
+                <span className="hidden xl:inline">{authUser.name?.split(' ')[0]}</span>
               </Link>
             ) : customerUser ? (
               <Link
@@ -656,9 +656,9 @@ export default function Navbar() {
               >
                 <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0"
                   style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)' }}>
-                  {customerUser.name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
+                  {customerUser.name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                 </div>
-                <span className="hidden xl:inline">{customerUser.name.split(' ')[0]}</span>
+                <span className="hidden xl:inline">{customerUser.name?.split(' ')[0]}</span>
               </Link>
             ) : (
               <Link

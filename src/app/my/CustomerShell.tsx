@@ -64,7 +64,7 @@ export default function CustomerShell({ children }: { children: React.ReactNode 
 
   if (!user) return null
 
-  const initials = user.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+  const initials = user.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

@@ -43,7 +43,7 @@ export default function FilterBar() {
     if (duration) params.set('duration', duration)
     if (starRating) params.set('starRating', starRating)
     if (budget) {
-      const [min, max] = budget.split('-')
+      const [min, max] = budget?.split('-')
       params.set('minPrice', min)
       params.set('maxPrice', max)
     }

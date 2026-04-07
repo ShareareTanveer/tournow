@@ -28,7 +28,7 @@ const EXCLUSION_PRESETS = [
   'Room service', 'Camera fees at monuments', 'Medical expenses',
 ]
 
-function toArr(s: string) { return s.split('\n').map((l) => l.trim()).filter(Boolean) }
+function toArr(s: string) { return s?.split('\n').map((l) => l.trim()).filter(Boolean) }
 function fromArr(a: string[] | undefined | null) { return (a ?? []).join('\n') }
 
 function ChipList({ label, items, presets, accentColor = 'sky', onChange }: {

@@ -49,7 +49,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write h
   // Sync value if changed externally
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
-      editor.commands.setContent(value, false)
+      editor.commands.setContent(value, { emitUpdate: false })
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])

@@ -53,7 +53,7 @@ export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string })
   const handleSearch = () => {
     const params = new URLSearchParams()
     if (destination) params.set('destination', destination)
-    const [min, max] = budget.value.split('-')
+    const [min, max] = budget.value?.split('-')
     params.set('minPrice', min)
     params.set('maxPrice', max)
     router.push(`/packages-from-sri-lanka/family?${params.toString()}`)
@@ -89,7 +89,7 @@ export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string })
           Discover Your
           <span className="block text-transparent bg-clip-text"
         style={{
-    backgroundImage: 'linear-gradient(90deg, var(--brand) 0%, var(--accent1) 50%, var(--brand) 100%)',
+    backgroundImage: 'linear-gradient(90deg, var(--brand) 0%,  var(--brand) 10%, var(--brand) 100%)',
   }}>
             Dream Holiday
           </span>

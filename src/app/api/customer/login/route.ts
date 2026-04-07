@@ -6,7 +6,7 @@ import { CustomerLoginSchema } from '@/lib/validations'
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const parsed = CustomerLoginSchema.safeParse(body)
+    const parsed: any = CustomerLoginSchema.safeParse(body)
     if (!parsed.success) return NextResponse.json({ error: 'Invalid credentials' }, { status: 400 })
 
     const { email, password } = parsed.data

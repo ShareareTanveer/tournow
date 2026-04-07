@@ -6,7 +6,7 @@ import { CustomerRegisterSchema } from '@/lib/validations'
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
-    const parsed = CustomerRegisterSchema.safeParse(body)
+    const parsed: any = CustomerRegisterSchema.safeParse(body)
     if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
 
     const { name, email, password, phone } = parsed.data

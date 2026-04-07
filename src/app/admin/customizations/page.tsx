@@ -5,7 +5,7 @@ import Link from 'next/link'
 async function getCustomizations() {
   try {
     return await prisma.tourCustomization.findMany({
-      include: { package: { select: { title: true, slug: true } } },
+      include: { tour: { select: { title: true, slug: true } } },
       orderBy: { createdAt: 'desc' },
       take: 50,
     })

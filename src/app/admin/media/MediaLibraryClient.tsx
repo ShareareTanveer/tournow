@@ -81,7 +81,7 @@ export default function MediaLibraryClient({ initialItems }: { initialItems: Med
               )}
             </div>
             <div className="p-2">
-              <p className="text-xs text-gray-600 truncate">{item.filename.split('/').pop()}</p>
+              <p className="text-xs text-gray-600 truncate">{item.filename?.split('/').pop()}</p>
               {item.size && <p className="text-[10px] text-gray-400">{(item.size / 1024).toFixed(0)} KB</p>}
             </div>
             {/* Hover actions */}

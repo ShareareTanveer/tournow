@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json()
-    const parsed = PackageSchema.safeParse(body)
+    const parsed:any = PackageSchema.safeParse(body)
     if (!parsed.success) {
       return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
     }

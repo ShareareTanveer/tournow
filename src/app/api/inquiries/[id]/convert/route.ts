@@ -17,18 +17,26 @@ function generatePassword(length = 10): string {
  *   type: 'package' | 'tour'
  *   packageId?: string   (required if type === 'package')
  *   tourId?: string      (required if type === 'tour')
+ *   customerName: string (admin can edit)
+ *   customerEmail: string (admin can edit)
+ *   phone?: string
  *   travelDate: string   (ISO date)
+ *   returnDate?: string
  *   paxAdult: number
  *   paxChild?: number
  *   paxInfant?: number
+ *   rooms?: { type: string; qty: number; label: string }[]
+ *   pricePerPerson?: number
+ *   priceTwin?: number
+ *   extraNights?: number
+ *   extraNightPrice?: number
+ *   selectedOptions?: { label: string; price: number }[]
  *   staffQuote: {
  *     lineItems: { label: string; price: number }[]
  *     totalPrice: number
  *     notes?: string
- *     validUntil?: string
  *   }
  *   adminNotes?: string
- *   phone?: string       (override phone if not on inquiry)
  */
 export async function POST(req: NextRequest, { params }: Params) {
   const admin = await getAuthUser(req)
@@ -37,7 +45,27 @@ export async function POST(req: NextRequest, { params }: Params) {
   const { id } = await params
   const body = await req.json()
 
-  const { type, packageId, tourId, travelDate, paxAdult = 1, paxChild = 0, paxInfant = 0, staffQuote, adminNotes, phone } = body
+  const {
+    type,
+    packageId,
+    tourId,
+    customerName,
+    customerEmail,
+    phone,
+    travelDate,
+    returnDate,
+    paxAdult = 1,
+    paxChild = 0,
+    paxInfant = 0,
+    rooms,
+    pricePerPerson,
+    priceTwin,
+    extraNights,
+    extraNightPrice,
+    selectedOptions,
+    staffQuote,
+    adminNotes,
+  } = body
 
   if (!type || !['package', 'tour'].includes(type)) {
     return NextResponse.json({ error: 'type must be "package" or "tour"' }, { status: 400 })
@@ -49,22 +77,19 @@ export async function POST(req: NextRequest, { params }: Params) {
     return NextResponse.json({ error: 'tourId required for tour booking' }, { status: 400 })
   }
   if (!travelDate) return NextResponse.json({ error: 'travelDate required' }, { status: 400 })
+  if (!customerName || !customerEmail) return NextResponse.json({ error: 'customerName and customerEmail required' }, { status: 400 })
   if (!staffQuote?.lineItems || typeof staffQuote?.totalPrice !== 'number') {
     return NextResponse.json({ error: 'staffQuote with lineItems and totalPrice required' }, { status: 400 })
   }
 
   // ── Fetch the inquiry ────────────────────────────────────────────────────────
-  const inquiry = type === 'tour'
-    ? await prisma.tourInquiry.findUnique({ where: { id } })
-    : await prisma.inquiry.findUnique({ where: { id } })
+  const inquiry = await prisma.inquiry.findUnique({ where: { id } })
 
   if (!inquiry) return NextResponse.json({ error: 'Inquiry not found' }, { status: 404 })
   if (inquiry.status === 'CONVERTED') {
     return NextResponse.json({ error: 'Inquiry already converted' }, { status: 400 })
   }
 
-  const customerEmail = inquiry.email
-  const customerName = inquiry.name
   const customerPhone = phone || inquiry.phone || ''
 
   // ── Find or create Customer account ─────────────────────────────────────────
@@ -105,6 +130,8 @@ export async function POST(req: NextRequest, { params }: Params) {
     paxChild,
     paxInfant,
     travelDate,
+    returnDate,
+    rooms,
     totalPrice: staffQuote.totalPrice,
     inquiryMessage: inquiry.message,
   }
@@ -121,9 +148,16 @@ export async function POST(req: NextRequest, { params }: Params) {
         customerEmail,
         customerPhone,
         travelDate: new Date(travelDate),
+        returnDate: returnDate ? new Date(returnDate) : undefined,
         paxAdult,
         paxChild,
         paxInfant,
+        rooms: rooms ?? null,
+        pricePerPerson: pricePerPerson ?? undefined,
+        priceTwin: priceTwin ?? undefined,
+        extraNights: extraNights ?? 0,
+        extraNightPrice: extraNightPrice ?? undefined,
+        selectedOptions: selectedOptions ?? null,
         totalPrice: staffQuote.totalPrice,
         staffQuote,
         adminNotes: adminNotes ?? null,
@@ -144,9 +178,16 @@ export async function POST(req: NextRequest, { params }: Params) {
         customerEmail,
         customerPhone,
         travelDate: new Date(travelDate),
+        returnDate: returnDate ? new Date(returnDate) : undefined,
         paxAdult,
         paxChild,
         paxInfant,
+        rooms: rooms ?? null,
+        pricePerPerson: pricePerPerson ?? undefined,
+        priceTwin: priceTwin ?? undefined,
+        extraNights: extraNights ?? 0,
+        extraNightPrice: extraNightPrice ?? undefined,
+        selectedOptions: selectedOptions ?? null,
         totalPrice: staffQuote.totalPrice,
         staffQuote,
         adminNotes: adminNotes ?? null,

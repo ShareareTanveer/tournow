@@ -38,19 +38,21 @@ export async function PUT(req: NextRequest, { params }: Params) {
   if (customerToken) {
     const payload = verifyToken(customerToken)
     if (payload) {
-      const customer = await prisma.customer.findUnique({ where: { id: payload.userId }, select: { email: true } })
+      const customer = await prisma.customer.findUnique({ where: { id: payload.userId }, select: { email: true, id: true } })
+      if (!customer) return NextResponse.json({ error: 'Customer not found' }, { status: 401 })
 
       const booking = await prisma.booking.findFirst({
         where: {
           id,
           OR: [
             { customerId: payload.userId },
-            ...(customer ? [{ customerEmail: customer.email }] : []),
+            { customerId: customer.id },
+            { customerEmail: customer.email },
           ],
         },
         include: { package: { select: { title: true } } },
       })
-      if (!booking) return NextResponse.json({ error: 'Not found' }, { status: 404 })
+      if (!booking) return NextResponse.json({ error: 'Booking not found for this customer' }, { status: 404 })
 
       // Auto-link customerId if missing
       if (!booking.customerId) {

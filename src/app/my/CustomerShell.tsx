@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { useCustomerAuth } from '@/lib/customerAuth'
 import {
   FiGrid, FiTag, FiCalendar, FiUser, FiLogOut,
   FiChevronRight, FiMenu, FiX, FiMapPin, FiAward,
@@ -45,10 +46,17 @@ export default function CustomerShell({ children }: { children: React.ReactNode 
       .finally(() => setLoading(false))
   }, [router])
 
+  const { logout } = useCustomerAuth()
+
   const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' }).catch(() => {})
-    router.push('/')
-    router.refresh()
+    try {
+      await fetch('/api/customer/logout', { method: 'POST', credentials: 'include' })
+    } catch {}
+    await logout() // Clear from context
+    // Small delay to ensure cookie is set before reload
+    await new Promise(r => setTimeout(r, 200))
+    // Hard page load to fully reset the app state
+    window.location.href = '/'
   }
 
   if (loading) {

@@ -32,9 +32,12 @@ export default function AuthModal({ open, onClose, onSuccess, initialTab = 'logi
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(loginForm),
+        credentials: 'include', // Ensure cookies are included
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Login failed'); return }
+      // Small delay to ensure cookie is set before calling refresh
+      await new Promise(r => setTimeout(r, 100))
       await refresh()
       onSuccess?.()
       onClose()
@@ -54,9 +57,12 @@ export default function AuthModal({ open, onClose, onSuccess, initialTab = 'logi
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(regForm),
+        credentials: 'include', // Ensure cookies are included
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Registration failed'); return }
+      // Small delay to ensure cookie is set before calling refresh
+      await new Promise(r => setTimeout(r, 100))
       await refresh()
       onSuccess?.()
       onClose()

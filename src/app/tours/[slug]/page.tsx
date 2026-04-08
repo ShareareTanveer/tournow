@@ -1,9 +1,9 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import InquiryForm from '@/components/forms/InquiryForm'
 import PackageGallery from '@/components/packages/PackageGallery'
 import PackageTabs from '@/components/packages/PackageTabs'
+import PackageInquirySection from '@/components/packages/PackageInquirySection'
 import BookNowButton from '@/components/booking/BookNowButton'
 import {
   FiMapPin, FiClock, FiStar, FiUsers, FiPhone, FiCheckCircle, FiXCircle,
@@ -218,15 +218,8 @@ export default async function TourDetailPage({ params }: Props) {
                 }} />
               </div>
 
-              {/* Inquiry form */}
-              <div className="px-5 pb-5">
-                <div className="relative flex items-center gap-3 my-3">
-                  <div className="flex-1 border-t border-gray-100" />
-                  <span className="text-xs text-gray-400">or send an inquiry</span>
-                  <div className="flex-1 border-t border-gray-100" />
-                </div>
-                <InquiryForm packageId={tour.id} packageTitle={tour.title} />
-              </div>
+              {/* Inquiry CTA */}
+              <PackageInquirySection packageId={tour.id} packageTitle={tour.title} />
             </div>
 
             {/* Contact card */}

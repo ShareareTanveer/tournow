@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useCustomerAuth } from '@/lib/customerAuth'
 
 interface InquiryFormProps {
   packageId?: string
@@ -8,12 +9,25 @@ interface InquiryFormProps {
 }
 
 export default function InquiryForm({ packageId, packageTitle }: InquiryFormProps) {
+  const { customer } = useCustomerAuth()
   const [form, setForm] = useState({
     name: '', email: '', phone: '', message: '', travelDate: '', paxCount: 1,
   })
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState('')
+
+  // Pre-fill form with logged-in customer's data
+  useEffect(() => {
+    if (customer) {
+      setForm(prev => ({
+        ...prev,
+        name: customer.name || '',
+        email: customer.email || '',
+        phone: customer.phone || '',
+      }))
+    }
+  }, [customer])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -61,7 +75,8 @@ export default function InquiryForm({ packageId, packageTitle }: InquiryFormProp
             type="text" required value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder="Your name"
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors"
+            disabled={!!customer}
+            className={`w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors ${customer ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''}`}
           />
         </div>
         <div>
@@ -70,7 +85,8 @@ export default function InquiryForm({ packageId, packageTitle }: InquiryFormProp
             type="email" required value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             placeholder="your@email.com"
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors"
+            disabled={!!customer}
+            className={`w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors ${customer ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''}`}
           />
         </div>
         <div>

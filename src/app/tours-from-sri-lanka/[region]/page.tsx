@@ -43,6 +43,7 @@ export default async function TourListingPage({
   const sp = await searchParams
   const meta = REGION_META[region] ?? { label: 'Tours', desc: '' }
   const dbRegion = SLUG_TO_REGION[region]
+  const country = sp.country || null
 
   const page = parseInt(sp.page ?? '1')
   const limit = 12
@@ -51,6 +52,7 @@ export default async function TourListingPage({
   const where: Record<string, unknown> = {
     isActive: true,
     ...(dbRegion ? { region: dbRegion } : {}),
+    ...(country ? { multiDestinations: { has: country } } : {}),
   }
 
   const [tours, total] = await prisma.$transaction([
@@ -64,20 +66,24 @@ export default async function TourListingPage({
     prisma.tour.count({ where }),
   ])
 
+  const displayTitle = country ? `${meta.label} in ${country}` : meta.label
+  const breadcrumbTrail = [
+    { label: 'Tours', href: '/tours-from-sri-lanka/south-east-asia' },
+    { label: meta.label, href: `/tours-from-sri-lanka/${region}` },
+    ...(country ? [{ label: country }] : []),
+  ]
+
   return (
     <div className="min-h-screen bg-gray-50">
       <PageHero
-        title={meta.label}
-        subtitle={meta.desc}
+        title={displayTitle}
+        subtitle={country ? `Curated tours in ${country}` : meta.desc}
         imageUrl={getPageHeroImage('tours')}
-        breadcrumbs={[
-          { label: 'Tours', href: '/tours-from-sri-lanka/south-east-asia' },
-          { label: meta.label },
-        ]}
+        breadcrumbs={breadcrumbTrail}
       >
         {total > 0 && (
           <p className="flex items-center gap-1.5 text-white/60 text-sm mt-2">
-            <FiGlobe size={12} /> {total} tours available
+            <FiGlobe size={12} /> {total} tour{total !== 1 ? 's' : ''} available
           </p>
         )}
       </PageHero>

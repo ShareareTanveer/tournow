@@ -43,15 +43,10 @@ export async function GET(req: NextRequest) {
   const payload = verifyToken(token)
   if (!payload) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const customer = await prisma.customer.findUnique({ where: { id: payload.userId }, select: { email: true } })
-
+  // Only return bookings explicitly linked to this customer ID
+  // (do NOT use email fallback in GET — that can leak other customers' data if emails collide)
   const bookings = await prisma.booking.findMany({
-    where: {
-      OR: [
-        { customerId: payload.userId },
-        ...(customer ? [{ customerEmail: customer.email }] : []),
-      ],
-    },
+    where: { customerId: payload.userId },
     include: { package: { select: { title: true, slug: true, images: true } } },
     orderBy: { createdAt: 'desc' },
   })

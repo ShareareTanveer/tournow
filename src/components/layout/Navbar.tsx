@@ -167,13 +167,13 @@ export default function Navbar() {
   }, [pathname]);
 
   useEffect(() => {
-    fetch('/api/auth/me')
+    fetch('/api/auth/me', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
       .then(data => setAuthUser(data?.user ?? null))
       .catch(() => setAuthUser(null))
-    fetch('/api/customer/me')
+    fetch('/api/customer/me', { cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
-      .then(data => setCustomerUser(data ?? null))
+      .then(data => setCustomerUser(data?.customer ?? null))
       .catch(() => setCustomerUser(null))
   }, [pathname]);
 
@@ -280,7 +280,7 @@ export default function Navbar() {
                         Browse by type
                       </p>
                       <Link
-                        href="/packages-from-sri-lanka/family"
+                        href="/packages-from-sri-lanka"
                         className="text-xs font-semibold hover:underline"
                         style={{ color: amber }}
                       >
@@ -411,7 +411,7 @@ export default function Navbar() {
                           {active.countries.map((c) => (
                             <Link
                               key={c}
-                              href={`/tours-from-sri-lanka/${active.slug}`}
+                              href={`/tours-from-sri-lanka/${active.slug}?country=${encodeURIComponent(c)}`}
                               className="block px-3 py-2 text-sm text-gray-600 rounded-xl transition-colors font-medium"
                               onMouseEnter={(e) => {
                                 (e.currentTarget as HTMLAnchorElement).style.color = "#0ea5e9"

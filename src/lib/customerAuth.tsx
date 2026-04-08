@@ -29,7 +29,7 @@ export function CustomerAuthProvider({ children }: { children: React.ReactNode }
 
   const refresh = useCallback(async () => {
     try {
-      const res = await fetch('/api/customer/me')
+      const res = await fetch('/api/customer/me', { credentials: 'include', cache: 'no-store' })
       const data = await res.json()
       setCustomer(data.customer ?? null)
     } catch {
@@ -40,7 +40,9 @@ export function CustomerAuthProvider({ children }: { children: React.ReactNode }
   }, [])
 
   const logout = useCallback(async () => {
-    await fetch('/api/customer/logout', { method: 'POST' })
+    document.cookie = 'customer_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
+    document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
+    await fetch('/api/customer/logout', { method: 'POST', credentials: 'include' })
     setCustomer(null)
   }, [])
 

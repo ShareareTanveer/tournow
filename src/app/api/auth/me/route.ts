@@ -4,5 +4,7 @@ import { getAuthUser } from '@/lib/auth'
 export async function GET(req: NextRequest) {
   const user = await getAuthUser(req)
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  // CUSTOMER role users belong to the Customer table, not the admin system
+  if (user.role === 'CUSTOMER') return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   return NextResponse.json({ user })
 }

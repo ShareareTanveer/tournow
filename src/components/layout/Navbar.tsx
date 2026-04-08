@@ -22,6 +22,7 @@ import {
   FiGlobe,
 } from "react-icons/fi";
 import CurrencySelector from "./CurrencySelector";
+import { useCustomerAuth } from "@/lib/customerAuth";
 
 const PACKAGE_CATEGORIES = [
   { label: "Family Packages",       slug: "family",    desc: "Perfect for the whole family",   icon: FiUsers,     color: "#3b82f6" },
@@ -129,7 +130,7 @@ export default function Navbar() {
   const [activeRegion, setActiveRegion] = useState("Asia");
   const [activeTourRegion, setActiveTourRegion] = useState("South East Asia");
   const [authUser, setAuthUser] = useState<{ name: string; role: string } | null>(null);
-  const [customerUser, setCustomerUser] = useState<{ name: string } | null>(null);
+  const { customer: customerUser } = useCustomerAuth();
   const pathname = usePathname();
 
   const pkgTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -171,10 +172,6 @@ export default function Navbar() {
       .then(r => r.ok ? r.json() : null)
       .then(data => setAuthUser(data?.user ?? null))
       .catch(() => setAuthUser(null))
-    fetch('/api/customer/me', { cache: 'no-store' })
-      .then(r => r.ok ? r.json() : null)
-      .then(data => setCustomerUser(data?.customer ?? null))
-      .catch(() => setCustomerUser(null))
   }, [pathname]);
 
   const activeRegionData = DESTINATION_REGIONS.find(

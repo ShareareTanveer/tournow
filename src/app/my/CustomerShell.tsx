@@ -6,15 +6,8 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useCustomerAuth } from '@/lib/customerAuth'
 import {
   FiGrid, FiTag, FiCalendar, FiUser, FiLogOut,
-  FiChevronRight, FiMenu, FiX, FiMapPin, FiAward,
+  FiChevronRight, FiMenu, FiMapPin, FiAward,
 } from 'react-icons/fi'
-
-interface UserData {
-  id: string
-  name: string
-  email: string
-  role: string
-}
 
 const NAV = [
   { href: '/my',                  label: 'Overview',        icon: FiGrid },
@@ -27,35 +20,20 @@ const NAV = [
 export default function CustomerShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
-  const [user, setUser] = useState<UserData | null>(null)
-  const [loading, setLoading] = useState(true)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { customer, loading, logout } = useCustomerAuth()
 
   useEffect(() => {
-    fetch('/api/auth/me')
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        if (!data?.user) { router.replace('/login?redirect=/my'); return }
-        // Admins/staff should use /admin, not /my
-        if (['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'STAFF'].includes(data.user.role)) {
-          router.replace('/admin/dashboard'); return
-        }
-        setUser(data.user)
-      })
-      .catch(() => router.replace('/login?redirect=/my'))
-      .finally(() => setLoading(false))
-  }, [router])
-
-  const { logout } = useCustomerAuth()
+    if (!loading && !customer) {
+      router.replace('/login?redirect=/my')
+    }
+  }, [loading, customer, router])
 
   const handleLogout = async () => {
-    try {
-      await fetch('/api/customer/logout', { method: 'POST', credentials: 'include' })
-    } catch {}
-    await logout() // Clear from context
-    // Small delay to ensure cookie is set before reload
-    await new Promise(r => setTimeout(r, 200))
-    // Hard page load to fully reset the app state
+    // Clear cookies client-side
+    document.cookie = 'customer_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
+    document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
+    await logout()
     window.location.href = '/'
   }
 
@@ -70,15 +48,14 @@ export default function CustomerShell({ children }: { children: React.ReactNode 
     )
   }
 
-  if (!user) return null
+  if (!customer) return null
 
-  const initials = user.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+  const initials = customer.name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
 
       {/* ── Sidebar ── */}
-      {/* Mobile overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-40 bg-black/40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
@@ -106,8 +83,8 @@ export default function CustomerShell({ children }: { children: React.ReactNode 
               {initials}
             </div>
             <div className="min-w-0">
-              <p className="font-bold text-gray-800 text-sm truncate">{user.name}</p>
-              <p className="text-[11px] text-gray-400 truncate">{user.email}</p>
+              <p className="font-bold text-gray-800 text-sm truncate">{customer.name}</p>
+              <p className="text-[11px] text-gray-400 truncate">{customer.email}</p>
             </div>
           </div>
         </div>

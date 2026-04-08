@@ -2,7 +2,7 @@
 
 import { useState, Suspense } from 'react'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi'
 
 function LoginForm() {
@@ -10,7 +10,6 @@ function LoginForm() {
   const [showPw, setShowPw] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
   const searchParams = useSearchParams()
   const redirect = searchParams.get('redirect') ?? '/'
 
@@ -19,24 +18,16 @@ function LoginForm() {
     setError('')
     setLoading(true)
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch('/api/customer/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
+        credentials: 'include',
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error ?? 'Login failed'); return }
 
-      // Honour explicit redirect (e.g. from a perk detail page).
-      // Otherwise: customers → /my, admins/staff → /admin/dashboard.
-      const hasExplicitRedirect = searchParams.get('redirect') !== null
-      if (hasExplicitRedirect) {
-        router.push(redirect)
-      } else {
-        const adminRoles = ['SUPER_ADMIN', 'ADMIN', 'EDITOR', 'STAFF']
-        router.push(adminRoles.includes(data.user?.role) ? '/admin/dashboard' : '/my')
-      }
-      router.refresh()
+      window.location.href = redirect === '/' ? '/my' : redirect
     } catch {
       setError('Something went wrong. Please try again.')
     } finally {

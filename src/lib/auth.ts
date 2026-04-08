@@ -41,6 +41,8 @@ export async function getAuthUser(req: NextRequest) {
   })
 
   if (!user || !user.isActive) return null
+  // CUSTOMER role users are managed via the Customer table, not the admin system
+  if (user.role === 'CUSTOMER') return null
   return user
 }
 

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import MediaUploader from '@/components/admin/MediaUploader'
+import InternalLinkPanel from '@/components/admin/InternalLinkPanel'
 
 const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor'), { ssr: false })
 
@@ -34,6 +35,13 @@ export default function NewsForm({ news }: { news?: any }) {
   }
 
   return (
+    <>
+    <InternalLinkPanel
+      title={form.title}
+      content={form.body}
+      currentSlug={form.slug}
+      onAutoLink={(newBody) => setForm(f => ({ ...f, body: newBody }))}
+    />
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Basic info */}
       <div className="bg-white rounded-2xl p-6 border border-gray-200 space-y-4">
@@ -98,5 +106,6 @@ export default function NewsForm({ news }: { news?: any }) {
         <button type="button" onClick={() => router.back()} className="border border-gray-200 text-gray-600 font-medium px-6 py-3 rounded-xl transition-colors hover:bg-gray-50">Cancel</button>
       </div>
     </form>
+    </>
   )
 }

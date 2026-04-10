@@ -1,10 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { FiPlus, FiX } from 'react-icons/fi'
+import { FiPlus, FiX, FiInfo } from 'react-icons/fi'
 import MultiImageUploader, { GalleryLayout } from '@/components/admin/MultiImageUploader'
+import SeoScorePanel from '@/components/admin/SeoScorePanel'
+import AiGeneratePanel, { AiApplyData } from '@/components/admin/AiGeneratePanel'
+import InternalLinkPanel from '@/components/admin/InternalLinkPanel'
+import { SeoInput } from '@/lib/seo-score'
 
 const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor'), { ssr: false })
 
@@ -195,7 +199,7 @@ function CancellationTiersEditor({ tiers, onChange }: { tiers: CancellationTier[
 export default function TourForm({ destinations, tour }: Props) {
   const router = useRouter()
   const isEdit = !!tour
-  const [tab, setTab] = useState<'basic' | 'pricing' | 'content' | 'details' | 'media' | 'flags'>('basic')
+  const [tab, setTab] = useState<'basic' | 'pricing' | 'content' | 'details' | 'media' | 'flags' | 'seo'>('basic')
 
   const [form, setForm] = useState({
     title: tour?.title ?? '',
@@ -242,6 +246,19 @@ export default function TourForm({ destinations, tour }: Props) {
     galleryLayout: (tour?.galleryLayout ?? 'grid-2x2') as GalleryLayout,
     isFeatured: tour?.isFeatured ?? false,
     isActive: tour?.isActive ?? true,
+    // SEO
+    metaTitle:          tour?.metaTitle          ?? '',
+    metaDescription:    tour?.metaDescription    ?? '',
+    focusKeyword:       tour?.focusKeyword       ?? '',
+    secondaryKeywords:  tour?.secondaryKeywords  ?? '',
+    canonicalUrl:       tour?.canonicalUrl       ?? '',
+    ogTitle:            tour?.ogTitle            ?? '',
+    ogDescription:      tour?.ogDescription      ?? '',
+    ogImage:            tour?.ogImage            ?? '',
+    twitterTitle:       tour?.twitterTitle       ?? '',
+    twitterDescription: tour?.twitterDescription ?? '',
+    metaRobots:         tour?.metaRobots         ?? 'index, follow',
+    schemaMarkup:       tour?.schemaMarkup       ?? '',
   })
 
   const [options, setOptions] = useState<OptionItem[]>(() => {
@@ -352,9 +369,73 @@ export default function TourForm({ destinations, tour }: Props) {
     { id: 'details',  label: 'Tour Details' },
     { id: 'media',    label: 'Media' },
     { id: 'flags',    label: 'Visibility' },
+    { id: 'seo',      label: 'SEO' },
   ] as const
 
+  const seoInput = useMemo<SeoInput>(() => ({
+    title:              form.title,
+    slug:               form.slug,
+    description:        form.description,
+    summary:            form.summary,
+    images:             form.images,
+    metaTitle:          form.metaTitle,
+    metaDescription:    form.metaDescription,
+    focusKeyword:       form.focusKeyword,
+    secondaryKeywords:  form.secondaryKeywords,
+    canonicalUrl:       form.canonicalUrl,
+    ogTitle:            form.ogTitle,
+    ogDescription:      form.ogDescription,
+    ogImage:            form.ogImage,
+    metaRobots:         form.metaRobots,
+    schemaMarkup:       form.schemaMarkup,
+  }), [form])
+
+  const handleAutoFixH1 = () => {
+    setForm(f => ({ ...f, description: f.description.replace(/<h1[^>]*>[\s\S]*?<\/h1>/gi, '') }))
+  }
+
+  const handleAiApply = (data: AiApplyData) => {
+    setForm(f => ({
+      ...f,
+      ...(data.description        && { description:       data.description }),
+      ...(data.summary            && { summary:           data.summary }),
+      ...(data.highlights         && { highlights:        data.highlights.join('\n') }),
+      ...(data.inclusions         && { inclusions:        data.inclusions }),
+      ...(data.exclusions         && { exclusions:        data.exclusions }),
+      ...(data.metaTitle          && { metaTitle:         data.metaTitle }),
+      ...(data.metaDescription    && { metaDescription:   data.metaDescription }),
+      ...(data.focusKeyword       && { focusKeyword:      data.focusKeyword }),
+      ...(data.secondaryKeywords  && { secondaryKeywords: data.secondaryKeywords }),
+      ...(data.ogTitle            && { ogTitle:           data.ogTitle }),
+      ...(data.ogDescription      && { ogDescription:     data.ogDescription }),
+      ...(data.schemaMarkup       && { schemaMarkup:      data.schemaMarkup }),
+    }))
+  }
+
+  const aiVars = useMemo(() => ({
+    title:    form.title,
+    summary:  form.summary,
+    duration: form.duration ? `${form.duration} days` : '',
+    keywords: form.focusKeyword || form.title,
+  }), [form.title, form.summary, form.duration, form.focusKeyword])
+
   return (
+    <>
+    <SeoScorePanel input={seoInput} onAutoFixH1={handleAutoFixH1} />
+    <AiGeneratePanel
+      entityType="tour"
+      entityId={tour?.id}
+      seoTemplateKey="tour-seo-generate"
+      fullTemplateKey="tour-full-generate"
+      vars={aiVars}
+      onApply={handleAiApply}
+    />
+    <InternalLinkPanel
+      title={form.title}
+      content={form.description}
+      currentSlug={form.slug}
+      onAutoLink={(newDesc) => setForm(f => ({ ...f, description: newDesc }))}
+    />
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Tab nav */}
       <div className="flex gap-1 bg-gray-100 rounded-xl p-1 flex-wrap">
@@ -579,6 +660,180 @@ export default function TourForm({ destinations, tour }: Props) {
             </div>
           </div>
         )}
+
+        {/* ── SEO ── */}
+        {tab === 'seo' && (
+          <div className="space-y-6">
+            <div>
+              <h3 className="font-bold text-gray-800">Search Engine Optimisation</h3>
+              <p className="text-xs text-gray-400 mt-0.5">Fill these fields to improve visibility in Google search results.</p>
+            </div>
+
+            <div className="space-y-4">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2">Basic</p>
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-gray-500">Focus Keyword</label>
+                  <span className="text-[10px] text-gray-400">Primary keyword you want to rank for</span>
+                </div>
+                <input value={form.focusKeyword}
+                  onChange={e => setForm({ ...form, focusKeyword: e.target.value })}
+                  placeholder="e.g. Turkey tour package Sri Lanka"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400" />
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-gray-500">Secondary Keywords</label>
+                  <span className="text-[10px] text-gray-400">Comma-separated</span>
+                </div>
+                <input value={form.secondaryKeywords}
+                  onChange={e => setForm({ ...form, secondaryKeywords: e.target.value })}
+                  placeholder="e.g. Turkey holidays, Istanbul tour, Cappadocia package"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400" />
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-gray-500">Meta Title</label>
+                  <span className={`text-[11px] font-semibold ${
+                    form.metaTitle.length === 0 ? 'text-gray-300' :
+                    form.metaTitle.length < 50 ? 'text-orange-500' :
+                    form.metaTitle.length <= 65 ? 'text-emerald-500' :
+                    'text-red-500'
+                  }`}>{form.metaTitle.length} / 65</span>
+                </div>
+                <input value={form.metaTitle}
+                  onChange={e => setForm({ ...form, metaTitle: e.target.value })}
+                  placeholder="e.g. Turkey Tour Package | 8 Days Istanbul & Cappadocia"
+                  maxLength={80}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400" />
+                <p className="text-[10px] text-gray-400 mt-1">Ideal: 50–65 characters.</p>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-gray-500">Meta Description</label>
+                  <span className={`text-[11px] font-semibold ${
+                    form.metaDescription.length === 0 ? 'text-gray-300' :
+                    form.metaDescription.length < 150 ? 'text-orange-500' :
+                    form.metaDescription.length <= 160 ? 'text-emerald-500' :
+                    'text-red-500'
+                  }`}>{form.metaDescription.length} / 160</span>
+                </div>
+                <textarea rows={3} value={form.metaDescription}
+                  onChange={e => setForm({ ...form, metaDescription: e.target.value })}
+                  placeholder="e.g. Discover Turkey with our 8-day guided tour — Istanbul, Cappadocia, hot air balloons & more. Flights & hotels included."
+                  maxLength={200}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400 resize-none" />
+                <p className="text-[10px] text-gray-400 mt-1">Ideal: 150–160 characters.</p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 mb-1.5">Canonical URL <span className="font-normal text-gray-400">(optional)</span></label>
+                <input value={form.canonicalUrl}
+                  onChange={e => setForm({ ...form, canonicalUrl: e.target.value })}
+                  type="url" placeholder="https://metrovoyage.com/tours/..."
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400" />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2">Social / Open Graph</p>
+              <p className="text-xs text-gray-400 -mt-2">Controls how this page looks when shared on social media.</p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-semibold text-gray-500">OG Title</label>
+                    <button type="button" onClick={() => setForm(f => ({ ...f, ogTitle: f.metaTitle }))}
+                      className="text-[10px] text-sky-500 hover:underline">Copy from Meta Title</button>
+                  </div>
+                  <input value={form.ogTitle} onChange={e => setForm({ ...form, ogTitle: e.target.value })}
+                    placeholder="Social share title"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1.5">OG Image URL</label>
+                  <input value={form.ogImage} onChange={e => setForm({ ...form, ogImage: e.target.value })}
+                    placeholder="Auto-uses first tour image if blank" type="url"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400" />
+                  {form.images[0] && !form.ogImage && (
+                    <p className="text-[10px] text-emerald-600 mt-1 flex items-center gap-1">
+                      <FiInfo size={10} /> Will use first tour image automatically
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-gray-500">OG Description</label>
+                  <button type="button" onClick={() => setForm(f => ({ ...f, ogDescription: f.metaDescription }))}
+                    className="text-[10px] text-sky-500 hover:underline">Copy from Meta Description</button>
+                </div>
+                <textarea rows={2} value={form.ogDescription}
+                  onChange={e => setForm({ ...form, ogDescription: e.target.value })}
+                  placeholder="Social share description"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400 resize-none" />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-semibold text-gray-500">Twitter Title</label>
+                    <button type="button" onClick={() => setForm(f => ({ ...f, twitterTitle: f.ogTitle || f.metaTitle }))}
+                      className="text-[10px] text-sky-500 hover:underline">Copy from OG</button>
+                  </div>
+                  <input value={form.twitterTitle} onChange={e => setForm({ ...form, twitterTitle: e.target.value })}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400" />
+                </div>
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-semibold text-gray-500">Twitter Description</label>
+                    <button type="button" onClick={() => setForm(f => ({ ...f, twitterDescription: f.ogDescription || f.metaDescription }))}
+                      className="text-[10px] text-sky-500 hover:underline">Copy from OG</button>
+                  </div>
+                  <textarea rows={2} value={form.twitterDescription}
+                    onChange={e => setForm({ ...form, twitterDescription: e.target.value })}
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400 resize-none" />
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-100 pb-2">Technical</p>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 mb-1.5">Meta Robots</label>
+                <select value={form.metaRobots} onChange={e => setForm({ ...form, metaRobots: e.target.value })}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400 bg-white">
+                  <option value="index, follow">index, follow (default — recommended)</option>
+                  <option value="noindex, follow">noindex, follow — hide from Google</option>
+                  <option value="index, nofollow">index, nofollow — don't follow links</option>
+                  <option value="noindex, nofollow">noindex, nofollow — full block</option>
+                </select>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-gray-500">JSON-LD Schema Markup</label>
+                  <span className="text-[10px] text-gray-400">Structured data for rich results</span>
+                </div>
+                <textarea rows={8} value={form.schemaMarkup}
+                  onChange={e => setForm({ ...form, schemaMarkup: e.target.value })}
+                  placeholder={'{\n  "@context": "https://schema.org",\n  "@type": "TouristAttraction",\n  "name": "..."\n}'}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs font-mono focus:outline-none focus:border-sky-400 resize-none"
+                  spellCheck={false} />
+                {form.schemaMarkup && (() => {
+                  try { JSON.parse(form.schemaMarkup); return <p className="text-[10px] text-emerald-600 mt-1">✓ Valid JSON</p> }
+                  catch { return <p className="text-[10px] text-red-500 mt-1">✗ Invalid JSON — please fix the syntax</p> }
+                })()}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">{error}</div>}
@@ -600,5 +855,6 @@ export default function TourForm({ destinations, tour }: Props) {
         )}
       </div>
     </form>
+    </>
   )
 }

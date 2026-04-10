@@ -121,6 +121,7 @@ model User {
   sessions              Session[]
   claimedPerks          ClaimedPerk[]
   loyaltyCard           LoyaltyCard?
+  aiJobs                AiGenerationJob[]
 
   @@map("users")
 }
@@ -224,6 +225,25 @@ model Package {
   isFeatured     Boolean         @default(false)
   isActive       Boolean         @default(true)
   paxType        String?
+
+  // ── SEO ────────────────────────────────────────────────────────────────────
+  // Basic
+  metaTitle          String?           // 50–65 chars ideal
+  metaDescription    String?  @db.Text // 150–160 chars ideal
+  focusKeyword       String?           // primary target keyword
+  secondaryKeywords  String?           // comma-separated extra keywords
+  canonicalUrl       String?
+  // Social / Open Graph
+  ogTitle            String?
+  ogDescription      String?  @db.Text
+  ogImage            String?           // URL; falls back to images[0] in head
+  twitterTitle       String?
+  twitterDescription String?  @db.Text
+  // Technical
+  metaRobots         String?  @default("index, follow")
+  schemaMarkup       String?  @db.Text // raw JSON-LD string
+  // ───────────────────────────────────────────────────────────────────────────
+
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
@@ -329,6 +349,25 @@ model Tour {
   isFeatured    Boolean  @default(false)
   isActive      Boolean  @default(true)
   paxType       String?
+
+  // ── SEO ────────────────────────────────────────────────────────────────────
+  // Basic
+  metaTitle          String?
+  metaDescription    String?  @db.Text
+  focusKeyword       String?
+  secondaryKeywords  String?
+  canonicalUrl       String?
+  // Social / Open Graph
+  ogTitle            String?
+  ogDescription      String?  @db.Text
+  ogImage            String?
+  twitterTitle       String?
+  twitterDescription String?  @db.Text
+  // Technical
+  metaRobots         String?  @default("index, follow")
+  schemaMarkup       String?  @db.Text
+  // ───────────────────────────────────────────────────────────────────────────
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -856,6 +895,62 @@ model SiteSetting {
   updatedAt DateTime @updatedAt
 
   @@map("site_settings")
+}
+
+// ─── AI ───────────────────────────────────────────────────────────────────────
+
+model AiProviderConfig {
+  id         String   @id @default(cuid())
+  provider   String   @unique // openai | groq | gemini | openrouter
+  apiKey     String   @db.Text
+  model      String   // e.g. gpt-4o, llama3-70b-8192, gemini-1.5-pro
+  isActive   Boolean  @default(true)
+  isPrimary  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("ai_provider_configs")
+}
+
+model AiPromptTemplate {
+  id          String   @id @default(cuid())
+  key         String   @unique // e.g. package-seo-generate, tour-full-generate
+  name        String
+  description String?
+  systemPrompt String  @db.Text
+  userPrompt  String   @db.Text // supports {{title}}, {{category}}, {{keywords}} etc.
+  outputFormat String  @default("json") // json | markdown | text
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  jobs AiGenerationJob[]
+
+  @@map("ai_prompt_templates")
+}
+
+model AiGenerationJob {
+  id           String   @id @default(cuid())
+  templateKey  String
+  entityType   String   // package | tour | blog | news
+  entityId     String?
+  status       String   @default("PENDING") // PENDING | RUNNING | DONE | FAILED
+  inputData    String   @db.Text // JSON: the vars passed to the prompt
+  outputData   String?  @db.Text // JSON: the raw AI response
+  parsedOutput String?  @db.Text // JSON: parsed & validated output
+  error        String?  @db.Text
+  provider     String?  // which provider was used
+  tokensUsed   Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  createdBy    String?  // userId
+
+  template AiPromptTemplate? @relation(fields: [templateKey], references: [key], onDelete: SetNull)
+  creator  User?             @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+  @@index([status])
+  @@map("ai_generation_jobs")
 }
 
 // ─── MEDIA ────────────────────────────────────────────────────────────────────

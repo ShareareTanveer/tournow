@@ -4,11 +4,13 @@ import { prisma } from '@/lib/prisma'
 import {
   FiDollarSign, FiBookOpen, FiInbox, FiVideo,
   FiStar, FiPackage, FiMail, FiCheckCircle,
-  FiPlus, FiEdit3, FiFileText, FiSettings,
+  FiPlus, FiEdit3, FiFileText, FiSettings, FiZap,
 } from 'react-icons/fi'
 
+import { BookingStatus } from '@prisma/client'
+
 // Statuses that represent a booking which has progressed past the initial request
-const CONFIRMED_STATUSES = [
+const CONFIRMED_STATUSES: BookingStatus[] = [
   'CONFIRMED', 'RECEIPT_UPLOADED', 'ADMIN_CONFIRMING',
   'ALL_CONFIRMED', 'MAIL_SENT', 'COMPLETED',
 ]
@@ -108,6 +110,7 @@ export default async function DashboardPage() {
     { label: 'Add Blog Post',  href: '/admin/blogs/new',    Icon: FiEdit3 },
     { label: 'Add News',       href: '/admin/news/new',     Icon: FiFileText },
     { label: 'Site Settings',  href: '/admin/settings',     Icon: FiSettings },
+    { label: 'AI Settings',    href: '/admin/settings/ai',  Icon: FiZap },
   ]
 
   return (

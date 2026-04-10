@@ -152,6 +152,7 @@ model Customer {
   bookings     Booking[]
   tourBookings TourBooking[]
   sessions     CustomerSession[]
+  claimedPerks ClaimedPerk[]
 
   @@map("customers")
 }
@@ -813,16 +814,20 @@ model Perk {
 }
 
 model ClaimedPerk {
-  id        String   @id @default(cuid())
-  userId    String
-  perkId    String
-  claimedAt DateTime @default(now())
-  status    String   @default("PENDING") // PENDING | APPROVED | USED | EXPIRED
+  id         String    @id @default(cuid())
+  // Either userId (admin/staff) or customerId (customer portal) will be set
+  userId     String?
+  customerId String?
+  perkId     String
+  claimedAt  DateTime  @default(now())
+  status     String    @default("PENDING") // PENDING | APPROVED | USED | EXPIRED
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  perk Perk @relation(fields: [perkId], references: [id], onDelete: Cascade)
+  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customer Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  perk     Perk      @relation(fields: [perkId], references: [id], onDelete: Cascade)
 
   @@unique([userId, perkId])
+  @@unique([customerId, perkId])
   @@map("claimed_perks")
 }
 

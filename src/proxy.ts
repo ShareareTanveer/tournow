@@ -16,36 +16,36 @@ async function getRole(token: string): Promise<string | null> {
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
-  const token = req.cookies.get('auth_token')?.value
 
   // ── /admin/* — allow login page through; protect everything else ──
   if (pathname.startsWith('/admin') && pathname !== '/admin/login') {
+    const token = req.cookies.get('auth_token')?.value
     if (!token) {
       return NextResponse.redirect(new URL('/admin/login', req.url))
     }
     const role = await getRole(token)
     if (!role || !ADMIN_ROLES.includes(role)) {
-      // Customers who somehow hit /admin → send to their dashboard
-      return NextResponse.redirect(new URL('/my', req.url))
+      const res = NextResponse.redirect(new URL('/admin/login', req.url))
+      res.cookies.delete('auth_token')
+      return res
     }
   }
 
-  // ── /my/* — require a valid customer (or any) session ──
+  // ── /my/* — require a valid customer_token ──
   if (pathname.startsWith('/my')) {
+    const token = req.cookies.get('customer_token')?.value
     if (!token) {
       return NextResponse.redirect(
         new URL(`/login?redirect=${encodeURIComponent(pathname)}`, req.url)
       )
     }
     const role = await getRole(token)
-    if (!role) {
-      return NextResponse.redirect(
+    if (!role || role !== 'CUSTOMER') {
+      const res = NextResponse.redirect(
         new URL(`/login?redirect=${encodeURIComponent(pathname)}`, req.url)
       )
-    }
-    // Admin users who land on /my → redirect to admin dashboard
-    if (ADMIN_ROLES.includes(role)) {
-      return NextResponse.redirect(new URL('/admin/dashboard', req.url))
+      res.cookies.delete('customer_token')
+      return res
     }
   }
 

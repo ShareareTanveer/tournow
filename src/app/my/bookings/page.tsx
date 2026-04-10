@@ -297,8 +297,8 @@ export default function MyBookingsPage() {
     setFetching(true)
     try {
       const [pkgRes, tourRes] = await Promise.all([
-        fetch('/api/bookings'),
-        fetch('/api/tour-bookings'),
+        fetch('/api/bookings',      { credentials: 'include', cache: 'no-store' }),
+        fetch('/api/tour-bookings', { credentials: 'include', cache: 'no-store' }),
       ])
       const pkgJson = pkgRes.ok ? await pkgRes.json() : { bookings: [] }
       const tourJson = tourRes.ok ? await tourRes.json() : { bookings: [] }

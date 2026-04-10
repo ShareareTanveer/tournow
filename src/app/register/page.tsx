@@ -21,9 +21,10 @@ function RegisterForm() {
     if (form.password.length < 6) { setError('Password must be at least 6 characters'); return }
     setLoading(true)
     try {
-      const res = await fetch('/api/auth/register', {
+      const res = await fetch('/api/customer/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ name: form.name, email: form.email, password: form.password }),
       })
       const data = await res.json()

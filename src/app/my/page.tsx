@@ -27,6 +27,14 @@ interface ClaimedPerk {
   }
 }
 
+interface Booking {
+  id: string
+  bookingRef: string
+  status: string
+  travelDate: string
+  package?: { title: string } | null
+}
+
 const STATUS_STYLE: Record<string, { label: string; cls: string }> = {
   PENDING:  { label: 'Pending',  cls: 'bg-yellow-100 text-yellow-700' },
   APPROVED: { label: 'Approved', cls: 'bg-green-100 text-green-700' },
@@ -37,21 +45,25 @@ const STATUS_STYLE: Record<string, { label: string; cls: string }> = {
 export default function CustomerOverviewPage() {
   const [claimedPerks, setClaimedPerks] = useState<ClaimedPerk[]>([])
   const [loyaltyCard, setLoyaltyCard] = useState<LoyaltyCard | null>(null)
+  const [bookings, setBookings] = useState<Booking[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/perks/claim').then(r => r.ok ? r.json() : []),
-      fetch('/api/loyalty/me').then(r => r.ok ? r.json() : null),
-    ]).then(([perks, loyaltyData]) => {
-      setClaimedPerks(perks)
+      fetch('/api/perks/claim',  { credentials: 'include', cache: 'no-store' }).then(r => r.ok ? r.json() : []),
+      fetch('/api/loyalty/me',   { credentials: 'include', cache: 'no-store' }).then(r => r.ok ? r.json() : null),
+      fetch('/api/bookings',     { credentials: 'include', cache: 'no-store' }).then(r => r.ok ? r.json() : null),
+    ]).then(([perks, loyaltyData, bookingData]) => {
+      setClaimedPerks(Array.isArray(perks) ? perks : [])
       setLoyaltyCard(loyaltyData?.card ?? null)
+      setBookings(bookingData?.bookings ?? [])
     }).catch(() => {}).finally(() => setLoading(false))
   }, [])
 
   const recentPerks = claimedPerks.slice(0, 3)
   const activePerks = claimedPerks.filter(p => p.status === 'APPROVED').length
   const pendingPerks = claimedPerks.filter(p => p.status === 'PENDING').length
+  const recentBookings = bookings.slice(0, 3)
 
   return (
     <div className="space-y-6">
@@ -90,7 +102,7 @@ export default function CustomerOverviewPage() {
             <FiCalendar size={20} className="text-blue-500" />
           </div>
           <div>
-            <p className="text-2xl font-black text-gray-900">0</p>
+            <p className="text-2xl font-black text-gray-900">{loading ? '—' : bookings.length}</p>
             <p className="text-xs text-gray-500 font-medium">My Bookings</p>
           </div>
         </div>
@@ -178,24 +190,67 @@ export default function CustomerOverviewPage() {
         )}
       </div>
 
-      {/* Bookings placeholder */}
+      {/* Recent bookings */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="px-5 py-4 flex items-center gap-2 border-b border-gray-100">
-          <FiCalendar size={16} className="text-gray-400" />
-          <h2 className="font-bold text-gray-800 text-sm">My Bookings</h2>
-        </div>
-        <div className="px-5 py-10 text-center">
-          <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
-            <FiCalendar size={20} className="text-blue-400" />
+        <div className="px-5 py-4 flex items-center justify-between border-b border-gray-100">
+          <div className="flex items-center gap-2">
+            <FiCalendar size={16} className="text-gray-400" />
+            <h2 className="font-bold text-gray-800 text-sm">My Bookings</h2>
           </div>
-          <p className="font-bold text-gray-700 text-sm">No bookings yet</p>
-          <p className="text-xs text-gray-400 mt-1 mb-4">Your upcoming trips will appear here once you book a package.</p>
-          <Link href="/packages-from-sri-lanka/family"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white"
-            style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
-            Browse Packages
+          <Link href="/my/bookings"
+            className="text-xs font-semibold flex items-center gap-1"
+            style={{ color: 'var(--brand)' }}>
+            View all <FiChevronRight size={12} />
           </Link>
         </div>
+
+        {loading ? (
+          <div className="px-5 py-8 flex items-center justify-center">
+            <div className="w-6 h-6 border-2 rounded-full animate-spin"
+              style={{ borderColor: 'var(--brand)', borderTopColor: 'transparent' }} />
+          </div>
+        ) : recentBookings.length === 0 ? (
+          <div className="px-5 py-10 text-center">
+            <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <FiCalendar size={20} className="text-blue-400" />
+            </div>
+            <p className="font-bold text-gray-700 text-sm">No bookings yet</p>
+            <p className="text-xs text-gray-400 mt-1 mb-4">Your upcoming trips will appear here once you book a package.</p>
+            <Link href="/packages-from-sri-lanka/family"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold text-white"
+              style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
+              Browse Packages
+            </Link>
+          </div>
+        ) : (
+          <ul className="divide-y divide-gray-50">
+            {recentBookings.map(b => (
+              <li key={b.id} className="px-5 py-3.5 flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                  <FiCalendar size={16} className="text-blue-500" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-gray-800 text-sm truncate">
+                    {b.package?.title ?? 'Booking'}
+                  </p>
+                  <p className="text-[11px] text-gray-400 flex items-center gap-1 mt-0.5">
+                    <FiClock size={10} />
+                    {new Date(b.travelDate).toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    <span className="ml-1 font-mono tracking-wide">{b.bookingRef}</span>
+                  </p>
+                </div>
+                <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full shrink-0 ${
+                  b.status === 'CONFIRMED' ? 'bg-green-100 text-green-700' :
+                  b.status === 'COMPLETED' ? 'bg-gray-100 text-gray-500' :
+                  b.status === 'CANCELLED' ? 'bg-red-100 text-red-500' :
+                  'bg-yellow-100 text-yellow-700'
+                }`}>
+                  {b.status}
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       {/* Pending perks notice */}

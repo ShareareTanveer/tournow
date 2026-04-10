@@ -54,3 +54,19 @@ export function requireAuth(roles?: string[]) {
     return { user }
   }
 }
+
+export async function getCustomerUser(req: NextRequest) {
+  const token = req.cookies.get('customer_token')?.value
+  if (!token) return null
+
+  const payload = verifyToken(token)
+  if (!payload || payload.role !== 'CUSTOMER') return null
+
+  const customer = await prisma.customer.findUnique({
+    where: { id: payload.userId },
+    select: { id: true, name: true, email: true, phone: true, isActive: true },
+  })
+
+  if (!customer || !customer.isActive) return null
+  return customer
+}

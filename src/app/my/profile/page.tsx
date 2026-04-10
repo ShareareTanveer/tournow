@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { FiUser, FiMail, FiLock, FiSave, FiCheckCircle, FiAlertCircle } from 'react-icons/fi'
 
-interface UserData { id: string; name: string; email: string; role: string }
+interface UserData { id: string; name: string; email: string; phone?: string | null }
 
 export default function MyProfilePage() {
   const [user, setUser] = useState<UserData | null>(null)
@@ -20,12 +20,12 @@ export default function MyProfilePage() {
   const [pwMsg, setPwMsg] = useState<{ type: 'ok' | 'err'; text: string } | null>(null)
 
   useEffect(() => {
-    fetch('/api/auth/me')
+    fetch('/api/customer/me', { credentials: 'include', cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
       .then(data => {
-        if (data?.user) {
-          setUser(data.user)
-          setName(data.user.name)
+        if (data?.customer) {
+          setUser(data.customer)
+          setName(data.customer.name)
         }
       })
   }, [])
@@ -36,14 +36,15 @@ export default function MyProfilePage() {
     setSaving(true)
     setProfileMsg(null)
     try {
-      const res = await fetch('/api/auth/profile', {
+      const res = await fetch('/api/customer/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ name }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to update')
-      setUser(data.user)
+      setUser(data.customer)
       setProfileMsg({ type: 'ok', text: 'Profile updated successfully.' })
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Something went wrong'
@@ -62,9 +63,10 @@ export default function MyProfilePage() {
     }
     setPwSaving(true)
     try {
-      const res = await fetch('/api/auth/profile', {
+      const res = await fetch('/api/customer/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ currentPassword: currentPw, newPassword: newPw }),
       })
       const data = await res.json()
@@ -98,7 +100,7 @@ export default function MyProfilePage() {
           <p className="font-bold text-gray-800">{user?.name ?? '…'}</p>
           <p className="text-sm text-gray-400">{user?.email}</p>
           <span className="mt-1 inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-600">
-            {user?.role ?? 'CUSTOMER'}
+            Member
           </span>
         </div>
       </div>

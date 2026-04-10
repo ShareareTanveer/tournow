@@ -17,12 +17,12 @@ export default function PerkClaimButton({ perkId, perkTitle, ctaLink }: Props) {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    // Check login + already-claimed state in one go
+    // Check customer login + already-claimed state in one go
     Promise.all([
-      fetch('/api/auth/me'),
-      fetch('/api/perks/claim'),
+      fetch('/api/customer/me', { credentials: 'include', cache: 'no-store' }),
+      fetch('/api/perks/claim', { credentials: 'include', cache: 'no-store' }),
     ]).then(async ([meRes, claimsRes]) => {
-      setLoggedIn(meRes.ok)
+      setLoggedIn(meRes.ok && (await meRes.json()).customer != null)
       if (claimsRes.ok) {
         const claims: Array<{ perkId: string; status: string }> = await claimsRes.json()
         const existing = claims.find(c => c.perkId === perkId)
@@ -41,6 +41,7 @@ export default function PerkClaimButton({ perkId, perkTitle, ctaLink }: Props) {
       const res = await fetch('/api/perks/claim', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ perkId }),
       })
       if (res.ok) {

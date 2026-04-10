@@ -30,9 +30,6 @@ export default function CustomerShell({ children }: { children: React.ReactNode 
   }, [loading, customer, router])
 
   const handleLogout = async () => {
-    // Clear cookies client-side
-    document.cookie = 'customer_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
-    document.cookie = 'auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 UTC;'
     await logout()
     window.location.href = '/'
   }

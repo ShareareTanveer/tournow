@@ -63,12 +63,12 @@ export default function MyPrivilegeCardPage() {
   useEffect(() => {
     // Load auth user + check if they already have a card
     Promise.all([
-      fetch('/api/auth/me').then(r => r.ok ? r.json() : null),
-      fetch('/api/loyalty/me').then(r => r.ok ? r.json() : null),
+      fetch('/api/customer/me', { credentials: 'include', cache: 'no-store' }).then(r => r.ok ? r.json() : null),
+      fetch('/api/loyalty/me',  { credentials: 'include', cache: 'no-store' }).then(r => r.ok ? r.json() : null),
     ]).then(([authData, cardData]) => {
-      if (authData?.user) {
-        setAuthUser(authData.user)
-        setForm(f => ({ ...f, name: authData.user.name, email: authData.user.email }))
+      if (authData?.customer) {
+        setAuthUser(authData.customer)
+        setForm(f => ({ ...f, name: authData.customer.name, email: authData.customer.email }))
       }
       if (cardData?.card) setCard(cardData.card)
     }).finally(() => setLoading(false))

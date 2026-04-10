@@ -32,7 +32,7 @@ export default function MyPerksPage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('/api/perks/claim')
+    fetch('/api/perks/claim', { credentials: 'include', cache: 'no-store' })
       .then(r => r.ok ? r.json() : [])
       .then(setPerks)
       .catch(() => setPerks([]))

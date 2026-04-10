@@ -13,13 +13,20 @@ export async function GET(req: NextRequest) {
 
   const claims = await prisma.claimedPerk.findMany({
     include: {
-      perk: { select: { id: true, title: true, iconColor: true, bgColor: true } },
-      user: { select: { id: true, name: true, email: true } },
+      perk:     { select: { id: true, title: true, iconColor: true, bgColor: true } },
+      user:     { select: { id: true, name: true, email: true } },
+      customer: { select: { id: true, name: true, email: true } },
     },
     orderBy: { claimedAt: 'desc' },
   })
 
-  return NextResponse.json(claims)
+  // Normalise: expose a single `claimedBy` field regardless of which table the claimant is in
+  const normalised = claims.map(c => ({
+    ...c,
+    user: c.user ?? c.customer ?? null,
+  }))
+
+  return NextResponse.json(normalised)
 }
 
 // PATCH /api/admin/perks/claims — update status of a claim

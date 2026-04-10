@@ -7,25 +7,48 @@ import {
   FiPlus, FiEdit3, FiFileText, FiSettings,
 } from 'react-icons/fi'
 
+// Statuses that represent a booking which has progressed past the initial request
+const CONFIRMED_STATUSES = [
+  'CONFIRMED', 'RECEIPT_UPLOADED', 'ADMIN_CONFIRMING',
+  'ALL_CONFIRMED', 'MAIL_SENT', 'COMPLETED',
+]
+
 async function getStats() {
   try {
     const [
-      totalBookings, confirmedBookings,
+      pkgBookingCount, tourBookingCount,
+      confirmedPkgCount, confirmedTourCount,
       totalInquiries, newInquiries,
       pendingConsultations, pendingReviews,
       totalSubscribers, totalPackages,
-      revenueAgg,
+      pkgRevenueAgg, tourRevenueAgg,
       recentInquiries, recentBookings,
     ] = await Promise.all([
+      // Total bookings = package + tour bookings combined
       prisma.booking.count(),
-      prisma.booking.count({ where: { status: 'CONFIRMED' } }),
+      prisma.tourBooking.count(),
+
+      // Confirmed = all statuses past "requested"
+      prisma.booking.count({ where: { status: { in: CONFIRMED_STATUSES } } }),
+      prisma.tourBooking.count({ where: { status: { in: CONFIRMED_STATUSES } } }),
+
       prisma.inquiry.count(),
       prisma.inquiry.count({ where: { status: 'NEW' } }),
       prisma.consultation.count({ where: { status: 'PENDING' } }),
       prisma.review.count({ where: { status: 'PENDING' } }),
       prisma.newsletterSubscriber.count({ where: { isActive: true } }),
       prisma.package.count({ where: { isActive: true } }),
-      prisma.payment.aggregate({ where: { status: 'PAID' }, _sum: { amount: true } }),
+
+      // Revenue = sum of totalPrice on paid bookings (package + tour)
+      prisma.booking.aggregate({
+        where: { paymentStatus: 'PAID' },
+        _sum: { totalPrice: true },
+      }),
+      prisma.tourBooking.aggregate({
+        where: { paymentStatus: 'PAID' },
+        _sum: { totalPrice: true },
+      }),
+
       prisma.inquiry.findMany({
         take: 5, orderBy: { createdAt: 'desc' },
         include: { package: { select: { title: true } } },
@@ -35,11 +58,19 @@ async function getStats() {
         include: { package: { select: { title: true } } },
       }),
     ])
+
     return {
-      totalBookings, confirmedBookings, totalInquiries, newInquiries,
-      pendingConsultations, pendingReviews, totalSubscribers, totalPackages,
-      totalRevenue: revenueAgg._sum.amount ?? 0,
-      recentInquiries, recentBookings,
+      totalBookings:      pkgBookingCount + tourBookingCount,
+      confirmedBookings:  confirmedPkgCount + confirmedTourCount,
+      totalInquiries,
+      newInquiries,
+      pendingConsultations,
+      pendingReviews,
+      totalSubscribers,
+      totalPackages,
+      totalRevenue: (pkgRevenueAgg._sum.totalPrice ?? 0) + (tourRevenueAgg._sum.totalPrice ?? 0),
+      recentInquiries,
+      recentBookings,
     }
   } catch {
     return null

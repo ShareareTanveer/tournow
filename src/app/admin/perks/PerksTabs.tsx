@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { FiGrid, FiTag, FiPlus, FiEdit2, FiTrash2, FiEye, FiEyeOff } from 'react-icons/fi'
+import AdminTable, { Column } from '@/components/admin/AdminTable'
 import ClaimsManager from './ClaimsManager'
 
 interface Perk {
@@ -39,6 +40,76 @@ export default function PerksTabs({ perks: initial, pendingCount }: Props) {
     router.refresh()
   }
 
+  const addPerkBtn = tab === 'perks' ? (
+    <Link href="/admin/perks/new"
+      className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
+      <FiPlus size={14} /> Add Perk
+    </Link>
+  ) : null
+
+  const columns: Column<Perk>[] = [
+    {
+      key: 'title', label: 'Perk', sortable: true,
+      render: p => (
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0">
+            {p.imageUrl ? (
+              <img src={p.imageUrl} alt={p.title} className="w-full h-full object-cover" />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center"
+                style={{ background: p.bgColor || '#fffbeb' }}>
+                <FiTag size={14} style={{ color: p.iconColor || '#0a83f5' }} />
+              </div>
+            )}
+          </div>
+          <div>
+            <p className="font-semibold text-gray-800">{p.title}</p>
+            {p.ctaLink && <p className="text-[11px] text-gray-400 truncate max-w-45">{p.ctaLink}</p>}
+          </div>
+        </div>
+      ),
+    },
+    {
+      key: 'description', label: 'Description',
+      render: p => <p className="line-clamp-2 text-xs text-gray-500 max-w-64">{p.description}</p>,
+    },
+    {
+      key: 'isActive', label: 'Status', sortable: true,
+      render: p => (
+        <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${
+          p.isActive
+            ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+            : 'bg-gray-100 text-gray-500 border border-gray-200'
+        }`}>
+          {p.isActive ? <FiEye size={10} /> : <FiEyeOff size={10} />}
+          {p.isActive ? 'Active' : 'Hidden'}
+        </span>
+      ),
+    },
+    {
+      key: 'sortOrder', label: 'Order', sortable: true, align: 'center',
+      render: p => <span className="text-sm text-gray-400 font-mono">{p.sortOrder}</span>,
+    },
+    {
+      key: 'actions', label: 'Actions',
+      render: p => (
+        <div className="flex items-center gap-1.5">
+          <Link href={`/admin/perks/${p.id}`}
+            className="flex items-center gap-1 text-xs font-semibold text-indigo-500 hover:text-indigo-600 border border-indigo-200 hover:bg-indigo-50 px-2.5 py-1 rounded-lg transition-colors">
+            <FiEdit2 size={11} /> Edit
+          </Link>
+          <button
+            onClick={() => handleDelete(p.id, p.title)}
+            disabled={deleting === p.id}
+            className="flex items-center gap-1 text-xs font-semibold text-red-500 hover:bg-red-50 border border-red-200 px-2.5 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+          >
+            <FiTrash2 size={11} /> {deleting === p.id ? '…' : 'Delete'}
+          </button>
+        </div>
+      ),
+    },
+  ]
+
   return (
     <div className="space-y-5">
       {/* Tabs */}
@@ -58,100 +129,22 @@ export default function PerksTabs({ perks: initial, pendingCount }: Props) {
             )}
           </button>
         </div>
-
-        {tab === 'perks' && (
-          <Link href="/admin/perks/new"
-            className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
-            <FiPlus size={14} /> Add Perk
-          </Link>
-        )}
+        {addPerkBtn}
       </div>
 
-      {/* Perks list */}
       {tab === 'perks' && (
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-          <table className="w-full text-sm min-w-175">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                {['', 'Title', 'Description', 'Status', 'Order', 'Actions'].map(h => (
-                  <th key={h} className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {perks.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-5 py-12 text-center text-gray-400">
-                    No perks yet.{' '}
-                    <Link href="/admin/perks/new" className="text-indigo-500 hover:underline font-medium">Add the first one</Link>
-                  </td>
-                </tr>
-              )}
-              {perks.map(p => (
-                <tr key={p.id} className="hover:bg-gray-50 transition-colors">
-                  {/* Icon preview */}
-                  <td className="pl-5 py-3 w-12">
-                    <div className="w-10 h-10 rounded-xl overflow-hidden shrink-0">
-                      {p.imageUrl ? (
-                        <img src={p.imageUrl} alt={p.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center"
-                          style={{ background: p.bgColor || '#fffbeb' }}>
-                          <FiTag size={14} style={{ color: p.iconColor || '#0a83f5' }} />
-                        </div>
-                      )}
-                    </div>
-                  </td>
-
-                  {/* Title */}
-                  <td className="px-5 py-3">
-                    <p className="font-semibold text-gray-800">{p.title}</p>
-                    {p.ctaLink && (
-                      <p className="text-[11px] text-gray-400 truncate max-w-45">{p.ctaLink}</p>
-                    )}
-                  </td>
-
-                  {/* Description */}
-                  <td className="px-5 py-3 text-gray-500 max-w-xs">
-                    <p className="line-clamp-2 text-xs">{p.description}</p>
-                  </td>
-
-                  {/* Status */}
-                  <td className="px-5 py-3">
-                    <span className={`inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full ${
-                      p.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'
-                    }`}>
-                      {p.isActive ? <FiEye size={10} /> : <FiEyeOff size={10} />}
-                      {p.isActive ? 'Active' : 'Hidden'}
-                    </span>
-                  </td>
-
-                  {/* Sort */}
-                  <td className="px-5 py-3 text-gray-400 text-sm font-mono">{p.sortOrder}</td>
-
-                  {/* Actions */}
-                  <td className="px-5 py-3">
-                    <div className="flex items-center gap-3">
-                      <Link href={`/admin/perks/${p.id}`}
-                        className="flex items-center gap-1.5 text-xs font-semibold text-indigo-500 hover:text-indigo-600 hover:underline">
-                        <FiEdit2 size={13} /> Edit
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(p.id, p.title)}
-                        disabled={deleting === p.id}
-                        className="flex items-center gap-1.5 text-xs font-semibold text-red-400 hover:text-red-600 disabled:opacity-50">
-                        <FiTrash2 size={13} /> {deleting === p.id ? '…' : 'Delete'}
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <AdminTable
+          data={perks}
+          columns={columns}
+          filterKey="isActive"
+          filterOptions={['ALL', 'true', 'false']}
+          filterLabels={{ ALL: 'All', true: 'Active', false: 'Hidden' }}
+          searchKeys={['title', 'description']}
+          defaultSort={{ key: 'sortOrder', dir: 'asc' }}
+          emptyMessage="No perks yet"
+        />
       )}
 
-      {/* Claims tab */}
       {tab === 'claims' && <ClaimsManager />}
     </div>
   )

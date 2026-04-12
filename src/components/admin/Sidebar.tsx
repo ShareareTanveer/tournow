@@ -148,15 +148,13 @@ export default function Sidebar() {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="px-5 py-5 border-b border-white/5 shrink-0">
-        <Link href="/admin/dashboard" onClick={onNavigate} className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-white font-black text-sm shrink-0 shadow-lg"
-            style={{ background: 'linear-gradient(135deg, #0a83f5, #06cddb)' }}>
-            H
-          </div>
-          <div>
-            <p className="text-white font-bold text-sm leading-none">Metro Voyage</p>
-          </div>
-        </Link>
+       <Link href="/" className="flex items-center gap-3 shrink-0">
+            <img
+              src="/logo.png"
+              alt="Metro Voyage Logo"
+              className="w-20 h-12 rounded-xl"
+            />
+          </Link>
       </div>
 
       {/* Nav */}

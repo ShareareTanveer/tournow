@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   FiDownload, FiCalendar, FiTrendingUp, FiUsers, FiDollarSign,
   FiPackage, FiInbox, FiVideo, FiMail, FiHeart, FiBarChart2,
@@ -365,8 +365,8 @@ function BarChart({ data, height = 160, color = '#6366f1', valuePrefix = '' }: {
   return (
     <svg viewBox={`0 0 ${vbW} ${vbH}`} className="w-full" style={{ height }}>
       {/* Gridlines + Y-axis ticks */}
-      {ticks.map(t => (
-        <g key={t}>
+      {ticks.map((t, ti) => (
+        <g key={ti}>
           <line x1={padL} x2={vbW - padR} y1={yPos(t)} y2={yPos(t)}
             stroke="#f1f5f9" strokeWidth="1" />
           <text x={padL - 4} y={yPos(t) + 3.5} textAnchor="end"
@@ -430,6 +430,8 @@ function LineChart({ data, height = 160, color = '#6366f1', valuePrefix = '' }: 
   data: { label: string; value: number }[]
   height?: number; color?: string; valuePrefix?: string
 }) {
+  const uid = React.useId()
+  const gradId = `lc-${uid.replace(/:/g, '')}`
   const [hovered, setHovered] = useState<number | null>(null)
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
@@ -456,17 +458,17 @@ function LineChart({ data, height = 160, color = '#6366f1', valuePrefix = '' }: 
   return (
     <svg viewBox={`0 0 ${vbW} ${vbH}`} className="w-full" style={{ height }}>
       <defs>
-        <linearGradient id="lineArea" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%"   stopColor={color} stopOpacity="0.18" />
           <stop offset="100%" stopColor={color} stopOpacity="0.01" />
         </linearGradient>
       </defs>
 
       {/* Gridlines */}
-      {ticks.map(t => {
+      {ticks.map((t, ti) => {
         const y = padT + chartH - (t / max) * chartH
         return (
-          <g key={t}>
+          <g key={ti}>
             <line x1={padL} x2={vbW - padR} y1={y} y2={y} stroke="#f1f5f9" strokeWidth="1" />
             <text x={padL - 4} y={y + 3.5} textAnchor="end" fontSize="8" fill="#94a3b8">{valuePrefix}{fmtK(t)}</text>
           </g>
@@ -474,7 +476,7 @@ function LineChart({ data, height = 160, color = '#6366f1', valuePrefix = '' }: 
       })}
 
       {/* Area fill */}
-      <path d={areaPath} fill="url(#lineArea)" />
+      <path d={areaPath} fill={`url(#${gradId})`} />
       {/* Line */}
       <path d={linePath} fill="none" stroke={color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
 

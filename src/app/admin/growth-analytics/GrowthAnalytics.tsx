@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   FiTrendingUp, FiTrendingDown, FiUsers, FiInbox, FiTarget, FiZap,
   FiBarChart2, FiCalendar, FiMail, FiArrowUp, FiArrowDown, FiMinus,
@@ -46,6 +46,8 @@ function getPctChange(curr: number, prev: number): number {
 
 /* ─── SVG Line chart ── */
 function MiniLine({ data, color = '#6366f1', height = 48 }: { data: number[]; color?: string; height?: number }) {
+  const uid = React.useId()
+  const gradId = `ml-${uid.replace(/:/g, '')}`
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
   if (!data.length || data.every(v => v === 0)) return <div style={{ height }} className="flex items-center justify-center text-xs text-gray-300">No data</div>
@@ -54,7 +56,6 @@ function MiniLine({ data, color = '#6366f1', height = 48 }: { data: number[]; co
   const pts = data.map((v, i) => ({ x: pad + (i / Math.max(data.length-1,1)) * (W - pad*2), y: H - pad - ((v/max)*(H-pad*2)) }))
   const line = pts.map((p,i) => `${i===0?'M':'L'} ${p.x} ${p.y}`).join(' ')
   const area = `${line} L ${pts[pts.length-1].x} ${H-pad} L ${pts[0].x} ${H-pad} Z`
-  const gradId = `mg-${color.replace('#','')}`
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{ height }}>
       <defs>
@@ -84,9 +85,9 @@ function FullBar({ data, color = '#6366f1', height = 180 }: { data: { label: str
   const ticks = [0, 0.25, 0.5, 0.75, 1].map(f => Math.round(max * f))
   return (
     <svg viewBox={`0 0 ${vbW} ${vbH}`} className="w-full" style={{ height }}>
-      {ticks.map(t => {
+      {ticks.map((t, ti) => {
         const y = padT + cH - (t/max)*cH
-        return <g key={t}>
+        return <g key={ti}>
           <line x1={padL} x2={vbW-padR} y1={y} y2={y} stroke="#f1f5f9" strokeWidth="1"/>
           <text x={padL-4} y={y+3.5} textAnchor="end" fontSize="7" fill="#94a3b8">{fmtK(t)}</text>
         </g>
@@ -128,9 +129,9 @@ function StackedBar({ data, colors, height = 160 }: {
   const ticks = [0,0.5,1].map(f=>Math.round(max*f))
   return (
     <svg viewBox={`0 0 ${vbW} ${vbH}`} className="w-full" style={{height}}>
-      {ticks.map(t => {
+      {ticks.map((t, ti) => {
         const y = padT+cH-(t/max)*cH
-        return <g key={t}>
+        return <g key={ti}>
           <line x1={padL} x2={vbW-padR} y1={y} y2={y} stroke="#f1f5f9" strokeWidth="1"/>
           <text x={padL-4} y={y+3.5} textAnchor="end" fontSize="7" fill="#94a3b8">{fmtK(t)}</text>
         </g>

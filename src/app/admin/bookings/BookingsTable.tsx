@@ -1,8 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Link from 'next/link'
-import { FiExternalLink, FiFileText, FiEdit2, FiAlertCircle } from 'react-icons/fi'
+import { FiExternalLink, FiFileText, FiEdit2, FiAlertCircle, FiCalendar, FiX } from 'react-icons/fi'
 import AdminTable, { Column } from '@/components/admin/AdminTable'
 
 const PIPELINE = [
@@ -50,9 +50,54 @@ interface Booking {
   createdAt: string
 }
 
+const PRESETS = [
+  { label: 'All time',     from: '',    to: '' },
+  { label: 'Today',        from: 'd0',  to: 'd0' },
+  { label: 'Last 7 days',  from: 'd7',  to: 'd0' },
+  { label: 'Last 30 days', from: 'd30', to: 'd0' },
+  { label: 'This month',   from: 'mS',  to: 'd0' },
+  { label: 'Last month',   from: 'lmS', to: 'lmE' },
+]
+
+function resolveDate(val: string): string {
+  if (!val) return ''
+  const now = new Date()
+  const pad = (n: number) => String(n).padStart(2, '0')
+  const iso = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`
+  if (val === 'd0') return iso(now)
+  if (val.startsWith('d')) { const d = new Date(now); d.setDate(d.getDate() - parseInt(val.slice(1))); return iso(d) }
+  if (val === 'mS')  return `${now.getFullYear()}-${pad(now.getMonth()+1)}-01`
+  if (val === 'lmS') { const d = new Date(now.getFullYear(), now.getMonth()-1, 1); return iso(d) }
+  if (val === 'lmE') { const d = new Date(now.getFullYear(), now.getMonth(), 0);   return iso(d) }
+  return val
+}
+
 export default function BookingsTable({ bookings: initial }: { bookings: Booking[] }) {
   const [bookings, setBookings] = useState(initial)
   const [updating, setUpdating] = useState<string | null>(null)
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo,   setDateTo]   = useState('')
+  const [activePreset, setActivePreset] = useState('All time')
+
+  const filteredBookings = useMemo(() => {
+    const from = resolveDate(dateFrom)
+    const to   = resolveDate(dateTo)
+    if (!from && !to) return bookings
+    return bookings.filter(b => {
+      const d = b.createdAt.slice(0, 10)
+      if (from && d < from) return false
+      if (to   && d > to)   return false
+      return true
+    })
+  }, [bookings, dateFrom, dateTo])
+
+  function applyPreset(p: typeof PRESETS[0]) {
+    setActivePreset(p.label)
+    setDateFrom(p.from)
+    setDateTo(p.to)
+  }
+
+  const hasFilter = !!(dateFrom || dateTo)
 
   async function update(id: string, type: string, data: object) {
     setUpdating(id)
@@ -69,18 +114,58 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
   const si = (s: string) => PIPELINE.find(p => p.status === s) ?? PIPELINE[0]
   const pi = (s: string) => PAY_STATUS.find(p => p.value === s) ?? PAY_STATUS[0]
 
-  // Pipeline strip as toolbarRight slot
-  const pipelineStrip = (
-    <div className="flex gap-1.5 flex-wrap text-[11px]">
-      {PIPELINE.slice(0, 9).map(p => {
-        const n = bookings.filter(b => b.status === p.status).length
-        if (n === 0) return null
-        return (
-          <span key={p.status} className={`px-2.5 py-1 rounded-full font-semibold ${p.bg} ${p.color}`}>
-            {p.label} <strong>{n}</strong>
+  // Date filter bar
+  const dateFilterBar = (
+    <div className="w-full border-t border-gray-100 pt-3 mt-1 space-y-2">
+      {/* Preset pills */}
+      <div className="flex items-center gap-2 flex-wrap">
+        <span className="flex items-center gap-1.5 text-[11px] font-bold text-gray-500 uppercase tracking-wider shrink-0">
+          <FiCalendar size={11} className="text-indigo-400" /> Date
+        </span>
+        {PRESETS.map(p => (
+          <button key={p.label} onClick={() => applyPreset(p)}
+            className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg transition-colors whitespace-nowrap ${
+              activePreset === p.label && !( (p.from===''&&dateFrom!=='') || (p.to===''&&dateTo!=='') )
+                ? 'bg-indigo-500 text-white'
+                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}>
+            {p.label}
+          </button>
+        ))}
+        {/* Custom inputs */}
+        <div className="flex items-center gap-1.5 ml-auto">
+          <input type="date" value={resolveDate(dateFrom)}
+            onChange={e => { setDateFrom(e.target.value); setActivePreset('Custom') }}
+            className="text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-300 bg-white w-32" />
+          <span className="text-gray-400 text-xs">→</span>
+          <input type="date" value={resolveDate(dateTo)}
+            onChange={e => { setDateTo(e.target.value); setActivePreset('Custom') }}
+            className="text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-300 bg-white w-32" />
+          {hasFilter && (
+            <button onClick={() => applyPreset(PRESETS[0])}
+              className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors" title="Clear">
+              <FiX size={12} />
+            </button>
+          )}
+        </div>
+      </div>
+      {/* Pipeline strip */}
+      <div className="flex gap-1.5 flex-wrap text-[11px]">
+        {PIPELINE.slice(0, 9).map(p => {
+          const n = filteredBookings.filter(b => b.status === p.status).length
+          if (n === 0) return null
+          return (
+            <span key={p.status} className={`px-2.5 py-1 rounded-full font-semibold ${p.bg} ${p.color}`}>
+              {p.label} <strong>{n}</strong>
+            </span>
+          )
+        })}
+        {hasFilter && (
+          <span className="px-2.5 py-1 rounded-full font-semibold bg-indigo-50 text-indigo-600 ml-auto">
+            {filteredBookings.length} of {bookings.length} shown
           </span>
-        )
-      })}
+        )}
+      </div>
     </div>
   )
 
@@ -205,7 +290,7 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
 
   return (
     <AdminTable
-      data={bookings}
+      data={filteredBookings}
       columns={columns}
       filterKey="status"
       filterOptions={['ALL', ...PIPELINE.map(p => p.status)]}
@@ -213,7 +298,7 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
       searchKeys={['customerName', 'customerEmail', 'customerPhone', 'bookingRef', 'title']}
       defaultSort={{ key: 'createdAt', dir: 'desc' }}
       emptyMessage="No bookings yet"
-      toolbarRight={pipelineStrip}
+      toolbarRight={dateFilterBar}
     />
   )
 }

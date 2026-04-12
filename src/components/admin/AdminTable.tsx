@@ -148,6 +148,8 @@ export default function AdminTable<T = any>({
     return data.filter(r => String(getValue(r, filterKey)) === v).length
   }
 
+  const useSelectFilter = Boolean(filterOptions && filterOptions.length > 10)
+
   return (
     <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
 
@@ -191,30 +193,54 @@ export default function AdminTable<T = any>({
 
         {/* Tab filters */}
         {filterOptions && filterOptions.length > 1 && (
-          <div className="flex gap-1 overflow-x-auto pb-0.5">
-            {filterOptions.map(opt => {
-              const count = tabCount(opt)
-              const label = filterLabels?.[opt] ?? opt
-              return (
-                <button
-                  key={opt}
-                  onClick={() => handleTab(opt)}
-                  className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors shrink-0 ${
-                    activeTab === opt
-                      ? 'bg-indigo-500 text-white'
-                      : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
-                  }`}
-                >
-                  {label}
-                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black leading-none ${
-                    activeTab === opt ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'
-                  }`}>
-                    {count}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
+          useSelectFilter ? (
+            <div className="flex items-center gap-2">
+              <label htmlFor="admin-table-filter" className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Filter
+              </label>
+              <select
+                id="admin-table-filter"
+                value={activeTab}
+                onChange={e => handleTab(e.target.value)}
+                className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100"
+              >
+                {filterOptions.map(opt => {
+                  const count = tabCount(opt)
+                  const label = filterLabels?.[opt] ?? opt
+                  return (
+                    <option key={opt} value={opt}>
+                      {label} {opt !== filterOptions[0] ? `(${count})` : `(${count})`}
+                    </option>
+                  )
+                })}
+              </select>
+            </div>
+          ) : (
+            <div className="flex gap-1 overflow-x-auto pb-0.5">
+              {filterOptions.map(opt => {
+                const count = tabCount(opt)
+                const label = filterLabels?.[opt] ?? opt
+                return (
+                  <button
+                    key={opt}
+                    onClick={() => handleTab(opt)}
+                    className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors shrink-0 ${
+                      activeTab === opt
+                        ? 'bg-indigo-500 text-white'
+                        : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+                    }`}
+                  >
+                    {label}
+                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-black leading-none ${
+                      activeTab === opt ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-500'
+                    }`}>
+                      {count}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
+          )
         )}
       </div>
 

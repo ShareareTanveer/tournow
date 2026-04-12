@@ -101,6 +101,12 @@ export async function POST(req: NextRequest, { params }: Params) {
   if (!customer) {
     isNewAccount = true
     tempPassword = generatePassword()
+    console.log(tempPassword,'tempPassword====')
+    console.log(tempPassword,'tempPassword====')
+    console.log(tempPassword,'tempPassword====')
+    console.log(tempPassword,'tempPassword====')
+    console.log(tempPassword,'tempPassword====')
+    console.log(tempPassword,'tempPassword====')
     const hashedPassword = await hashPassword(tempPassword)
     customer = await prisma.customer.create({
       data: {

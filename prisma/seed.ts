@@ -1005,7 +1005,7 @@ async function main() {
   await prisma.perk.deleteMany()
   await prisma.perk.createMany({
     data: [
-      { title: 'SLTDA Licensed',          description: 'Fully certified by the Sri Lanka Tourism Development Authority — your safety and trust guaranteed.', iconName: 'FiShield',    iconColor: '#f59e0b', bgColor: '#fffbeb', sortOrder: 1, isActive: true },
+      { title: 'SLTDA Licensed',          description: 'Fully certified by the Sri Lanka Tourism Development Authority — your safety and trust guaranteed.', iconName: 'FiShield',    iconColor: '#0a83f5', bgColor: '#fffbeb', sortOrder: 1, isActive: true },
       { title: '24/7 Support',            description: 'Our dedicated team is available around the clock to assist you before, during, and after your trip.', iconName: 'FiHeadphones', iconColor: '#0d9488', bgColor: '#f0fdfa', sortOrder: 2, isActive: true },
       { title: 'Best Price Guarantee',    description: 'We match or beat any comparable quote — you deserve the best holiday at the best price.',            iconName: 'FiTag',       iconColor: '#7c3aed', bgColor: '#f5f3ff', sortOrder: 3, isActive: true },
       { title: 'Tailor-Made Itineraries', description: 'Every trip is personalised to your preferences, budget, and travel style — nothing is off-the-shelf.',iconName: 'FiEdit',      iconColor: '#dc2626', bgColor: '#fef2f2', sortOrder: 4, isActive: true },

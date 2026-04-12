@@ -4,12 +4,12 @@ import { FiAward, FiGift, FiTrendingUp, FiStar, FiArrowRight } from 'react-icons
 const TIERS = [
   { name: 'Bronze', min: 0, max: 999, color: '#cd7f32', bg: '#fdf3e7', desc: 'Welcome bonus points on every booking' },
   { name: 'Silver', min: 1000, max: 4999, color: '#94a3b8', bg: '#f8fafc', desc: 'Priority support + exclusive discounts' },
-  { name: 'Gold', min: 5000, max: null, color: '#f59e0b', bg: '#fffbeb', desc: 'VIP perks, lounge access & concierge' },
+  { name: 'Gold', min: 5000, max: null, color: '#0a83f5', bg: '#fffbeb', desc: 'VIP perks, lounge access & concierge' },
 ]
 
 const STEPS = [
   { icon: FiGift, title: 'Register Free', desc: 'Sign up for your Metro Voyage Privilege Card — takes 60 seconds.', color: '#0d9488' },
-  { icon: FiTrendingUp, title: 'Earn Points', desc: 'Get reward points on every booking, referral, and review.', color: '#f59e0b' },
+  { icon: FiTrendingUp, title: 'Earn Points', desc: 'Get reward points on every booking, referral, and review.', color: '#0a83f5' },
   { icon: FiStar, title: 'Unlock Perks', desc: 'Redeem points for discounts, upgrades, and exclusive benefits.', color: '#6366f1' },
 ]
 
@@ -26,7 +26,7 @@ export default function LoyaltySection() {
         {/* Header */}
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase px-4 py-1.5 rounded-full mb-4"
-            style={{ background: 'rgba(245,158,11,0.15)', color: '#f59e0b' }}>
+            style={{ background: 'rgba(245,158,11,0.15)', color: '#0a83f5' }}>
             <FiAward size={12} /> Privilege Card
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-black mb-4">

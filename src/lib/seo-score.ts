@@ -183,7 +183,7 @@ function scoreLabel(total: number): { label: SeoScoreResult['label']; color: str
   if (total >= 90) return { label: 'Excellent', color: 'bg-emerald-500', textColor: 'text-emerald-700' }
   if (total >= 75) return { label: 'Good',      color: 'bg-green-500',   textColor: 'text-green-700' }
   if (total >= 55) return { label: 'OK',         color: 'bg-yellow-400',  textColor: 'text-yellow-700' }
-  if (total >= 35) return { label: 'Needs Work', color: 'bg-orange-400',  textColor: 'text-orange-700' }
+  if (total >= 35) return { label: 'Needs Work', color: 'bg-indigo-400',  textColor: 'text-indigo-700' }
   return               { label: 'Poor',          color: 'bg-red-500',     textColor: 'text-red-700' }
 }
 

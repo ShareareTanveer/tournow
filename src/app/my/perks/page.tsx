@@ -53,7 +53,7 @@ export default function MyPerksPage() {
         </div>
       ) : perks.length === 0 ? (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm px-6 py-14 text-center">
-          <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-14 h-14 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <FiTag size={24} style={{ color: 'var(--brand)' }} />
           </div>
           <p className="font-bold text-gray-700">You haven't claimed any perks yet</p>
@@ -89,7 +89,7 @@ export default function MyPerksPage() {
                   <div className="flex items-start gap-3 mb-2">
                     <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 mt-0.5"
                       style={{ background: cp.perk.bgColor || '#fffbeb' }}>
-                      <FiGift size={15} style={{ color: cp.perk.iconColor || '#f59e0b' }} />
+                      <FiGift size={15} style={{ color: cp.perk.iconColor || '#0a83f5' }} />
                     </div>
                     <div className="min-w-0">
                       <h3 className="font-bold text-gray-800 text-sm leading-tight">{cp.perk.title}</h3>

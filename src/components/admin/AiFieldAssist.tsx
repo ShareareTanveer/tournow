@@ -68,13 +68,13 @@ interface Props {
   currentValue: string
   formContext:  Record<string, string>   // other form fields for context
   onApply:      (text: string) => void
-  accentColor?: 'orange' | 'sky'        // matches the form's theme
+  accentColor?: 'indigo' | 'sky'        // matches the form's theme
 }
 
 // ─── Sparkle button ───────────────────────────────────────────────────────────
 
 export default function AiFieldAssist({
-  fieldLabel, fieldName, currentValue, formContext, onApply, accentColor = 'orange',
+  fieldLabel, fieldName, currentValue, formContext, onApply, accentColor = 'indigo',
 }: Props) {
   const [open, setOpen]             = useState(false)
   const [providers, setProviders]   = useState<Provider[]>([])
@@ -88,7 +88,7 @@ export default function AiFieldAssist({
 
   const btnColor = accentColor === 'sky'
     ? 'text-sky-500 hover:bg-sky-50 border-sky-200 hover:border-sky-400'
-    : 'text-orange-500 hover:bg-orange-50 border-orange-200 hover:border-orange-400'
+    : 'text-indigo-500 hover:bg-indigo-50 border-indigo-200 hover:border-indigo-400'
 
   // Load providers on open
   useEffect(() => {

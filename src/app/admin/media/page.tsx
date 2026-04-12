@@ -11,7 +11,7 @@ async function getMedia() {
 export default async function MediaPage() {
   const items = await getMedia()
   return (
-    <AdminShell title="Media Library">
+    <AdminShell title="Media Library" subtitle={`${items.length} files`}>
       <MediaLibraryClient initialItems={items} />
     </AdminShell>
   )

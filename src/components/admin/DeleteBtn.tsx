@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { FiTrash2 } from 'react-icons/fi'
 
 export default function DeleteBtn({ url, label = 'Delete', method = 'DELETE', confirm: confirmMsg }: {
   url: string; label?: string; method?: string; confirm?: string
@@ -18,8 +19,12 @@ export default function DeleteBtn({ url, label = 'Delete', method = 'DELETE', co
   }
 
   return (
-    <button onClick={handle} disabled={loading}
-      className="text-red-500 hover:underline text-xs font-medium disabled:opacity-50">
+    <button
+      onClick={handle}
+      disabled={loading}
+      className="flex items-center gap-1 text-xs font-semibold text-red-500 hover:bg-red-50 border border-red-200 px-2.5 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+    >
+      <FiTrash2 size={11} />
       {loading ? '…' : label}
     </button>
   )

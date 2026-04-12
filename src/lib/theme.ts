@@ -16,7 +16,7 @@ export type ThemeConfig = {
 }
 
 export const DEFAULT_THEME: ThemeConfig = {
-  brand:       '#f59e0b',
+  brand:       '#0a83f5',
   brandDark:   '#d97706',
   brandLight:  '#fffbeb',
   brandMuted:  '#fef3c7',

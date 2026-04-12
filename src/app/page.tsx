@@ -161,14 +161,14 @@ export default async function HomePage() {
                     {/* Content */}
                     <div className="p-6 flex flex-col flex-1">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-orange-100 text-orange-700">{featured.category}</span>
+                        <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-indigo-100 text-indigo-700">{featured.category}</span>
                         {featured.readingTime && (
                           <span className="flex items-center gap-1 text-xs text-gray-400">
                             <FiClock size={11} /> {featured.readingTime} min read
                           </span>
                         )}
                       </div>
-                      <h3 className="font-bold text-gray-900 text-xl mb-2 leading-tight group-hover:text-orange-500 transition-colors line-clamp-2">{featured.title}</h3>
+                      <h3 className="font-bold text-gray-900 text-xl mb-2 leading-tight group-hover:text-indigo-500 transition-colors line-clamp-2">{featured.title}</h3>
                       <p className="text-sm text-gray-500 leading-relaxed line-clamp-2 flex-1">{featured.excerpt}</p>
                       <div className="flex items-center justify-between mt-5">
                         <div className="flex items-center gap-2">
@@ -201,8 +201,8 @@ export default async function HomePage() {
                           )}
                         </div>
                         <div className="flex-1 min-w-0 py-0.5">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-orange-500">{blog.category}</span>
-                          <h4 className="font-semibold text-gray-800 text-sm leading-tight mt-0.5 line-clamp-2 group-hover:text-orange-500 transition-colors">{blog.title}</h4>
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-500">{blog.category}</span>
+                          <h4 className="font-semibold text-gray-800 text-sm leading-tight mt-0.5 line-clamp-2 group-hover:text-indigo-500 transition-colors">{blog.title}</h4>
                           <div className="flex items-center gap-2 mt-1.5 text-xs text-gray-400">
                             {blog.readingTime && <span className="flex items-center gap-0.5"><FiClock size={10} /> {blog.readingTime}m</span>}
                             <span>{blog.author}</span>
@@ -212,7 +212,7 @@ export default async function HomePage() {
                     ))}
 
                     <Link href="/blogs"
-                      className="flex items-center justify-center gap-2 border-2 border-dashed border-gray-200 hover:border-orange-300 rounded-2xl py-5 text-sm font-semibold text-gray-400 hover:text-orange-500 transition-all group">
+                      className="flex items-center justify-center gap-2 border-2 border-dashed border-gray-200 hover:border-indigo-300 rounded-2xl py-5 text-sm font-semibold text-gray-400 hover:text-indigo-500 transition-all group">
                       <FiBookOpen size={16} /> View all stories <FiArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </div>

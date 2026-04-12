@@ -25,14 +25,14 @@ const FALLBACK_BG = [
   { from: '#f43f5e', to: '#f97316', label: 'Offer' },
   { from: '#8b5cf6', to: '#ec4899', label: 'Perk' },
   { from: '#0ea5e9', to: '#14b8a6', label: 'Deal' },
-  { from: '#f59e0b', to: '#f43f5e', label: 'Offer' },
+  { from: '#0a83f5', to: '#f43f5e', label: 'Offer' },
   { from: '#10b981', to: '#0ea5e9', label: 'Perk' },
   { from: '#6366f1', to: '#8b5cf6', label: 'Deal' },
 ]
 
 const DEFAULT_PERKS: Perk[] = [
   { id: '1', title: 'FREE Visa Consultation',          description: 'Get expert visa guidance at no cost — travel smarter with zero stress',          imageUrl: 'https://picsum.photos/seed/visa-passport/700/440',    iconName: 'FiShield',    iconColor: '#ec4899', bgColor: '#fdf2f8' },
-  { id: '2', title: 'Big Families, Big Perks',         description: 'Families of 5 or more enjoy complimentary tours at top destinations',            imageUrl: 'https://picsum.photos/seed/family-beach/700/440',     iconName: 'FiUsers',     iconColor: '#f59e0b', bgColor: '#fffbeb' },
+  { id: '2', title: 'Big Families, Big Perks',         description: 'Families of 5 or more enjoy complimentary tours at top destinations',            imageUrl: 'https://picsum.photos/seed/family-beach/700/440',     iconName: 'FiUsers',     iconColor: '#0a83f5', bgColor: '#fffbeb' },
   { id: '3', title: 'Corporate Travel to Your Door',   description: 'Tailored travel consultations for businesses, right at your office',             imageUrl: 'https://picsum.photos/seed/corp-meeting/700/440',     iconName: 'FiBriefcase', iconColor: '#8b5cf6', bgColor: '#f5f3ff' },
   { id: '4', title: 'Child Stays FREE',                description: 'Children under 12 stay free on select packages when travelling with 2 adults',   imageUrl: 'https://picsum.photos/seed/kids-holiday/700/440',     iconName: 'FiHeart',     iconColor: '#ef4444', bgColor: '#fef2f2' },
   { id: '5', title: 'Best Price Guarantee',            description: "Find a lower price elsewhere and we'll match it — no hidden fees, ever",         imageUrl: 'https://picsum.photos/seed/price-tag/700/440',        iconName: 'FiAward',     iconColor: '#0d9488', bgColor: '#f0fdf9' },

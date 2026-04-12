@@ -258,7 +258,7 @@ export default function MultiImageUploader({
                 />
 
                 {i === 0 && (
-                  <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-orange-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow">
+                  <div className="absolute top-1.5 left-1.5 flex items-center gap-1 bg-indigo-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full shadow">
                     <FiStar size={8} /> Featured
                   </div>
                 )}
@@ -266,7 +266,7 @@ export default function MultiImageUploader({
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-1.5 p-2">
                   {i !== 0 && (
                     <button type="button" onClick={() => setFeatured(i)}
-                      className="flex items-center gap-1 bg-orange-500 hover:bg-orange-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg w-full justify-center">
+                      className="flex items-center gap-1 bg-indigo-500 hover:bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded-lg w-full justify-center">
                       <FiStar size={9} /> Set featured
                     </button>
                   )}
@@ -300,10 +300,10 @@ export default function MultiImageUploader({
                 onDragOver={e => { e.preventDefault(); setDragOver(true) }}
                 onDragLeave={() => setDragOver(false)}
                 onClick={() => inputRef.current?.click()}
-                className={`rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-1 cursor-pointer transition-all ${dragOver ? 'border-orange-400 bg-orange-50' : 'border-gray-300 hover:border-orange-400 hover:bg-orange-50/30'}`}
+                className={`rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-1 cursor-pointer transition-all ${dragOver ? 'border-indigo-400 bg-indigo-50' : 'border-gray-300 hover:border-indigo-400 hover:bg-indigo-50/30'}`}
                 style={{ aspectRatio: '16/9' }}>
                 {uploading
-                  ? <FiLoader size={18} className="animate-spin text-orange-500" />
+                  ? <FiLoader size={18} className="animate-spin text-indigo-500" />
                   : <><FiPlus size={18} className="text-gray-400" /><span className="text-[10px] text-gray-400">Add</span></>
                 }
               </div>
@@ -316,9 +316,9 @@ export default function MultiImageUploader({
             onDragOver={e => { e.preventDefault(); setDragOver(true) }}
             onDragLeave={() => setDragOver(false)}
             onClick={() => inputRef.current?.click()}
-            className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${dragOver ? 'border-orange-400 bg-orange-50' : 'border-gray-300 hover:border-orange-400 hover:bg-orange-50/30'}`}>
+            className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all ${dragOver ? 'border-indigo-400 bg-indigo-50' : 'border-gray-300 hover:border-indigo-400 hover:bg-indigo-50/30'}`}>
             {uploading
-              ? <div className="flex flex-col items-center gap-2 text-orange-500"><FiLoader size={24} className="animate-spin" /><p className="text-sm font-medium">Uploading…</p></div>
+              ? <div className="flex flex-col items-center gap-2 text-indigo-500"><FiLoader size={24} className="animate-spin" /><p className="text-sm font-medium">Uploading…</p></div>
               : <div className="flex flex-col items-center gap-2 text-gray-400">
                   <FiImage size={28} />
                   <p className="text-sm font-medium text-gray-600">📁 Click to browse or drag & drop image</p>
@@ -331,7 +331,7 @@ export default function MultiImageUploader({
         {/* ── Upload more button ── */}
         {images.length > 0 && canAdd && (
           <button type="button" onClick={() => inputRef.current?.click()} disabled={uploading}
-            className="flex items-center gap-2 text-xs font-semibold text-gray-600 border border-gray-200 hover:border-orange-300 hover:text-orange-500 px-4 py-2 rounded-xl transition-colors disabled:opacity-50">
+            className="flex items-center gap-2 text-xs font-semibold text-gray-600 border border-gray-200 hover:border-indigo-300 hover:text-indigo-500 px-4 py-2 rounded-xl transition-colors disabled:opacity-50">
             {uploading ? <FiLoader size={12} className="animate-spin" /> : <FiUpload size={12} />}
             {uploading ? 'Uploading…' : 'Upload more photos'}
           </button>
@@ -340,7 +340,7 @@ export default function MultiImageUploader({
         {/* ── Load from URL ── */}
         {canAdd && (
           <div className="flex gap-2">
-            <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-xl px-3 focus-within:border-orange-400 transition-colors">
+            <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-xl px-3 focus-within:border-indigo-400 transition-colors">
               <FiLink size={13} className="text-gray-400 shrink-0" />
               <input
                 type="text"
@@ -371,7 +371,7 @@ export default function MultiImageUploader({
               <button key={l.id} type="button" onClick={() => onLayoutChange(l.id)}
                 className={`flex flex-col gap-2 p-3 rounded-xl border-2 transition-all text-left ${
                   layout === l.id
-                    ? 'border-orange-400 bg-orange-50 text-orange-500'
+                    ? 'border-indigo-400 bg-indigo-50 text-indigo-500'
                     : 'border-gray-200 hover:border-gray-300 text-gray-400 hover:text-gray-500'
                 }`}>
                 <div className="w-full">{l.preview}</div>

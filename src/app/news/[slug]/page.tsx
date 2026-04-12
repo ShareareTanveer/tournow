@@ -60,7 +60,7 @@ export default async function NewsDetailPage({ params }: Props) {
 
           {/* ── Main Content ── */}
           <div className="lg:col-span-2">
-            <Link href="/news" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-orange-500 transition-colors mb-6">
+            <Link href="/news" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-indigo-500 transition-colors mb-6">
               <FiArrowLeft size={14} /> Back to News
             </Link>
 
@@ -99,7 +99,7 @@ export default async function NewsDetailPage({ params }: Props) {
                     Book Free Consultation
                   </Link>
                   <Link href="/packages-from-sri-lanka/family"
-                    className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl border-2 transition hover:bg-orange-50"
+                    className="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-xl border-2 transition hover:bg-indigo-50"
                     style={{ borderColor: 'var(--brand)', color: 'var(--brand)' }}>
                     Browse Packages
                   </Link>
@@ -124,7 +124,7 @@ export default async function NewsDetailPage({ params }: Props) {
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-gray-700 line-clamp-2 group-hover:text-orange-500 transition-colors leading-snug">{item.title}</p>
+                        <p className="text-xs font-semibold text-gray-700 line-clamp-2 group-hover:text-indigo-500 transition-colors leading-snug">{item.title}</p>
                         <p className="text-xs text-gray-400 mt-1">
                           {new Date(item.publishedAt).toLocaleDateString('en-LK', { day: 'numeric', month: 'short' })}
                         </p>
@@ -146,7 +146,7 @@ export default async function NewsDetailPage({ params }: Props) {
               <p className="relative font-bold text-base mb-1">Plan Your Holiday</p>
               <p className="relative text-white/80 text-xs mb-4">Get expert advice from our travel specialists — free of charge.</p>
               <Link href="/consultation"
-                className="relative inline-flex items-center gap-1.5 text-xs font-bold bg-white px-4 py-2 rounded-xl transition hover:bg-orange-50"
+                className="relative inline-flex items-center gap-1.5 text-xs font-bold bg-white px-4 py-2 rounded-xl transition hover:bg-indigo-50"
                 style={{ color: 'var(--brand-dark)' }}>
                 Book Consultation
               </Link>

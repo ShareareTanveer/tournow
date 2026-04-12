@@ -33,7 +33,7 @@ export default async function VisaDetailPage({ params }: Props) {
         imageUrl={getPageHeroImage('visas')}
         breadcrumbs={[{ label: 'Visas', href: '/visas' }, { label: visa.country }]}
       >
-        <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full mt-3 ${visa.isVisaFree ? 'bg-green-500' : 'bg-orange-500'} text-white`}>
+        <span className={`inline-block text-xs font-semibold px-3 py-1 rounded-full mt-3 ${visa.isVisaFree ? 'bg-green-500' : 'bg-indigo-500'} text-white`}>
           {visa.isVisaFree ? 'Visa Free' : 'Visa Required'}
         </span>
       </PageHero>

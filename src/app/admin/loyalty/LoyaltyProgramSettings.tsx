@@ -60,7 +60,7 @@ export default function LoyaltyProgramSettings({ settings }: { settings: Record<
       <label className="block text-xs font-semibold text-gray-500 mb-1">{label}</label>
       {hint && <p className="text-[11px] text-gray-400 mb-1">{hint}</p>}
       <input value={form[key]} onChange={set(key)}
-        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400" />
+        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400" />
     </div>
   )
 
@@ -69,7 +69,7 @@ export default function LoyaltyProgramSettings({ settings }: { settings: Record<
       <label className="block text-xs font-semibold text-gray-500 mb-1">{label}</label>
       {hint && <p className="text-[11px] text-gray-400 mb-1">{hint}</p>}
       <textarea rows={rows} value={form[key]} onChange={set(key)}
-        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400 resize-none" />
+        className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 resize-none" />
     </div>
   )
 
@@ -107,17 +107,17 @@ export default function LoyaltyProgramSettings({ settings }: { settings: Record<
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wide">How It Works — 3 Steps</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-3 p-4 bg-gray-50 rounded-xl">
-              <p className="text-xs font-bold text-orange-500">Step 1</p>
+              <p className="text-xs font-bold text-indigo-500">Step 1</p>
               {inp('loyalty_how_step1_title', 'Title')}
               {area('loyalty_how_step1_desc', 'Description', 2)}
             </div>
             <div className="space-y-3 p-4 bg-gray-50 rounded-xl">
-              <p className="text-xs font-bold text-orange-500">Step 2</p>
+              <p className="text-xs font-bold text-indigo-500">Step 2</p>
               {inp('loyalty_how_step2_title', 'Title')}
               {area('loyalty_how_step2_desc', 'Description', 2)}
             </div>
             <div className="space-y-3 p-4 bg-gray-50 rounded-xl">
-              <p className="text-xs font-bold text-orange-500">Step 3</p>
+              <p className="text-xs font-bold text-indigo-500">Step 3</p>
               {inp('loyalty_how_step3_title', 'Title')}
               {area('loyalty_how_step3_desc', 'Description', 2)}
             </div>
@@ -128,8 +128,8 @@ export default function LoyaltyProgramSettings({ settings }: { settings: Record<
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Tier Benefit Lists</p>
           <p className="text-[11px] text-gray-400">Enter one benefit per line. These appear on the public Privilege Card page.</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="p-4 bg-orange-50 rounded-xl space-y-3 border border-orange-100">
-              <p className="text-xs font-bold text-orange-700">Bronze Tier</p>
+            <div className="p-4 bg-indigo-50 rounded-xl space-y-3 border border-indigo-100">
+              <p className="text-xs font-bold text-indigo-700">Bronze Tier</p>
               {area('loyalty_bronze_perks', 'Benefits (one per line)', 6)}
             </div>
             <div className="p-4 bg-gray-50 rounded-xl space-y-3 border border-gray-200">
@@ -157,7 +157,7 @@ export default function LoyaltyProgramSettings({ settings }: { settings: Record<
 
       <div className="flex items-center gap-4">
         <button type="submit" disabled={loading}
-          className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors text-sm">
+          className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors text-sm">
           <FiSave size={14} /> {loading ? 'Saving…' : 'Save Program Settings'}
         </button>
         {saved && (

@@ -22,7 +22,7 @@ export default async function LoyaltyAdminPage() {
   cards.forEach((c) => { if (c.tier in tiers) (tiers as any)[c.tier]++ })
 
   return (
-    <AdminShell title="Privilege Card Program">
+    <AdminShell title="Privilege Card Program" subtitle={`${cards.length} cards issued`}>
       <LoyaltyTabs
         cards={cards}
         settings={settings}

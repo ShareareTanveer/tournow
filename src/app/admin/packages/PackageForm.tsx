@@ -54,10 +54,10 @@ function ChipList({ label, items, presets, onChange }: {
   return (
     <div>
       <label className="block text-xs font-semibold text-gray-500 mb-1.5">{label}</label>
-      <div className="border border-gray-200 rounded-xl p-3 space-y-2 focus-within:border-orange-400 transition-colors">
+      <div className="border border-gray-200 rounded-xl p-3 space-y-2 focus-within:border-indigo-400 transition-colors">
         <div className="flex flex-wrap gap-1.5 min-h-[24px]">
           {items.map(item => (
-            <span key={item} className="flex items-center gap-1 text-xs bg-orange-50 text-orange-700 px-2.5 py-1 rounded-full font-medium">
+            <span key={item} className="flex items-center gap-1 text-xs bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full font-medium">
               {item}
               <button type="button" onClick={() => onChange(items.filter(i => i !== item))}
                 className="hover:text-red-500 ml-0.5"><FiX size={10} /></button>
@@ -69,9 +69,9 @@ function ChipList({ label, items, presets, onChange }: {
           <input value={input} onChange={e => setInput(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); add(input) } }}
             placeholder="Type custom item or pick below…"
-            className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-orange-400" />
+            className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-400" />
           <button type="button" onClick={() => add(input)}
-            className="text-xs bg-orange-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-orange-600 flex items-center gap-1">
+            className="text-xs bg-indigo-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-indigo-600 flex items-center gap-1">
             <FiPlus size={11} /> Add
           </button>
         </div>
@@ -79,7 +79,7 @@ function ChipList({ label, items, presets, onChange }: {
           <div className="flex flex-wrap gap-1">
             {available.slice(0, 10).map(p => (
               <button key={p} type="button" onClick={() => add(p)}
-                className="text-[10px] bg-gray-100 hover:bg-orange-50 hover:text-orange-600 text-gray-500 px-2 py-0.5 rounded-full transition-colors">
+                className="text-[10px] bg-gray-100 hover:bg-indigo-50 hover:text-indigo-600 text-gray-500 px-2 py-0.5 rounded-full transition-colors">
                 + {p}
               </button>
             ))}
@@ -104,7 +104,7 @@ function OptionsEditor({ options, onChange }: { options: OptionItem[]; onChange:
     <div>
       <label className="block text-xs font-semibold text-gray-500 mb-1.5">Add-on Options / Extras</label>
       <p className="text-xs text-gray-400 mb-2">Customers can select these during booking (e.g. airport pickup, travel insurance, single supplement)</p>
-      <div className="border border-gray-200 rounded-xl p-3 space-y-2 focus-within:border-orange-400">
+      <div className="border border-gray-200 rounded-xl p-3 space-y-2 focus-within:border-indigo-400">
         {options.length > 0 && (
           <div className="space-y-1">
             {options.map((opt, i) => (
@@ -114,7 +114,7 @@ function OptionsEditor({ options, onChange }: { options: OptionItem[]; onChange:
                 <label className="flex items-center gap-1 text-[10px] text-gray-400">
                   <input type="checkbox" checked={!!opt.isDefault}
                     onChange={e => { const updated = [...options]; updated[i] = { ...opt, isDefault: e.target.checked }; onChange(updated) }}
-                    className="w-3 h-3 accent-orange-500" /> Default
+                    className="w-3 h-3 accent-indigo-500" /> Default
                 </label>
                 <button type="button" onClick={() => onChange(options.filter((_, j) => j !== i))}
                   className="text-gray-300 hover:text-red-400"><FiX size={13} /></button>
@@ -126,12 +126,12 @@ function OptionsEditor({ options, onChange }: { options: OptionItem[]; onChange:
           <input value={newLabel} onChange={e => setNewLabel(e.target.value)}
             onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); add() } }}
             placeholder="Option name (e.g. Airport pickup)"
-            className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-orange-400" />
+            className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-400" />
           <input value={newPrice} onChange={e => setNewPrice(e.target.value)} type="number" min="0"
             placeholder="Price"
-            className="w-24 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-orange-400" />
+            className="w-24 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-400" />
           <button type="button" onClick={add}
-            className="text-xs bg-orange-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-orange-600 flex items-center gap-1">
+            className="text-xs bg-indigo-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-indigo-600 flex items-center gap-1">
             <FiPlus size={11} /> Add
           </button>
         </div>
@@ -165,7 +165,7 @@ function CancellationTiersEditor({ tiers, onChange }: { tiers: CancellationTier[
             {tiers.map((t, i) => (
               <div key={i} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2">
                 <span className="text-xs font-semibold text-gray-600 w-20 shrink-0">≥ {t.daysBeforeDep}d</span>
-                <span className={`text-xs font-bold ${t.refundPercent >= 75 ? 'text-green-600' : t.refundPercent >= 25 ? 'text-orange-500' : 'text-red-500'}`}>
+                <span className={`text-xs font-bold ${t.refundPercent >= 75 ? 'text-green-600' : t.refundPercent >= 25 ? 'text-indigo-500' : 'text-red-500'}`}>
                   {t.refundPercent}% refund
                 </span>
                 <span className="flex-1 text-xs text-gray-400 italic">{t.label}</span>
@@ -178,17 +178,17 @@ function CancellationTiersEditor({ tiers, onChange }: { tiers: CancellationTier[
         <div className="flex gap-2 flex-wrap">
           <input value={days} onChange={e => setDays(e.target.value)} type="number" min="0"
             placeholder="Days before"
-            className="w-24 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-orange-400" />
+            className="w-24 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-400" />
           <select value={refund} onChange={e => setRefund(e.target.value)}
-            className="w-28 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-orange-400 bg-white">
+            className="w-28 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-400 bg-white">
             <option value="">% Refund</option>
             {[100, 75, 50, 25, 0].map(r => <option key={r} value={r}>{r}%</option>)}
           </select>
           <input value={tierLabel} onChange={e => setTierLabel(e.target.value)}
             placeholder="Label (optional)"
-            className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-orange-400" />
+            className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-400" />
           <button type="button" onClick={add}
-            className="text-xs bg-orange-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-orange-600 flex items-center gap-1">
+            className="text-xs bg-indigo-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-indigo-600 flex items-center gap-1">
             <FiPlus size={11} /> Add
           </button>
         </div>
@@ -337,7 +337,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
       <label className="block text-xs font-semibold text-gray-500 mb-1.5">{label}{required && ' *'}</label>
       <input required={required} type={type} value={form[key] as string} placeholder={placeholder}
         onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
     </div>
   )
 
@@ -347,7 +347,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
       {hint && <p className="text-xs text-gray-400 mb-1">{hint}</p>}
       <textarea rows={rows} value={form[key] as string}
         onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none" />
+        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 resize-none" />
     </div>
   )
 
@@ -355,7 +355,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
     <label className="flex items-center gap-2 cursor-pointer">
       <input type="checkbox" checked={!!form[key]}
         onChange={(e) => setForm({ ...form, [key]: e.target.checked })}
-        className="w-4 h-4 accent-orange-500" />
+        className="w-4 h-4 accent-indigo-500" />
       <span className="text-sm font-medium text-gray-700">{label}</span>
     </label>
   )
@@ -428,7 +428,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
       <div className="flex gap-1 bg-gray-100 rounded-xl p-1 flex-wrap">
         {TABS.map((t) => (
           <button key={t.id} type="button" onClick={() => setTab(t.id as any)}
-            className={`flex-1 text-xs font-semibold px-3 py-2 rounded-lg transition-colors min-w-[80px] ${tab === t.id ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+            className={`flex-1 text-xs font-semibold px-3 py-2 rounded-lg transition-colors min-w-20 ${tab === t.id ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
             {t.label}
           </button>
         ))}
@@ -445,7 +445,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                 <div className="flex gap-2">
                   <input required value={form.title}
                     onChange={(e) => setForm({ ...form, title: e.target.value, slug: autoSlug(e.target.value) })}
-                    className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400"
+                    className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
                     placeholder="e.g. Dubai City Escape" />
                   <AiFieldAssist fieldLabel="Title" fieldName="title" currentValue={form.title} formContext={aiContext} onApply={v => setForm(f => ({ ...f, title: v, slug: autoSlug(v) }))} />
                 </div>
@@ -454,21 +454,21 @@ export default function PackageForm({ destinations, pkg }: Props) {
               <div>
                 <label className="block text-xs font-semibold text-gray-500 mb-1.5">Category *</label>
                 <select required value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 bg-white">
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 bg-white">
                   {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-gray-500 mb-1.5">Destination *</label>
                 <select required value={form.destinationId} onChange={(e) => setForm({ ...form, destinationId: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 bg-white">
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 bg-white">
                   {destinations.map((d) => <option key={d.id} value={d.id}>{d.name} ({d.region})</option>)}
                 </select>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-gray-500 mb-1.5">Star Rating *</label>
                 <select required value={form.starRating} onChange={(e) => setForm({ ...form, starRating: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 bg-white">
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 bg-white">
                   {STARS.map((s) => <option key={s} value={s}>{s === 'THREE' ? '3 Star' : s === 'FOUR' ? '4 Star' : '5 Star'}</option>)}
                 </select>
               </div>
@@ -477,14 +477,14 @@ export default function PackageForm({ destinations, pkg }: Props) {
               <div>
                 <label className="block text-xs font-semibold text-gray-500 mb-1.5">Pax Type</label>
                 <select value={form.paxType} onChange={(e) => setForm({ ...form, paxType: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 bg-white">
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 bg-white">
                   {['per person', 'per couple', 'per group'].map((p) => <option key={p} value={p}>{p}</option>)}
                 </select>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-gray-500 mb-1.5">Difficulty</label>
                 <select value={form.difficulty} onChange={(e) => setForm({ ...form, difficulty: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 bg-white">
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 bg-white">
                   {DIFFICULTIES.map((d) => <option key={d} value={d}>{d}</option>)}
                 </select>
               </div>
@@ -518,7 +518,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
               <textarea rows={2} value={form.cancellationPolicy}
                 onChange={(e) => setForm({ ...form, cancellationPolicy: e.target.value })}
                 placeholder="e.g. Free cancellation up to 30 days before departure"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none" />
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 resize-none" />
             </div>
           </div>
         )}
@@ -535,7 +535,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
               <textarea rows={2} value={form.summary}
                 onChange={(e) => setForm({ ...form, summary: e.target.value })}
                 placeholder="One-paragraph overview shown in package cards…"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none" />
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 resize-none" />
             </div>
             <div>
               <div className="flex items-center justify-between mb-2">
@@ -557,7 +557,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                 </div>
                 <textarea rows={5} value={form.highlights}
                   onChange={e => setForm({ ...form, highlights: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 resize-none" />
               </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -622,7 +622,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                   <textarea rows={3} value={form.customizationNotes}
                     onChange={(e) => setForm({ ...form, customizationNotes: e.target.value })}
                     placeholder="What aspects can be customized…"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none" />
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 resize-none" />
                 </div>
               )}
             </div>
@@ -677,7 +677,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                 <input value={form.focusKeyword}
                   onChange={e => setForm({ ...form, focusKeyword: e.target.value })}
                   placeholder="e.g. family holiday package Sri Lanka"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
               </div>
 
               <div>
@@ -688,7 +688,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                 <input value={form.secondaryKeywords}
                   onChange={e => setForm({ ...form, secondaryKeywords: e.target.value })}
                   placeholder="e.g. family tours, kids friendly holiday, Sri Lanka packages"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
               </div>
 
               <div>
@@ -697,7 +697,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                   <div className="flex items-center gap-2">
                     <span className={`text-[11px] font-semibold ${
                       form.metaTitle.length === 0 ? 'text-gray-300' :
-                      form.metaTitle.length < 50 ? 'text-orange-500' :
+                      form.metaTitle.length < 50 ? 'text-indigo-500' :
                       form.metaTitle.length <= 65 ? 'text-emerald-500' :
                       'text-red-500'
                     }`}>{form.metaTitle.length} / 65</span>
@@ -708,7 +708,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                   onChange={e => setForm({ ...form, metaTitle: e.target.value })}
                   placeholder="e.g. Family Holiday Packages Sri Lanka | Halo Holidays"
                   maxLength={80}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
                 <p className="text-[10px] text-gray-400 mt-1">Ideal: 50–65 characters. Shown as the blue link in Google results.</p>
               </div>
 
@@ -718,7 +718,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                   <div className="flex items-center gap-2">
                     <span className={`text-[11px] font-semibold ${
                       form.metaDescription.length === 0 ? 'text-gray-300' :
-                      form.metaDescription.length < 150 ? 'text-orange-500' :
+                      form.metaDescription.length < 150 ? 'text-indigo-500' :
                       form.metaDescription.length <= 160 ? 'text-emerald-500' :
                       'text-red-500'
                     }`}>{form.metaDescription.length} / 160</span>
@@ -729,7 +729,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                   onChange={e => setForm({ ...form, metaDescription: e.target.value })}
                   placeholder="e.g. Explore our award-winning family holiday packages from Sri Lanka. Hotels, flights & guided tours included. Book today."
                   maxLength={200}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 resize-none" />
                 <p className="text-[10px] text-gray-400 mt-1">Ideal: 150–160 characters. Shown below the title in Google results.</p>
               </div>
 
@@ -739,7 +739,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                   onChange={e => setForm({ ...form, canonicalUrl: e.target.value })}
                   placeholder="https://metrovoyage.com/packages/..."
                   type="url"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
                 <p className="text-[10px] text-gray-400 mt-1">Leave blank unless this page is accessible at multiple URLs.</p>
               </div>
             </div>
@@ -755,14 +755,14 @@ export default function PackageForm({ destinations, pkg }: Props) {
                     <label className="text-xs font-semibold text-gray-500">OG Title</label>
                     <div className="flex items-center gap-2">
                       <button type="button" onClick={() => setForm(f => ({ ...f, ogTitle: f.metaTitle }))}
-                        className="text-[10px] text-orange-500 hover:underline">Copy from Meta</button>
+                        className="text-[10px] text-indigo-500 hover:underline">Copy from Meta</button>
                       <AiFieldAssist fieldLabel="OG Title" fieldName="ogTitle" currentValue={form.ogTitle} formContext={aiContext} onApply={v => setForm(f => ({ ...f, ogTitle: v }))} />
                     </div>
                   </div>
                   <input value={form.ogTitle}
                     onChange={e => setForm({ ...form, ogTitle: e.target.value })}
                     placeholder="Social share title"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-gray-500 mb-1.5">OG Image URL</label>
@@ -770,7 +770,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                     onChange={e => setForm({ ...form, ogImage: e.target.value })}
                     placeholder="Auto-uses first package image if blank"
                     type="url"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
                   {form.images[0] && !form.ogImage && (
                     <p className="text-[10px] text-emerald-600 mt-1 flex items-center gap-1">
                       <FiInfo size={10} /> Will use first package image automatically
@@ -784,14 +784,14 @@ export default function PackageForm({ destinations, pkg }: Props) {
                   <label className="text-xs font-semibold text-gray-500">OG Description</label>
                   <div className="flex items-center gap-2">
                     <button type="button" onClick={() => setForm(f => ({ ...f, ogDescription: f.metaDescription }))}
-                      className="text-[10px] text-orange-500 hover:underline">Copy from Meta</button>
+                      className="text-[10px] text-indigo-500 hover:underline">Copy from Meta</button>
                     <AiFieldAssist fieldLabel="OG Description" fieldName="ogDescription" currentValue={form.ogDescription} formContext={aiContext} onApply={v => setForm(f => ({ ...f, ogDescription: v }))} />
                   </div>
                 </div>
                 <textarea rows={2} value={form.ogDescription}
                   onChange={e => setForm({ ...form, ogDescription: e.target.value })}
                   placeholder="Social share description"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none" />
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 resize-none" />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -800,28 +800,28 @@ export default function PackageForm({ destinations, pkg }: Props) {
                     <label className="text-xs font-semibold text-gray-500">Twitter Title</label>
                     <div className="flex items-center gap-2">
                       <button type="button" onClick={() => setForm(f => ({ ...f, twitterTitle: f.ogTitle || f.metaTitle }))}
-                        className="text-[10px] text-orange-500 hover:underline">Copy from OG</button>
+                        className="text-[10px] text-indigo-500 hover:underline">Copy from OG</button>
                       <AiFieldAssist fieldLabel="Twitter Title" fieldName="twitterTitle" currentValue={form.twitterTitle} formContext={aiContext} onApply={v => setForm(f => ({ ...f, twitterTitle: v }))} />
                     </div>
                   </div>
                   <input value={form.twitterTitle}
                     onChange={e => setForm({ ...form, twitterTitle: e.target.value })}
                     placeholder="Twitter / X card title"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
                 </div>
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-xs font-semibold text-gray-500">Twitter Description</label>
                     <div className="flex items-center gap-2">
                       <button type="button" onClick={() => setForm(f => ({ ...f, twitterDescription: f.ogDescription || f.metaDescription }))}
-                        className="text-[10px] text-orange-500 hover:underline">Copy from OG</button>
+                        className="text-[10px] text-indigo-500 hover:underline">Copy from OG</button>
                       <AiFieldAssist fieldLabel="Twitter Description" fieldName="twitterDescription" currentValue={form.twitterDescription} formContext={aiContext} onApply={v => setForm(f => ({ ...f, twitterDescription: v }))} />
                     </div>
                   </div>
                   <textarea rows={2} value={form.twitterDescription}
                     onChange={e => setForm({ ...form, twitterDescription: e.target.value })}
                     placeholder="Twitter / X card description"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none" />
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 resize-none" />
                 </div>
               </div>
             </div>
@@ -834,7 +834,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                 <label className="block text-xs font-semibold text-gray-500 mb-1.5">Meta Robots</label>
                 <select value={form.metaRobots}
                   onChange={e => setForm({ ...form, metaRobots: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 bg-white">
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 bg-white">
                   <option value="index, follow">index, follow (default — recommended)</option>
                   <option value="noindex, follow">noindex, follow — hide from Google</option>
                   <option value="index, nofollow">index, nofollow — don't follow links</option>
@@ -853,7 +853,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                 <textarea rows={8} value={form.schemaMarkup}
                   onChange={e => setForm({ ...form, schemaMarkup: e.target.value })}
                   placeholder={'{\n  "@context": "https://schema.org",\n  "@type": "TouristAttraction",\n  "name": "...",\n  "description": "..."\n}'}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs font-mono focus:outline-none focus:border-orange-400 resize-none"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs font-mono focus:outline-none focus:border-indigo-400 resize-none"
                   spellCheck={false} />
                 {form.schemaMarkup && (() => {
                   try { JSON.parse(form.schemaMarkup); return <p className="text-[10px] text-emerald-600 mt-1">✓ Valid JSON</p> }
@@ -872,7 +872,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
 
       <div className="flex gap-3">
         <button type="submit" disabled={loading}
-          className="bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+          className="bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
           {loading ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Package'}
         </button>
         <button type="button" onClick={() => router.back()}

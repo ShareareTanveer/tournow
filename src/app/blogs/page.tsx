@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-  Adventure: 'bg-orange-100 text-orange-700',
+  Adventure: 'bg-indigo-100 text-indigo-700',
   Honeymoon: 'bg-pink-100 text-pink-700',
   Family: 'bg-blue-100 text-blue-700',
   Solo: 'bg-purple-100 text-purple-700',

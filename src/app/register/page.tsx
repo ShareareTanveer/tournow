@@ -53,12 +53,12 @@ function RegisterForm() {
         </div>
 
         {/* Benefits strip */}
-        <div className="bg-orange-50 border border-orange-100 rounded-2xl px-5 py-4 mb-6">
-          <p className="text-xs font-bold text-orange-700 mb-2 uppercase tracking-wider">Member benefits</p>
+        <div className="bg-indigo-50 border border-indigo-100 rounded-2xl px-5 py-4 mb-6">
+          <p className="text-xs font-bold text-indigo-700 mb-2 uppercase tracking-wider">Member benefits</p>
           <div className="space-y-1.5">
             {['Claim exclusive travel perks & offers', 'Save favourite packages to your wish list', 'Track your booking history', 'Priority WhatsApp support'].map(b => (
-              <div key={b} className="flex items-center gap-2 text-xs text-orange-800">
-                <FiCheckCircle size={12} className="text-orange-500 shrink-0" /> {b}
+              <div key={b} className="flex items-center gap-2 text-xs text-indigo-800">
+                <FiCheckCircle size={12} className="text-indigo-500 shrink-0" /> {b}
               </div>
             ))}
           </div>
@@ -75,7 +75,7 @@ function RegisterForm() {
               <div className="relative">
                 <FiUser size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-400"
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400"
                   placeholder="Your full name" />
               </div>
             </div>
@@ -85,7 +85,7 @@ function RegisterForm() {
               <div className="relative">
                 <FiMail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input required type="email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-400"
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400"
                   placeholder="you@example.com" />
               </div>
             </div>
@@ -96,7 +96,7 @@ function RegisterForm() {
                 <FiLock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input required type={showPw ? 'text' : 'password'} value={form.password}
                   onChange={e => setForm({ ...form, password: e.target.value })}
-                  className="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-400"
+                  className="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400"
                   placeholder="At least 6 characters" />
                 <button type="button" onClick={() => setShowPw(s => !s)}
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
@@ -111,7 +111,7 @@ function RegisterForm() {
                 <FiLock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input required type={showPw ? 'text' : 'password'} value={form.confirm}
                   onChange={e => setForm({ ...form, confirm: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-orange-400"
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400"
                   placeholder="Repeat your password" />
               </div>
             </div>

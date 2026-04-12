@@ -12,8 +12,8 @@ const DEFAULTS = [
   { slug: 'solo', label: 'Solo', icon: FiUser, desc: 'Explore on your own', color: 'from-purple-500 to-purple-700', imageUrl: 'https://picsum.photos/seed/solo-adventure/800/600' },
   { slug: 'squad', label: 'Squad', icon: FiSmile, desc: 'Travel with friends', color: 'from-emerald-500 to-teal-700', imageUrl: 'https://picsum.photos/seed/group-travel/800/600' },
   { slug: 'corporate', label: 'Corporate', icon: FiBriefcase, desc: 'MICE & business travel', color: 'from-slate-500 to-slate-700', imageUrl: 'https://picsum.photos/seed/corporate-travel/800/600' },
-  { slug: 'special', label: 'Special', icon: FiStar, desc: 'VIP & exclusive', color: 'from-amber-500 to-orange-600', imageUrl: 'https://picsum.photos/seed/vip-travel/800/600' },
-  { slug: 'holiday', label: '2026 Holidays', icon: FiSun, desc: 'Seasonal packages', color: 'from-orange-500 to-red-600', imageUrl: 'https://picsum.photos/seed/holiday-season/800/600' },
+  { slug: 'special', label: 'Special', icon: FiStar, desc: 'VIP & exclusive', color: 'from-amber-500 to-indigo-600', imageUrl: 'https://picsum.photos/seed/vip-travel/800/600' },
+  { slug: 'holiday', label: '2026 Holidays', icon: FiSun, desc: 'Seasonal packages', color: 'from-indigo-500 to-red-600', imageUrl: 'https://picsum.photos/seed/holiday-season/800/600' },
   { slug: 'culture', label: 'Cultural', icon: FiGlobe, desc: 'Immersive cultural experiences', color: 'from-indigo-500 to-blue-700', imageUrl: 'https://picsum.photos/seed/cultural-travel/800/600' },
 ]
 

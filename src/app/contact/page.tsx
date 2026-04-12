@@ -8,7 +8,7 @@ export const metadata: Metadata = { title: 'Contact Us', description: 'Get in to
 
 const CONTACT_ITEMS = [
   { Icon: FiPhone,        iconBg: '#eff6ff', iconColor: '#3b82f6', title: 'Phone',    content: '+94 70 454 5455',          href: 'tel:+94704545455' },
-  { Icon: FiMail,         iconBg: '#fef3c7', iconColor: '#f59e0b', title: 'Email',    content: 'contact@metrovoyage.com',  href: 'mailto:contact@metrovoyage.com' },
+  { Icon: FiMail,         iconBg: '#fef3c7', iconColor: '#0a83f5', title: 'Email',    content: 'contact@metrovoyage.com',  href: 'mailto:contact@metrovoyage.com' },
   { Icon: FaWhatsapp,     iconBg: '#dcfce7', iconColor: '#22c55e', title: 'WhatsApp', content: '+94 70 454 5455',          href: 'https://wa.me/94704545455' },
 ]
 
@@ -49,7 +49,7 @@ export default function ContactPage() {
 
             <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
               <div className="flex gap-4 items-start">
-                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-orange-50">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 bg-indigo-50">
                   <FiMapPin size={20} style={{ color: 'var(--brand)' }} />
                 </div>
                 <div>

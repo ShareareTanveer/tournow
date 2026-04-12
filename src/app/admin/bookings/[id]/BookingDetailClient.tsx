@@ -79,7 +79,7 @@ const PIPELINE = [
   { status: 'REQUESTED',        label: 'Requested',        color: 'text-blue-600',   bg: 'bg-blue-50',   dot: 'bg-blue-400' },
   { status: 'CALL_REQUIRED',    label: 'Call Required',    color: 'text-purple-600', bg: 'bg-purple-50', dot: 'bg-purple-400' },
   { status: 'EDIT_RESEND',      label: 'Edit & Resend',    color: 'text-yellow-600', bg: 'bg-yellow-50', dot: 'bg-yellow-400' },
-  { status: 'AWAITING_CONFIRM', label: 'Awaiting Confirm', color: 'text-orange-600', bg: 'bg-orange-50', dot: 'bg-orange-400' },
+  { status: 'AWAITING_CONFIRM', label: 'Awaiting Confirm', color: 'text-indigo-600', bg: 'bg-indigo-50', dot: 'bg-indigo-400' },
   { status: 'CONFIRMED',        label: 'Confirmed',        color: 'text-teal-600',   bg: 'bg-teal-50',   dot: 'bg-teal-400' },
   { status: 'RECEIPT_UPLOADED', label: 'Receipt Uploaded', color: 'text-indigo-600', bg: 'bg-indigo-50', dot: 'bg-indigo-400' },
   { status: 'ADMIN_CONFIRMING', label: 'Admin Confirming', color: 'text-pink-600',   bg: 'bg-pink-50',   dot: 'bg-pink-400' },
@@ -91,7 +91,7 @@ const PIPELINE = [
 
 const PAY_STATUS = [
   { value: 'UNPAID',   label: 'Unpaid',   color: 'text-red-600',    bg: 'bg-red-50' },
-  { value: 'PARTIAL',  label: 'Partial',  color: 'text-orange-600', bg: 'bg-orange-50' },
+  { value: 'PARTIAL',  label: 'Partial',  color: 'text-indigo-600', bg: 'bg-indigo-50' },
   { value: 'PAID',     label: 'Paid',     color: 'text-green-600',  bg: 'bg-green-50' },
   { value: 'REFUNDED', label: 'Refunded', color: 'text-gray-500',   bg: 'bg-gray-50' },
 ]
@@ -114,7 +114,7 @@ function InfoRow({ label, value, highlight }: { label: string; value: React.Reac
   return (
     <div className="flex justify-between gap-3 py-1.5 border-b border-gray-50 last:border-0">
       <span className="text-xs text-gray-400 shrink-0">{label}</span>
-      <span className={`text-xs font-semibold text-right ${highlight ? 'text-orange-600' : 'text-gray-800'}`}>{value}</span>
+      <span className={`text-xs font-semibold text-right ${highlight ? 'text-indigo-600' : 'text-gray-800'}`}>{value}</span>
     </div>
   )
 }
@@ -173,16 +173,16 @@ function PriceComparison({ booking }: { booking: Booking }) {
       </div>
 
       {/* Admin Quote / Final */}
-      <div className={`rounded-2xl overflow-hidden border ${hasQuote ? 'bg-orange-50 border-orange-200' : 'bg-gray-50 border-gray-200'}`}>
-        <div className={`px-4 py-3 border-b flex items-center justify-between gap-2 ${hasQuote ? 'border-orange-100' : 'border-gray-100'}`}>
+      <div className={`rounded-2xl overflow-hidden border ${hasQuote ? 'bg-indigo-50 border-indigo-200' : 'bg-gray-50 border-gray-200'}`}>
+        <div className={`px-4 py-3 border-b flex items-center justify-between gap-2 ${hasQuote ? 'border-indigo-100' : 'border-gray-100'}`}>
           <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${hasQuote ? 'bg-orange-400' : 'bg-gray-300'}`} />
-            <p className={`text-xs font-bold uppercase tracking-wide ${hasQuote ? 'text-orange-700' : 'text-gray-500'}`}>
+            <div className={`w-2 h-2 rounded-full ${hasQuote ? 'bg-indigo-400' : 'bg-gray-300'}`} />
+            <p className={`text-xs font-bold uppercase tracking-wide ${hasQuote ? 'text-indigo-700' : 'text-gray-500'}`}>
               {hasQuote ? 'Admin Quote (Sent to Customer)' : 'No Quote Built Yet'}
             </p>
           </div>
           <Link href={`/admin/bookings/${booking.id}/edit`}
-            className="flex items-center gap-1 text-xs font-semibold text-orange-600 hover:text-orange-700 bg-white border border-orange-200 px-2.5 py-1 rounded-lg transition-colors">
+            className="flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-700 bg-white border border-indigo-200 px-2.5 py-1 rounded-lg transition-colors">
             <FiEdit2 size={11} /> {hasQuote ? 'Edit Quote' : 'Build Quote'}
           </Link>
         </div>
@@ -201,9 +201,9 @@ function PriceComparison({ booking }: { booking: Booking }) {
                   value={new Date(quote.validUntil).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                   highlight />
               )}
-              <div className="mt-3 pt-2 border-t border-orange-200 flex justify-between">
-                <span className="text-xs font-bold text-orange-700">Final Quote Total</span>
-                <span className="text-sm font-black text-orange-600">LKR {quote.totalPrice.toLocaleString()}</span>
+              <div className="mt-3 pt-2 border-t border-indigo-200 flex justify-between">
+                <span className="text-xs font-bold text-indigo-700">Final Quote Total</span>
+                <span className="text-sm font-black text-indigo-600">LKR {quote.totalPrice.toLocaleString()}</span>
               </div>
               {/* Difference callout */}
               {snap && (
@@ -214,7 +214,7 @@ function PriceComparison({ booking }: { booking: Booking }) {
             <div className="text-center py-6">
               <p className="text-xs text-gray-400 mb-3">Build a quote with custom pricing for this customer</p>
               <Link href={`/admin/bookings/${booking.id}/edit`}
-                className="inline-flex items-center gap-1.5 text-xs bg-orange-500 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-orange-600">
+                className="inline-flex items-center gap-1.5 text-xs bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-indigo-600">
                 <FiEdit2 size={12} /> Build Quote Now
               </Link>
             </div>
@@ -256,13 +256,13 @@ function StatusTimeline({ status }: { status: string }) {
             <div className={`flex flex-col items-center gap-1`}>
               <div className={`w-3 h-3 rounded-full border-2 transition-all ${
                 done ? `${info.dot} border-transparent` : 'bg-white border-gray-300'
-              } ${active ? 'ring-2 ring-offset-1 ring-orange-300 scale-125' : ''}`} />
+              } ${active ? 'ring-2 ring-offset-1 ring-indigo-300 scale-125' : ''}`} />
               <span className={`text-[9px] font-semibold whitespace-nowrap ${done ? info.color : 'text-gray-300'}`}>
                 {info.label.replace(' ✓', '')}
               </span>
             </div>
             {i < TIMELINE_STEPS.length - 1 && (
-              <div className={`h-0.5 w-8 mb-4 mx-0.5 ${i < idx ? 'bg-orange-400' : 'bg-gray-200'}`} />
+              <div className={`h-0.5 w-8 mb-4 mx-0.5 ${i < idx ? 'bg-indigo-400' : 'bg-gray-200'}`} />
             )}
           </div>
         )
@@ -309,7 +309,7 @@ function QuickActions({ booking, type, onUpdate }: {
     <div className="flex flex-wrap gap-2">
       {/* Edit / build quote always available */}
       <Link href={`/admin/bookings/${booking.id}/edit`}
-        className="flex items-center gap-1.5 text-xs bg-orange-500 text-white px-3 py-2 rounded-xl font-semibold hover:bg-orange-600 transition-colors">
+        className="flex items-center gap-1.5 text-xs bg-indigo-500 text-white px-3 py-2 rounded-xl font-semibold hover:bg-indigo-600 transition-colors">
         <FiEdit2 size={13} /> {booking.staffQuote ? 'Edit Quote' : 'Build Quote'}
       </Link>
 
@@ -317,7 +317,7 @@ function QuickActions({ booking, type, onUpdate }: {
       {booking.staffQuote && ['REQUESTED', 'CALL_REQUIRED', 'EDIT_RESEND'].includes(s) && (
         <button onClick={() => act('send_quote', { staffQuote: booking.staffQuote, adminNotes: booking.adminNotes })}
           disabled={loading === 'send_quote'}
-          className="flex items-center gap-1.5 text-xs bg-blue-500 text-white px-3 py-2 rounded-xl font-semibold hover:bg-blue-600 disabled:opacity-50 transition-colors">
+          className="flex items-center gap-1.5 text-xs bg-indigo-500 text-white px-3 py-2 rounded-xl font-semibold hover:bg-blue-600 disabled:opacity-50 transition-colors">
           <FiSend size={13} /> {loading === 'send_quote' ? 'Sending…' : 'Send Quote to Customer'}
         </button>
       )}
@@ -326,7 +326,7 @@ function QuickActions({ booking, type, onUpdate }: {
       {booking.staffQuote && s === 'AWAITING_CONFIRM' && (
         <button onClick={() => act('send_quote', { staffQuote: booking.staffQuote, adminNotes: booking.adminNotes })}
           disabled={loading === 'send_quote'}
-          className="flex items-center gap-1.5 text-xs bg-blue-400 text-white px-3 py-2 rounded-xl font-semibold hover:bg-blue-500 disabled:opacity-50 transition-colors">
+          className="flex items-center gap-1.5 text-xs bg-blue-400 text-white px-3 py-2 rounded-xl font-semibold hover:bg-indigo-500 disabled:opacity-50 transition-colors">
           <FiSend size={13} /> {loading === 'send_quote' ? 'Sending…' : 'Resend Quote'}
         </button>
       )}
@@ -387,9 +387,9 @@ function AdminNotesEditor({ booking, type, onUpdate }: {
     <div>
       <textarea rows={4} placeholder="Internal notes, payment references, call logs…"
         value={notes} onChange={e => setNotes(e.target.value)}
-        className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 resize-none" />
+        className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400 resize-none" />
       <button onClick={save} disabled={saving || notes === (booking.adminNotes ?? '')}
-        className="mt-2 text-xs bg-orange-500 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-orange-600 disabled:opacity-50 transition-colors">
+        className="mt-2 text-xs bg-indigo-500 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-indigo-600 disabled:opacity-50 transition-colors">
         {saving ? 'Saving…' : 'Save Notes'}
       </button>
     </div>
@@ -627,8 +627,8 @@ export default function BookingDetailClient({ booking: initial, type }: {
         <Card title="Customer">
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
-                <FiUser size={16} className="text-orange-500" />
+              <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+                <FiUser size={16} className="text-indigo-500" />
               </div>
               <div>
                 <p className="font-bold text-sm text-gray-900">{booking.customerName}</p>

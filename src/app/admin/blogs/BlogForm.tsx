@@ -68,31 +68,31 @@ export default function BlogForm({ blog }: { blog?: any }) {
             <div className="flex gap-2">
               <input required value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value, slug: autoSlug(e.target.value) })}
-                className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+                className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
               <AiFieldAssist fieldLabel="Title" fieldName="title" currentValue={form.title} formContext={aiContext} onApply={v => setForm(f => ({ ...f, title: v, slug: autoSlug(v) }))} />
             </div>
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1.5">Slug *</label>
             <input value={form.slug} onChange={e => setForm({ ...form, slug: e.target.value })}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1.5">Category *</label>
             <input value={form.category} onChange={e => setForm({ ...form, category: e.target.value })}
               placeholder="Travel Tips, Destinations…"
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1.5">Author *</label>
             <input value={form.author} onChange={e => setForm({ ...form, author: e.target.value })}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1.5">Reading Time (min)</label>
             <input type="number" min={1} value={form.readingTime}
               onChange={(e) => setForm({ ...form, readingTime: Number(e.target.value) })}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
           </div>
           <div className="sm:col-span-2">
             <div className="flex items-center justify-between mb-1.5">
@@ -100,7 +100,7 @@ export default function BlogForm({ blog }: { blog?: any }) {
               <AiFieldAssist fieldLabel="Excerpt" fieldName="excerpt" currentValue={form.excerpt} formContext={aiContext} onApply={v => setForm(f => ({ ...f, excerpt: v }))} />
             </div>
             <input value={form.excerpt} onChange={e => setForm({ ...form, excerpt: e.target.value })}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
           </div>
         </div>
       </div>
@@ -131,13 +131,13 @@ export default function BlogForm({ blog }: { blog?: any }) {
       {/* Visibility */}
       <div className="bg-white rounded-2xl p-6 border border-gray-200">
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="w-4 h-4 accent-orange-500" />
+          <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="w-4 h-4 accent-indigo-500" />
           <span className="text-sm text-gray-700 font-medium">Published (visible on website)</span>
         </label>
       </div>
 
       <div className="flex gap-3">
-        <button type="submit" disabled={loading} className="bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+        <button type="submit" disabled={loading} className="bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
           {loading ? 'Saving…' : isEdit ? 'Save Changes' : 'Publish Post'}
         </button>
         <button type="button" onClick={() => router.back()} className="border border-gray-200 text-gray-600 font-medium px-6 py-3 rounded-xl transition-colors hover:bg-gray-50">Cancel</button>

@@ -27,7 +27,7 @@ export default async function NewsPage() {
         {news.length > 0 ? (
           <div className="space-y-6">
             {news.map((article: any) => (
-              <Link key={article.id} href={`/news/${article.slug}`} className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-orange-200 transition-all flex items-start gap-5">
+              <Link key={article.id} href={`/news/${article.slug}`} className="group bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-indigo-200 transition-all flex items-start gap-5">
                 {article.imageUrl && (
                   <div className="relative w-28 h-20 rounded-xl overflow-hidden shrink-0 bg-gray-100">
                     <Image src={article.imageUrl} alt={article.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -38,7 +38,7 @@ export default async function NewsPage() {
                     {article.source && <span className="text-xs px-2 py-0.5 rounded-full font-medium" style={{ background: 'var(--brand-muted)', color: 'var(--brand-dark)' }}>{article.source}</span>}
                     <span className="text-xs text-gray-400">{new Date(article.publishedAt).toLocaleDateString('en-LK', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
                   </div>
-                  <h2 className="font-bold text-gray-800 mb-2 group-hover:text-orange-500 transition-colors">{article.title}</h2>
+                  <h2 className="font-bold text-gray-800 mb-2 group-hover:text-indigo-500 transition-colors">{article.title}</h2>
                   <p className="text-sm text-gray-500 leading-relaxed line-clamp-2">{article.excerpt ?? article.body?.replace(/<[^>]*>/g, '').slice(0, 150)}</p>
                 </div>
               </Link>

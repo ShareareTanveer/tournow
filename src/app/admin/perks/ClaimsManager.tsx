@@ -96,7 +96,7 @@ export default function ClaimsManager() {
 
       {/* Table */}
       <div className="bg-white rounded-2xl border border-gray-200 overflow-x-auto">
-        <table className="w-full text-sm min-w-[700px]">
+        <table className="w-full text-sm min-w-175">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               {['Customer', 'Perk', 'Claimed On', 'Status', 'Actions'].map(h => (
@@ -117,8 +117,8 @@ export default function ClaimsManager() {
                 <tr key={c.id} className="hover:bg-gray-50">
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
-                        <FiUser size={12} className="text-orange-600" />
+                      <div className="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
+                        <FiUser size={12} className="text-indigo-600" />
                       </div>
                       <div>
                         <p className="font-semibold text-gray-800 text-sm">{c.user.name}</p>
@@ -130,7 +130,7 @@ export default function ClaimsManager() {
                     <div className="flex items-center gap-2">
                       <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
                         style={{ background: c.perk.bgColor || '#fffbeb' }}>
-                        <FiTag size={12} style={{ color: c.perk.iconColor || '#f59e0b' }} />
+                        <FiTag size={12} style={{ color: c.perk.iconColor || '#0a83f5' }} />
                       </div>
                       <span className="font-medium text-gray-800">{c.perk.title}</span>
                     </div>

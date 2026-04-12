@@ -21,10 +21,10 @@ interface LoyaltyCard {
 const TIER = {
   BRONZE: {
     label: 'Bronze',
-    color: 'text-orange-700',
-    bg: 'bg-orange-50',
-    border: 'border-orange-200',
-    bar: 'bg-orange-400',
+    color: 'text-indigo-700',
+    bg: 'bg-indigo-50',
+    border: 'border-indigo-200',
+    bar: 'bg-indigo-400',
     next: 'Silver',
     nextAt: 500,
     perks: ['Priority customer support', 'Early access to promotions', '5% discount on bookings'],
@@ -188,7 +188,7 @@ export default function MyPrivilegeCardPage() {
         <div className="flex items-center justify-between text-xs text-gray-400">
           <span>Member since {new Date(card.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
           <Link href="/privilege-card" target="_blank"
-            className="flex items-center gap-1 text-orange-500 hover:underline font-medium">
+            className="flex items-center gap-1 text-indigo-500 hover:underline font-medium">
             <FiExternalLink size={12} /> View full program details
           </Link>
         </div>

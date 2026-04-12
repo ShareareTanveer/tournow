@@ -88,7 +88,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write h
       title={title}
       onClick={onClick}
       className={`p-2 rounded-lg transition-colors text-sm ${active
-        ? 'bg-orange-100 text-orange-600'
+        ? 'bg-indigo-100 text-indigo-600'
         : 'text-gray-600 hover:bg-gray-100'}`}
     >
       {icon}
@@ -128,7 +128,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write h
         <div className="w-px h-5 bg-gray-200 mx-1" />
 
         <button type="button" title="Link" onClick={() => setShowLink(!showLink)}
-          className={`p-2 rounded-lg transition-colors ${editor.isActive('link') ? 'bg-orange-100 text-orange-600' : 'text-gray-600 hover:bg-gray-100'}`}>
+          className={`p-2 rounded-lg transition-colors ${editor.isActive('link') ? 'bg-indigo-100 text-indigo-600' : 'text-gray-600 hover:bg-gray-100'}`}>
           <FiLink size={14} />
         </button>
 
@@ -159,7 +159,7 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Write h
             onKeyDown={e => e.key === 'Enter' && addLink()}
           />
           <button type="button" onClick={addLink}
-            className="text-xs font-semibold text-white bg-blue-500 hover:bg-blue-600 px-3 py-1.5 rounded-lg transition-colors">
+            className="text-xs font-semibold text-white bg-indigo-500 hover:bg-blue-600 px-3 py-1.5 rounded-lg transition-colors">
             Add
           </button>
           <button type="button" onClick={() => setShowLink(false)}

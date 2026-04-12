@@ -12,7 +12,7 @@ async function getSettings() {
 export default async function SettingsAdminPage() {
   const settings = await getSettings()
   return (
-    <AdminShell title="Site Settings">
+    <AdminShell title="Site Settings" subtitle="Configure your website content and social links">
       <SettingsForm settings={settings} />
     </AdminShell>
   )

@@ -101,7 +101,7 @@ export default function AuthModal({ open, onClose, onSuccess, initialTab = 'logi
             <button key={t} onClick={() => { setTab(t); setError('') }}
               className={`flex-1 py-3 text-sm font-semibold transition-colors ${
                 tab === t
-                  ? 'text-orange-500 border-b-2 border-orange-500'
+                  ? 'text-indigo-500 border-b-2 border-indigo-500'
                   : 'text-gray-400 hover:text-gray-600'
               }`}>
               {t === 'login' ? 'Sign In' : 'Register'}
@@ -123,14 +123,14 @@ export default function AuthModal({ open, onClose, onSuccess, initialTab = 'logi
                 <input type="email" required placeholder="your@email.com"
                   value={loginForm.email}
                   onChange={e => setLoginForm(f => ({ ...f, email: e.target.value }))}
-                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 pl-9" />
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400 pl-9" />
               </Field>
               <Field icon={<FiLock size={15} />} label="Password">
                 <div className="relative">
                   <input type={showPass ? 'text' : 'password'} required placeholder="••••••"
                     value={loginForm.password}
                     onChange={e => setLoginForm(f => ({ ...f, password: e.target.value }))}
-                    className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 pl-9 pr-10" />
+                    className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400 pl-9 pr-10" />
                   <button type="button" onClick={() => setShowPass(v => !v)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                     {showPass ? <FiEyeOff size={14} /> : <FiEye size={14} />}
@@ -145,7 +145,7 @@ export default function AuthModal({ open, onClose, onSuccess, initialTab = 'logi
               <p className="text-center text-xs text-gray-400">
                 No account?{' '}
                 <button type="button" onClick={() => setTab('register')}
-                  className="text-orange-500 font-semibold hover:underline">Register here</button>
+                  className="text-indigo-500 font-semibold hover:underline">Register here</button>
               </p>
             </form>
           )}
@@ -157,26 +157,26 @@ export default function AuthModal({ open, onClose, onSuccess, initialTab = 'logi
                 <input type="text" required placeholder="Your full name" minLength={2}
                   value={regForm.name}
                   onChange={e => setRegForm(f => ({ ...f, name: e.target.value }))}
-                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 pl-9" />
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400 pl-9" />
               </Field>
               <Field icon={<FiMail size={15} />} label="Email Address">
                 <input type="email" required placeholder="your@email.com"
                   value={regForm.email}
                   onChange={e => setRegForm(f => ({ ...f, email: e.target.value }))}
-                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 pl-9" />
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400 pl-9" />
               </Field>
               <Field icon={<FiPhone size={15} />} label="Phone (optional)">
                 <input type="tel" placeholder="+94 70 xxx xxxx"
                   value={regForm.phone}
                   onChange={e => setRegForm(f => ({ ...f, phone: e.target.value }))}
-                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 pl-9" />
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400 pl-9" />
               </Field>
               <Field icon={<FiLock size={15} />} label="Password">
                 <div className="relative">
                   <input type={showPass ? 'text' : 'password'} required placeholder="Min 6 characters" minLength={6}
                     value={regForm.password}
                     onChange={e => setRegForm(f => ({ ...f, password: e.target.value }))}
-                    className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 pl-9 pr-10" />
+                    className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400 pl-9 pr-10" />
                   <button type="button" onClick={() => setShowPass(v => !v)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
                     {showPass ? <FiEyeOff size={14} /> : <FiEye size={14} />}
@@ -191,7 +191,7 @@ export default function AuthModal({ open, onClose, onSuccess, initialTab = 'logi
               <p className="text-center text-xs text-gray-400">
                 Already have an account?{' '}
                 <button type="button" onClick={() => setTab('login')}
-                  className="text-orange-500 font-semibold hover:underline">Sign in</button>
+                  className="text-indigo-500 font-semibold hover:underline">Sign in</button>
               </p>
             </form>
           )}

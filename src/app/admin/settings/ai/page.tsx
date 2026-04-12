@@ -15,14 +15,11 @@ export default async function AiSettingsPage() {
   }))
 
   return (
-    <AdminShell title="AI Settings">
+    <AdminShell
+      title="AI Provider Config"
+      subtitle="Configure AI providers for content and SEO generation"
+    >
       <div className="max-w-2xl">
-        <div className="mb-6">
-          <h1 className="text-xl font-black text-gray-900">AI Provider Configuration</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Configure your AI providers to enable per-field content and SEO generation for packages, tours, and blog posts.
-          </p>
-        </div>
         <AiSettingsForm initial={masked as Parameters<typeof AiSettingsForm>[0]['initial']} />
       </div>
     </AdminShell>

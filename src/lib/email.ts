@@ -185,12 +185,12 @@ export async function sendQuoteToCustomer(data: {
       <h2>Hi ${data.customerName},</h2>
       <p>We've prepared a personalised quote for your trip to <strong>${data.title}</strong>.</p>
       <table style="border-collapse:collapse;width:100%;margin:16px 0">
-        <tr style="background:#f59e0b;color:white">
+        <tr style="background:#0a83f5;color:white">
           <th style="padding:8px;text-align:left">Item</th>
           <th style="padding:8px;text-align:right">Price</th>
         </tr>
         ${itemsHtml}
-        <tr style="border-top:2px solid #f59e0b">
+        <tr style="border-top:2px solid #0a83f5">
           <td style="padding:8px"><strong>Total</strong></td>
           <td style="padding:8px;text-align:right"><strong>LKR ${data.totalPrice.toLocaleString()}</strong></td>
         </tr>
@@ -198,7 +198,7 @@ export async function sendQuoteToCustomer(data: {
       ${data.notes ? `<p><strong>Notes from our team:</strong> ${data.notes}</p>` : ''}
       ${data.validUntil ? `<p style="color:#dc2626"><strong>Quote valid until:</strong> ${new Date(data.validUntil).toDateString()}</p>` : ''}
       <p>
-        <a href="${appUrl}/my/bookings" style="background:#f59e0b;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block">
+        <a href="${appUrl}/my/bookings" style="background:#0a83f5;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block">
           Review &amp; Confirm Quote
         </a>
       </p>
@@ -323,7 +323,7 @@ export async function sendInquiryConverted(data: {
   ).join('')
 
   const credentialsSection = data.isNewAccount && data.tempPassword ? `
-    <div style="background:#fffbeb;border:1px solid #f59e0b;border-radius:8px;padding:16px;margin:16px 0">
+    <div style="background:#fffbeb;border:1px solid #0a83f5;border-radius:8px;padding:16px;margin:16px 0">
       <h3 style="margin:0 0 8px;color:#92400e">Your Account Has Been Created</h3>
       <p style="margin:0 0 4px">We've created a Metro Voyage account for you so you can track your booking online.</p>
       <table style="margin-top:8px">
@@ -344,12 +344,12 @@ export async function sendInquiryConverted(data: {
       ${credentialsSection}
       <h3>Quote Details</h3>
       <table style="border-collapse:collapse;width:100%;margin:12px 0">
-        <tr style="background:#f59e0b;color:white">
+        <tr style="background:#0a83f5;color:white">
           <th style="padding:8px;text-align:left">Item</th>
           <th style="padding:8px;text-align:right">Price</th>
         </tr>
         ${itemsHtml}
-        <tr style="border-top:2px solid #f59e0b">
+        <tr style="border-top:2px solid #0a83f5">
           <td style="padding:8px"><strong>Total</strong></td>
           <td style="padding:8px;text-align:right"><strong>LKR ${data.totalPrice.toLocaleString()}</strong></td>
         </tr>
@@ -360,7 +360,7 @@ export async function sendInquiryConverted(data: {
       </table>
       ${data.notes ? `<p><strong>Notes:</strong> ${data.notes}</p>` : ''}
       <p style="margin-top:20px">
-        <a href="${data.loginUrl}/my/bookings" style="background:#f59e0b;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block">
+        <a href="${data.loginUrl}/my/bookings" style="background:#0a83f5;color:white;padding:12px 24px;text-decoration:none;border-radius:6px;display:inline-block">
           Review &amp; Confirm Your Booking
         </a>
       </p>

@@ -243,7 +243,7 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
         {/* Header */}
         <div className="flex items-start justify-between px-6 pt-5 pb-4 border-b border-gray-100 shrink-0">
           <div>
-            <p className="text-xs text-orange-500 mb-0.5 uppercase tracking-wide font-bold">Admin — Convert to Booking</p>
+            <p className="text-xs text-indigo-500 mb-0.5 uppercase tracking-wide font-bold">Admin — Convert to Booking</p>
             <h2 className="text-base font-bold text-gray-900 leading-snug line-clamp-2 max-w-[340px]">{target.title}</h2>
           </div>
           <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 shrink-0 ml-2">
@@ -256,7 +256,7 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
           {stepOrder.map((s, i) => (
             <div key={s} className="flex items-center gap-1 flex-1">
               <div className={`h-1 flex-1 rounded-full transition-colors ${
-                stepOrder.indexOf(step) >= i ? 'bg-orange-400' : 'bg-gray-200'
+                stepOrder.indexOf(step) >= i ? 'bg-indigo-400' : 'bg-gray-200'
               }`} />
             </div>
           ))}
@@ -275,19 +275,19 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
                     <div>
                       <label className="text-xs font-semibold text-gray-500 block mb-1">Name</label>
                       <input type="text" value={cName} onChange={e => setCName(e.target.value)}
-                        className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400" />
+                        className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-400" />
                     </div>
                     <div>
                       <label className="text-xs font-semibold text-gray-500 block mb-1">Phone</label>
                       <input type="text" value={cPhone} onChange={e => setCPhone(e.target.value)}
                         placeholder="+94 7X XXX XXXX"
-                        className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400" />
+                        className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-400" />
                     </div>
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-gray-500 block mb-1">Email</label>
                     <input type="email" value={cEmail} onChange={e => setCEmail(e.target.value)}
-                      className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400" />
+                      className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-400" />
                   </div>
                 </div>
               </Section>
@@ -299,7 +299,7 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
                     <input type="date" required
                       value={form.travelDate}
                       onChange={e => setForm(f => ({ ...f, travelDate: e.target.value }))}
-                      className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400" />
+                      className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400" />
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-gray-500 block mb-1">Return Date</label>
@@ -307,7 +307,7 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
                       min={form.travelDate}
                       value={form.returnDate}
                       onChange={e => setForm(f => ({ ...f, returnDate: e.target.value }))}
-                      className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400" />
+                      className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400" />
                   </div>
                 </div>
               </Section>
@@ -349,7 +349,7 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
           {step === 'rooms' && (
             <Section title="Select Rooms">
               <p className="text-xs text-gray-400 mb-4">
-                Choose room types and quantities. <span className="text-orange-500 font-semibold">Edit prices below to customise the quote.</span>
+                Choose room types and quantities. <span className="text-indigo-500 font-semibold">Edit prices below to customise the quote.</span>
               </p>
               <div className="space-y-3">
                 {ROOM_CONFIG.map(rc => {
@@ -359,11 +359,11 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
                   return (
                     <div key={rc.type}
                       className={`p-4 rounded-xl border-2 transition-colors ${
-                        isSelected ? 'border-orange-400 bg-orange-50' : 'border-gray-100'
+                        isSelected ? 'border-indigo-400 bg-indigo-50' : 'border-gray-100'
                       }`}>
                       <div className="flex items-center justify-between">
                         <div className="flex-1 min-w-0">
-                          <p className={`text-sm font-semibold ${isSelected ? 'text-orange-700' : 'text-gray-800'}`}>
+                          <p className={`text-sm font-semibold ${isSelected ? 'text-indigo-700' : 'text-gray-800'}`}>
                             {rc.label}
                           </p>
                           <p className="text-xs text-gray-400">{rc.description}</p>
@@ -372,13 +372,13 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
                           <button type="button"
                             onClick={() => setRoomQty(rc.type, rc.label, Math.max(0, qty - 1))}
                             disabled={qty === 0}
-                            className="w-8 h-8 rounded-full border-2 border-gray-200 text-gray-600 hover:border-orange-400 hover:text-orange-500 font-bold flex items-center justify-center disabled:opacity-30 transition-colors">
+                            className="w-8 h-8 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold flex items-center justify-center disabled:opacity-30 transition-colors">
                             <FiMinus size={14} />
                           </button>
                           <span className="w-6 text-center font-bold text-gray-800 text-sm">{qty}</span>
                           <button type="button"
                             onClick={() => setRoomQty(rc.type, rc.label, qty + 1)}
-                            className="w-8 h-8 rounded-full border-2 border-gray-200 text-gray-600 hover:border-orange-400 hover:text-orange-500 font-bold flex items-center justify-center transition-colors">
+                            className="w-8 h-8 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold flex items-center justify-center transition-colors">
                             <FiPlus size={14} />
                           </button>
                         </div>
@@ -417,7 +417,7 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
                 })}
               </div>
               {totalRooms === 0 && (
-                <p className="text-xs text-orange-500 mt-3 flex items-center gap-1">
+                <p className="text-xs text-indigo-500 mt-3 flex items-center gap-1">
                   <FiInfo size={12} /> Select at least one room to continue.
                 </p>
               )}
@@ -430,18 +430,18 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
               {options.length > 0 ? (
                 <Section title="Add-ons & Extras">
                   <p className="text-xs text-gray-400 mb-3">
-                    Toggle options and <span className="text-orange-500 font-semibold">edit prices</span> as needed (price per adult).
+                    Toggle options and <span className="text-indigo-500 font-semibold">edit prices</span> as needed (price per adult).
                   </p>
                   <div className="space-y-2">
                     {options.map((opt) => (
                       <div key={opt.label}
                         className={`flex items-center justify-between p-3 rounded-xl border-2 transition-colors ${
-                          opt.selected ? 'border-orange-400 bg-orange-50' : 'border-gray-100'
+                          opt.selected ? 'border-indigo-400 bg-indigo-50' : 'border-gray-100'
                         }`}>
                         <button type="button" onClick={() => toggleOption(opt.label)}
                           className="flex items-center gap-3 flex-1 min-w-0 text-left">
                           <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                            opt.selected ? 'border-orange-400 bg-orange-400' : 'border-gray-300'
+                            opt.selected ? 'border-indigo-400 bg-indigo-400' : 'border-gray-300'
                           }`}>
                             {opt.selected && <FiCheckCircle size={12} className="text-white" />}
                           </div>
@@ -472,14 +472,14 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
                 <textarea rows={3} placeholder="Notes included in the quote email (e.g. special terms, inclusions…)"
                   value={form.notes}
                   onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 resize-none" />
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400 resize-none" />
               </Section>
 
               <Section title="Internal Admin Notes">
                 <textarea rows={2} placeholder="Internal notes (not visible to customer)"
                   value={form.adminNotes}
                   onChange={e => setForm(f => ({ ...f, adminNotes: e.target.value }))}
-                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 resize-none" />
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400 resize-none" />
               </Section>
             </>
           )}
@@ -537,11 +537,11 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
                           placeholder={computedTotal.toLocaleString()}
                           value={totalOverride}
                           onChange={e => setTotalOverride(e.target.value)}
-                          className="w-32 text-sm border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:border-orange-400 text-right"
+                          className="w-32 text-sm border border-gray-200 rounded-lg px-2 py-1 focus:outline-none focus:border-indigo-400 text-right"
                         />
                       </div>
                     </div>
-                    <p className="text-right font-black text-xl text-orange-500 mt-1">
+                    <p className="text-right font-black text-xl text-indigo-500 mt-1">
                       LKR {finalTotal.toLocaleString()}
                     </p>
                     {totalOverride && (
@@ -582,30 +582,30 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
             {step !== 'summary' && finalTotal > 0 && (
               <div className="text-right">
                 <p className="text-xs text-gray-400">Total</p>
-                <p className="font-black text-base text-orange-500">LKR {finalTotal.toLocaleString()}</p>
+                <p className="font-black text-base text-indigo-500">LKR {finalTotal.toLocaleString()}</p>
               </div>
             )}
             {step === 'dates' && (
               <button onClick={() => setStep('rooms')} disabled={!canGoToRooms}
-                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm disabled:opacity-40 transition-all">
+                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-sm disabled:opacity-40 transition-all">
                 Choose Rooms <FiChevronRight size={14} />
               </button>
             )}
             {step === 'rooms' && (
               <button onClick={() => setStep('options')} disabled={!canGoToOptions}
-                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm disabled:opacity-40 transition-all">
+                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-sm disabled:opacity-40 transition-all">
                 Continue <FiChevronRight size={14} />
               </button>
             )}
             {step === 'options' && (
               <button onClick={() => setStep('summary')}
-                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-semibold text-sm transition-all">
+                className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 text-white font-semibold text-sm transition-all">
                 Review Quote <FiChevronRight size={14} />
               </button>
             )}
             {step === 'summary' && (
               <button onClick={submit} disabled={loading}
-                className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white font-semibold text-sm transition-all">
+                className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 text-white font-semibold text-sm transition-all">
                 {loading ? 'Creating…' : 'Create Booking & Send Email'}
               </button>
             )}
@@ -643,12 +643,12 @@ function Counter({ label, sub, min = 0, max = 20, value, onChange }: {
       {sub && <p className="text-[10px] text-gray-400 mb-1">{sub}</p>}
       <div className="flex items-center justify-center gap-2">
         <button type="button" onClick={() => onChange(Math.max(min, value - 1))}
-          className="w-7 h-7 rounded-full border-2 border-gray-200 text-gray-600 hover:border-orange-400 hover:text-orange-500 font-bold text-base flex items-center justify-center transition-colors">
+          className="w-7 h-7 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold text-base flex items-center justify-center transition-colors">
           −
         </button>
         <span className="w-6 text-center font-bold text-gray-800">{value}</span>
         <button type="button" onClick={() => onChange(Math.min(max, value + 1))}
-          className="w-7 h-7 rounded-full border-2 border-gray-200 text-gray-600 hover:border-orange-400 hover:text-orange-500 font-bold text-base flex items-center justify-center transition-colors">
+          className="w-7 h-7 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold text-base flex items-center justify-center transition-colors">
           +
         </button>
       </div>
@@ -664,7 +664,7 @@ function PriceInput({ value, onChange, small }: { value: number; onChange: (v: n
       value={value || ''}
       onChange={e => onChange(Number(e.target.value))}
       onClick={e => e.stopPropagation()}
-      className={`border border-orange-200 bg-white rounded-lg focus:outline-none focus:border-orange-400 text-right font-semibold text-orange-700
+      className={`border border-indigo-200 bg-white rounded-lg focus:outline-none focus:border-indigo-400 text-right font-semibold text-indigo-700
         ${small ? 'w-24 px-2 py-0.5 text-xs' : 'w-32 px-3 py-1.5 text-sm'}`}
     />
   )

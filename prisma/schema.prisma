@@ -838,7 +838,7 @@ model Perk {
   title       String
   description String        @db.Text
   iconName    String
-  iconColor   String        @default("#f59e0b")
+  iconColor   String        @default("#0a83f5")
   bgColor     String        @default("#fffbeb")
   imageUrl    String?
   ctaLink     String?

@@ -34,7 +34,7 @@ const STATUS_COLOR: Record<string, string> = {
   REQUESTED: 'text-blue-600 bg-blue-50',
   CALL_REQUIRED: 'text-purple-600 bg-purple-50',
   EDIT_RESEND: 'text-yellow-600 bg-yellow-50',
-  AWAITING_CONFIRM: 'text-orange-600 bg-orange-100 ring-1 ring-orange-300',
+  AWAITING_CONFIRM: 'text-indigo-600 bg-indigo-100 ring-1 ring-indigo-300',
   CONFIRMED: 'text-teal-600 bg-teal-50',
   RECEIPT_UPLOADED: 'text-indigo-600 bg-indigo-50',
   ADMIN_CONFIRMING: 'text-pink-600 bg-pink-50',
@@ -138,8 +138,8 @@ function QuoteReview({ booking, onAction }: { booking: Booking; onAction: () => 
   const lineItems = quote?.lineItems ?? []
 
   return (
-    <div className="mx-4 mb-4 p-4 bg-orange-50 border-2 border-orange-200 rounded-2xl">
-      <p className="text-xs font-black text-orange-700 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+    <div className="mx-4 mb-4 p-4 bg-indigo-50 border-2 border-indigo-200 rounded-2xl">
+      <p className="text-xs font-black text-indigo-700 uppercase tracking-wide mb-3 flex items-center gap-1.5">
         <FiCheckCircle size={13} /> Your Quote is Ready — Action Required
       </p>
 
@@ -153,11 +153,11 @@ function QuoteReview({ booking, onAction }: { booking: Booking; onAction: () => 
                 <td className="px-3 py-2 text-right font-semibold text-gray-800">LKR {item.price.toLocaleString()}</td>
               </tr>
             ))}
-            <tr className="bg-orange-50">
-              <td className="px-3 py-2.5 font-black text-orange-700">
+            <tr className="bg-indigo-50">
+              <td className="px-3 py-2.5 font-black text-indigo-700">
                 {lineItems.length === 0 ? 'Confirmed Total' : 'Total'}
               </td>
-              <td className="px-3 py-2.5 text-right font-black text-orange-700 text-sm">
+              <td className="px-3 py-2.5 text-right font-black text-indigo-700 text-sm">
                 LKR {(quote?.totalPrice ?? booking.totalPrice).toLocaleString()}
               </td>
             </tr>
@@ -185,7 +185,7 @@ function QuoteReview({ booking, onAction }: { booking: Booking; onAction: () => 
         <div className="mb-3 space-y-2">
           <textarea rows={3} placeholder="Describe what you'd like changed (rooms, price, dates, extras…)"
             value={requestNote} onChange={e => setRequestNote(e.target.value)}
-            className="w-full text-xs border border-orange-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400 resize-none bg-white" />
+            className="w-full text-xs border border-indigo-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-400 resize-none bg-white" />
           <div className="flex gap-2">
             <button onClick={() => respond('request_changes')} disabled={loading || !requestNote.trim()}
               className="flex items-center gap-1.5 text-xs bg-gray-700 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-gray-800 disabled:opacity-50">
@@ -206,7 +206,7 @@ function QuoteReview({ booking, onAction }: { booking: Booking; onAction: () => 
             <FiCheckCircle size={14} /> {loading ? 'Confirming…' : 'Accept & Confirm'}
           </button>
           <button onClick={() => setShowRequestForm(true)} disabled={loading}
-            className="flex items-center gap-1.5 text-sm bg-white border border-orange-300 text-orange-600 px-4 py-2 rounded-xl font-semibold hover:bg-orange-50 disabled:opacity-50 transition-colors">
+            className="flex items-center gap-1.5 text-sm bg-white border border-indigo-300 text-indigo-600 px-4 py-2 rounded-xl font-semibold hover:bg-indigo-50 disabled:opacity-50 transition-colors">
             Request Changes
           </button>
         </div>
@@ -358,7 +358,7 @@ export default function MyBookingsPage() {
           <p className="text-sm text-gray-500 mt-1">Welcome back, {customer.name}.</p>
         </div>
         {pendingQuotes > 0 && (
-          <div className="flex items-center gap-2 bg-orange-100 border border-orange-300 text-orange-700 px-4 py-2 rounded-xl text-sm font-semibold">
+          <div className="flex items-center gap-2 bg-indigo-100 border border-indigo-300 text-indigo-700 px-4 py-2 rounded-xl text-sm font-semibold">
             <FiAlertCircle size={15} />
             {pendingQuotes} quote{pendingQuotes > 1 ? 's' : ''} awaiting your confirmation
           </div>
@@ -392,7 +392,7 @@ export default function MyBookingsPage() {
       <div className="space-y-4">
         {bookings.map(b => (
           <div key={b.id} className={`bg-white rounded-2xl border shadow-sm overflow-hidden ${
-            b.status === 'AWAITING_CONFIRM' ? 'border-orange-300' : 'border-gray-100'
+            b.status === 'AWAITING_CONFIRM' ? 'border-indigo-300' : 'border-gray-100'
           }`}>
             {/* Card header */}
             <div className="flex gap-4 p-4">
@@ -437,11 +437,11 @@ export default function MyBookingsPage() {
 
             {/* Admin message */}
             {b.adminNotes && b.status !== 'AWAITING_CONFIRM' && (
-              <div className="mx-4 mb-3 p-3 bg-orange-50 border border-orange-100 rounded-xl">
-                <p className="text-[10px] font-bold text-orange-600 uppercase mb-1 flex items-center gap-1">
+              <div className="mx-4 mb-3 p-3 bg-indigo-50 border border-indigo-100 rounded-xl">
+                <p className="text-[10px] font-bold text-indigo-600 uppercase mb-1 flex items-center gap-1">
                   <FiCheckCircle size={10} /> Message from our team
                 </p>
-                <p className="text-xs text-orange-700 leading-relaxed">{b.adminNotes}</p>
+                <p className="text-xs text-indigo-700 leading-relaxed">{b.adminNotes}</p>
               </div>
             )}
 

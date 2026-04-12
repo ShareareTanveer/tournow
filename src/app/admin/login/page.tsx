@@ -36,7 +36,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center mx-auto mb-4">
+          <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-indigo-400 to-indigo-600 flex items-center justify-center mx-auto mb-4">
             <span className="text-white font-bold text-2xl">H</span>
           </div>
           <h1 className="text-white font-bold text-xl">Metro Voyage</h1>
@@ -56,7 +56,7 @@ export default function AdminLoginPage() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="admin@metrovoyage.com"
-                className="w-full bg-gray-700 border border-gray-600 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 transition-colors placeholder-gray-500"
+                className="w-full bg-gray-700 border border-gray-600 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 transition-colors placeholder-gray-500"
               />
             </div>
 
@@ -68,7 +68,7 @@ export default function AdminLoginPage() {
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="••••••••"
-                className="w-full bg-gray-700 border border-gray-600 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 transition-colors placeholder-gray-500"
+                className="w-full bg-gray-700 border border-gray-600 text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 transition-colors placeholder-gray-500"
               />
             </div>
 
@@ -81,7 +81,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white font-semibold py-3 rounded-xl transition-colors mt-2"
+              className="w-full bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 text-white font-semibold py-3 rounded-xl transition-colors mt-2"
             >
               {loading ? 'Signing in…' : 'Sign In'}
             </button>

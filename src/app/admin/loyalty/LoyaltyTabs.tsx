@@ -7,7 +7,7 @@ import LoyaltyProgramSettings from './LoyaltyProgramSettings'
 import Link from 'next/link'
 
 const TIER_BADGE: Record<string, string> = {
-  BRONZE: 'bg-orange-100 text-orange-700',
+  BRONZE: 'bg-indigo-100 text-indigo-700',
   SILVER: 'bg-gray-100 text-gray-600',
   GOLD:   'bg-amber-100 text-amber-700',
 }
@@ -36,7 +36,7 @@ export default function LoyaltyTabs({ cards, settings, tiers }: Props) {
           </button>
         </div>
         <Link href="/privilege-card" target="_blank"
-          className="flex items-center gap-1.5 text-xs font-semibold text-orange-500 hover:text-orange-600 border border-orange-200 px-3 py-1.5 rounded-lg hover:bg-orange-50 transition-colors">
+          className="flex items-center gap-1.5 text-xs font-semibold text-indigo-500 hover:text-indigo-600 border border-indigo-200 px-3 py-1.5 rounded-lg hover:bg-indigo-50 transition-colors">
           <FiExternalLink size={12} /> View Public Page
         </Link>
       </div>
@@ -52,10 +52,10 @@ export default function LoyaltyTabs({ cards, settings, tiers }: Props) {
             {(['GOLD', 'SILVER', 'BRONZE'] as const).map(tier => (
               <div key={tier} className="bg-white rounded-2xl border border-gray-200 p-5">
                 <p className={`text-xs font-medium mb-1 flex items-center gap-1.5`}>
-                  <span className={`inline-block w-2 h-2 rounded-full ${tier === 'GOLD' ? 'bg-amber-400' : tier === 'SILVER' ? 'bg-gray-400' : 'bg-orange-700'}`} />
+                  <span className={`inline-block w-2 h-2 rounded-full ${tier === 'GOLD' ? 'bg-amber-400' : tier === 'SILVER' ? 'bg-gray-400' : 'bg-indigo-700'}`} />
                   <span className="text-gray-400">{tier.charAt(0) + tier.slice(1).toLowerCase()}</span>
                 </p>
-                <p className={`text-3xl font-bold ${tier === 'GOLD' ? 'text-amber-600' : tier === 'SILVER' ? 'text-gray-500' : 'text-orange-700'}`}>
+                <p className={`text-3xl font-bold ${tier === 'GOLD' ? 'text-amber-600' : tier === 'SILVER' ? 'text-gray-500' : 'text-indigo-700'}`}>
                   {tiers[tier]}
                 </p>
               </div>

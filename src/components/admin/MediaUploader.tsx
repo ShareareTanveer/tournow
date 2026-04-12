@@ -203,11 +203,11 @@ export default function MediaUploader({
           onDragLeave={() => setDragOver(false)}
           onClick={() => inputRef.current?.click()}
           className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all ${
-            dragOver ? 'border-orange-400 bg-orange-50' : 'border-gray-300 hover:border-orange-400 hover:bg-orange-50/30'
+            dragOver ? 'border-indigo-400 bg-indigo-50' : 'border-gray-300 hover:border-indigo-400 hover:bg-indigo-50/30'
           }`}
         >
           {uploading ? (
-            <div className="flex flex-col items-center gap-2 text-orange-500">
+            <div className="flex flex-col items-center gap-2 text-indigo-500">
               <FiLoader size={24} className="animate-spin" />
               <p className="text-sm font-medium">Uploading…</p>
             </div>
@@ -223,7 +223,7 @@ export default function MediaUploader({
 
       {/* Load from URL row */}
       <div className="flex gap-2">
-        <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-xl px-3 focus-within:border-orange-400 transition-colors bg-white">
+        <div className="flex-1 flex items-center gap-2 border border-gray-200 rounded-xl px-3 focus-within:border-indigo-400 transition-colors bg-white">
           <FiLink size={13} className="text-gray-400 shrink-0" />
           <input
             type="text"

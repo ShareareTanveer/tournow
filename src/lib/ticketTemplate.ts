@@ -76,7 +76,7 @@ export function generateTicketHtml(data: TicketData): string {
   <div style="max-width:680px;margin:32px auto;background:white;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)">
 
     <!-- Header -->
-    <div style="background:linear-gradient(135deg,#f59e0b,#d97706);padding:28px 32px;color:white">
+    <div style="background:linear-gradient(135deg,#0a83f5,#d97706);padding:28px 32px;color:white">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
         <div>
           <p style="font-size:22px;font-weight:900;letter-spacing:-0.5px">${company}</p>
@@ -186,7 +186,7 @@ export function generateTicketHtml(data: TicketData): string {
       </div>
       <div class="no-print" style="margin-top:20px;border-top:1px solid #374151;padding-top:16px;text-align:center">
         <button onclick="window.print()"
-          style="background:#f59e0b;color:white;border:none;padding:10px 28px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">
+          style="background:#0a83f5;color:white;border:none;padding:10px 28px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">
           🖨 Print / Save as PDF
         </button>
       </div>

@@ -42,9 +42,9 @@ function ChipList({ label, items, presets, accentColor = 'sky', onChange }: {
 }) {
   const [input, setInput] = useState('')
   const available = presets.filter(p => !items.includes(p))
-  const focusBorder = accentColor === 'sky' ? 'focus:border-sky-400' : 'focus:border-orange-400'
-  const chipBg = accentColor === 'sky' ? 'bg-sky-50 text-sky-700' : 'bg-orange-50 text-orange-700'
-  const addBg = accentColor === 'sky' ? 'bg-sky-500 hover:bg-sky-600' : 'bg-orange-500 hover:bg-orange-600'
+  const focusBorder = accentColor === 'sky' ? 'focus:border-sky-400' : 'focus:border-indigo-400'
+  const chipBg = accentColor === 'sky' ? 'bg-sky-50 text-sky-700' : 'bg-indigo-50 text-indigo-700'
+  const addBg = accentColor === 'sky' ? 'bg-indigo-500 hover:bg-sky-600' : 'bg-indigo-500 hover:bg-indigo-600'
 
   function add(val: string) {
     const v = val.trim()
@@ -132,7 +132,7 @@ function OptionsEditor({ options, onChange }: { options: OptionItem[]; onChange:
             placeholder="Price"
             className="w-24 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-400" />
           <button type="button" onClick={add}
-            className="text-xs bg-sky-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-sky-600 flex items-center gap-1">
+            className="text-xs bg-indigo-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-sky-600 flex items-center gap-1">
             <FiPlus size={11} /> Add
           </button>
         </div>
@@ -166,7 +166,7 @@ function CancellationTiersEditor({ tiers, onChange }: { tiers: CancellationTier[
             {tiers.map((t, i) => (
               <div key={i} className="flex items-center gap-2 bg-gray-50 rounded-lg px-3 py-2">
                 <span className="text-xs font-semibold text-gray-600 w-20 shrink-0">≥ {t.daysBeforeDep}d</span>
-                <span className={`text-xs font-bold ${t.refundPercent >= 75 ? 'text-green-600' : t.refundPercent >= 25 ? 'text-orange-500' : 'text-red-500'}`}>
+                <span className={`text-xs font-bold ${t.refundPercent >= 75 ? 'text-green-600' : t.refundPercent >= 25 ? 'text-indigo-500' : 'text-red-500'}`}>
                   {t.refundPercent}% refund
                 </span>
                 <span className="flex-1 text-xs text-gray-400 italic">{t.label}</span>
@@ -189,7 +189,7 @@ function CancellationTiersEditor({ tiers, onChange }: { tiers: CancellationTier[
             placeholder="Label (optional)"
             className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-400" />
           <button type="button" onClick={add}
-            className="text-xs bg-sky-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-sky-600 flex items-center gap-1">
+            className="text-xs bg-indigo-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-sky-600 flex items-center gap-1">
             <FiPlus size={11} /> Add
           </button>
         </div>
@@ -427,7 +427,7 @@ export default function TourForm({ destinations, tour }: Props) {
       <div className="flex gap-1 bg-gray-100 rounded-xl p-1 flex-wrap">
         {TABS.map((t) => (
           <button key={t.id} type="button" onClick={() => setTab(t.id as any)}
-            className={`flex-1 text-xs font-semibold px-3 py-2 rounded-lg transition-colors min-w-[80px] ${tab === t.id ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+            className={`flex-1 text-xs font-semibold px-3 py-2 rounded-lg transition-colors min-w-20 ${tab === t.id ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
             {t.label}
           </button>
         ))}
@@ -701,7 +701,7 @@ export default function TourForm({ destinations, tour }: Props) {
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-semibold text-gray-500">Meta Title</label>
                   <div className="flex items-center gap-2">
-                    <span className={`text-[11px] font-semibold ${form.metaTitle.length === 0 ? 'text-gray-300' : form.metaTitle.length < 50 ? 'text-orange-500' : form.metaTitle.length <= 65 ? 'text-emerald-500' : 'text-red-500'}`}>{form.metaTitle.length} / 65</span>
+                    <span className={`text-[11px] font-semibold ${form.metaTitle.length === 0 ? 'text-gray-300' : form.metaTitle.length < 50 ? 'text-indigo-500' : form.metaTitle.length <= 65 ? 'text-emerald-500' : 'text-red-500'}`}>{form.metaTitle.length} / 65</span>
                     <AiFieldAssist fieldLabel="Meta Title" fieldName="metaTitle" currentValue={form.metaTitle} formContext={aiContext} onApply={v => setForm(f => ({ ...f, metaTitle: v }))} accentColor="sky" />
                   </div>
                 </div>
@@ -717,7 +717,7 @@ export default function TourForm({ destinations, tour }: Props) {
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-semibold text-gray-500">Meta Description</label>
                   <div className="flex items-center gap-2">
-                    <span className={`text-[11px] font-semibold ${form.metaDescription.length === 0 ? 'text-gray-300' : form.metaDescription.length < 150 ? 'text-orange-500' : form.metaDescription.length <= 160 ? 'text-emerald-500' : 'text-red-500'}`}>{form.metaDescription.length} / 160</span>
+                    <span className={`text-[11px] font-semibold ${form.metaDescription.length === 0 ? 'text-gray-300' : form.metaDescription.length < 150 ? 'text-indigo-500' : form.metaDescription.length <= 160 ? 'text-emerald-500' : 'text-red-500'}`}>{form.metaDescription.length} / 160</span>
                     <AiFieldAssist fieldLabel="Meta Description" fieldName="metaDescription" currentValue={form.metaDescription} formContext={aiContext} onApply={v => setForm(f => ({ ...f, metaDescription: v }))} accentColor="sky" />
                   </div>
                 </div>
@@ -842,7 +842,7 @@ export default function TourForm({ destinations, tour }: Props) {
 
       <div className="flex gap-3">
         <button type="submit" disabled={loading}
-          className="bg-sky-500 hover:bg-sky-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+          className="bg-indigo-500 hover:bg-sky-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
           {loading ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Tour'}
         </button>
         <button type="button" onClick={() => router.back()}

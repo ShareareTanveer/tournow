@@ -53,7 +53,7 @@ export default async function AboutPage() {
             { Icon: FiHeart,     iconBg: '#fef2f2', iconColor: '#ef4444', title: 'Customer First',      desc: 'Your satisfaction is our priority. We are available until 10 PM, every day.' },
             { Icon: FiGlobe,     iconBg: '#eef2ff', iconColor: '#6366f1', title: 'Destination Experts', desc: 'We visit every destination we recommend to give you first-hand insights.' },
             { Icon: FiNavigation,iconBg: '#f0fdf9', iconColor: '#0d9488', title: 'Passion for Travel',  desc: 'We are travellers ourselves. That passion shows in every package we create.' },
-            { Icon: FiShield,    iconBg: '#fffbeb', iconColor: '#f59e0b', title: 'Trust & Reliability', desc: 'SLTDA licensed, Civil Aviation certified, and fully bonded & insured.' },
+            { Icon: FiShield,    iconBg: '#fffbeb', iconColor: '#0a83f5', title: 'Trust & Reliability', desc: 'SLTDA licensed, Civil Aviation certified, and fully bonded & insured.' },
           ] as const).map((v) => (
             <div key={v.title} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex gap-4 items-start">
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: v.iconBg }}>

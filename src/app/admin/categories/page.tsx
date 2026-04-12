@@ -67,8 +67,7 @@ export default function CategoriesPage() {
   }
 
   return (
-    <AdminShell title="Tour Categories">
-      <p className="text-sm text-gray-500 mb-6">Manage category images and descriptions. These appear on the homepage and packages page.</p>
+    <AdminShell title="Tour Categories" subtitle="Manage category images and descriptions shown on the homepage">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {cats.map((cat) => {
           const isEditing = editing === cat.slug
@@ -89,8 +88,8 @@ export default function CategoriesPage() {
                 ) : cat.imageUrl ? (
                   <img src={cat.imageUrl} alt={cat.label} className="w-full h-32 object-cover" />
                 ) : (
-                  <div className="w-full h-32 bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center">
-                    <span className="text-3xl font-black text-orange-400 opacity-60">{cat.label[0]}</span>
+                  <div className="w-full h-32 bg-linear-to-br from-indigo-100 to-indigo-200 flex items-center justify-center">
+                    <span className="text-3xl font-black text-indigo-400 opacity-60">{cat.label[0]}</span>
                   </div>
                 )}
               </div>
@@ -102,21 +101,21 @@ export default function CategoriesPage() {
                     <div>
                       <label className="block text-xs font-semibold text-gray-400 mb-1">Label</label>
                       <input value={editData.label || ''} onChange={e => setEditData(d => ({ ...d, label: e.target.value }))}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-400" />
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-400" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-gray-400 mb-1">Description</label>
                       <textarea rows={2} value={editData.description || ''} onChange={e => setEditData(d => ({ ...d, description: e.target.value }))}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-400 resize-none" />
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-400 resize-none" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-gray-400 mb-1">Sort Order</label>
                       <input type="number" min={0} value={editData.sortOrder ?? 0} onChange={e => setEditData(d => ({ ...d, sortOrder: Number(e.target.value) }))}
-                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-orange-400" />
+                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-400" />
                     </div>
                     <div className="flex gap-2">
                       <button onClick={() => saveEdit(cat)} disabled={saving}
-                        className="flex-1 flex items-center justify-center gap-1.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white text-xs font-semibold py-2 rounded-lg transition-colors">
+                        className="flex-1 flex items-center justify-center gap-1.5 bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 text-white text-xs font-semibold py-2 rounded-lg transition-colors">
                         <FiCheck size={12} /> {saving ? 'Saving…' : 'Save'}
                       </button>
                       <button onClick={() => setEditing(null)}

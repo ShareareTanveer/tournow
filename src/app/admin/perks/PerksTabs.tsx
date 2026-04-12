@@ -61,7 +61,7 @@ export default function PerksTabs({ perks: initial, pendingCount }: Props) {
 
         {tab === 'perks' && (
           <Link href="/admin/perks/new"
-            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
+            className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors">
             <FiPlus size={14} /> Add Perk
           </Link>
         )}
@@ -83,7 +83,7 @@ export default function PerksTabs({ perks: initial, pendingCount }: Props) {
                 <tr>
                   <td colSpan={6} className="px-5 py-12 text-center text-gray-400">
                     No perks yet.{' '}
-                    <Link href="/admin/perks/new" className="text-orange-500 hover:underline font-medium">Add the first one</Link>
+                    <Link href="/admin/perks/new" className="text-indigo-500 hover:underline font-medium">Add the first one</Link>
                   </td>
                 </tr>
               )}
@@ -97,7 +97,7 @@ export default function PerksTabs({ perks: initial, pendingCount }: Props) {
                       ) : (
                         <div className="w-full h-full flex items-center justify-center"
                           style={{ background: p.bgColor || '#fffbeb' }}>
-                          <FiTag size={14} style={{ color: p.iconColor || '#f59e0b' }} />
+                          <FiTag size={14} style={{ color: p.iconColor || '#0a83f5' }} />
                         </div>
                       )}
                     </div>
@@ -133,7 +133,7 @@ export default function PerksTabs({ perks: initial, pendingCount }: Props) {
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
                       <Link href={`/admin/perks/${p.id}`}
-                        className="flex items-center gap-1.5 text-xs font-semibold text-orange-500 hover:text-orange-600 hover:underline">
+                        className="flex items-center gap-1.5 text-xs font-semibold text-indigo-500 hover:text-indigo-600 hover:underline">
                         <FiEdit2 size={13} /> Edit
                       </Link>
                       <button

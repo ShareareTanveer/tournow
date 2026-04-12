@@ -152,7 +152,7 @@ export default function CustomerOverviewPage() {
           </div>
         ) : recentPerks.length === 0 ? (
           <div className="px-5 py-10 text-center">
-            <div className="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
+            <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
               <FiTag size={20} style={{ color: 'var(--brand)' }} />
             </div>
             <p className="font-bold text-gray-700 text-sm">No perks claimed yet</p>
@@ -171,7 +171,7 @@ export default function CustomerOverviewPage() {
                 <li key={cp.id} className="px-5 py-3.5 flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
                     style={{ background: cp.perk.bgColor || '#fffbeb' }}>
-                    <FiGift size={16} style={{ color: cp.perk.iconColor || '#f59e0b' }} />
+                    <FiGift size={16} style={{ color: cp.perk.iconColor || '#0a83f5' }} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-gray-800 text-sm truncate">{cp.perk.title}</p>

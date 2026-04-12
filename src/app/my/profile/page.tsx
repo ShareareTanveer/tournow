@@ -99,7 +99,7 @@ export default function MyProfilePage() {
         <div>
           <p className="font-bold text-gray-800">{user?.name ?? '…'}</p>
           <p className="text-sm text-gray-400">{user?.email}</p>
-          <span className="mt-1 inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-600">
+          <span className="mt-1 inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-600">
             Member
           </span>
         </div>

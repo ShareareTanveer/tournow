@@ -14,7 +14,7 @@ async function getData() {
 export default async function PerksAdminPage() {
   const { perks, pendingCount } = await getData()
   return (
-    <AdminShell title="Perks Management">
+    <AdminShell title="Perks Management" subtitle={`${perks.length} perks · ${pendingCount} pending claims`}>
       <PerksTabs perks={perks} pendingCount={pendingCount} />
     </AdminShell>
   )

@@ -209,7 +209,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
             {stepOrder.map((s, i) => (
               <div key={s} className="flex items-center gap-1 flex-1">
                 <div className={`h-1 flex-1 rounded-full transition-colors ${
-                  stepOrder.indexOf(step) >= i ? 'bg-orange-400' : 'bg-gray-200'
+                  stepOrder.indexOf(step) >= i ? 'bg-indigo-400' : 'bg-gray-200'
                 }`} />
               </div>
             ))}
@@ -230,7 +230,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                       min={new Date().toISOString().split('T')[0]}
                       value={form.travelDate}
                       onChange={e => setForm(f => ({ ...f, travelDate: e.target.value }))}
-                      className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400" />
+                      className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400" />
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-gray-500 block mb-1">Return Date</label>
@@ -238,7 +238,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                       min={form.travelDate || new Date().toISOString().split('T')[0]}
                       value={form.returnDate}
                       onChange={e => setForm(f => ({ ...f, returnDate: e.target.value }))}
-                      className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400" />
+                      className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400" />
                   </div>
                 </div>
               </Section>
@@ -281,14 +281,14 @@ export default function BookingModal({ open, onClose, target }: Props) {
                   return (
                     <div key={rc.type}
                       className={`flex items-center justify-between p-4 rounded-xl border-2 transition-colors ${
-                        isSelected ? 'border-orange-400 bg-orange-50' : 'border-gray-100'
+                        isSelected ? 'border-indigo-400 bg-indigo-50' : 'border-gray-100'
                       }`}>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-sm font-semibold ${isSelected ? 'text-orange-700' : 'text-gray-800'}`}>
+                        <p className={`text-sm font-semibold ${isSelected ? 'text-indigo-700' : 'text-gray-800'}`}>
                           {rc.label}
                         </p>
                         <p className="text-xs text-gray-400">{rc.description}</p>
-                        <p className="text-xs font-bold text-orange-600 mt-0.5">
+                        <p className="text-xs font-bold text-indigo-600 mt-0.5">
                           LKR {unitPrice.toLocaleString()} / person
                           {rc.discounted && target.priceTwin && target.priceTwin < target.price && (
                             <span className="ml-1 text-green-600">(best value)</span>
@@ -299,13 +299,13 @@ export default function BookingModal({ open, onClose, target }: Props) {
                         <button type="button"
                           onClick={() => setRoomQty(rc.type, rc.label, Math.max(0, qty - 1))}
                           disabled={qty === 0}
-                          className="w-8 h-8 rounded-full border-2 border-gray-200 text-gray-600 hover:border-orange-400 hover:text-orange-500 font-bold flex items-center justify-center disabled:opacity-30 transition-colors">
+                          className="w-8 h-8 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold flex items-center justify-center disabled:opacity-30 transition-colors">
                           <FiMinus size={14} />
                         </button>
                         <span className="w-6 text-center font-bold text-gray-800 text-sm">{qty}</span>
                         <button type="button"
                           onClick={() => setRoomQty(rc.type, rc.label, qty + 1)}
-                          className="w-8 h-8 rounded-full border-2 border-gray-200 text-gray-600 hover:border-orange-400 hover:text-orange-500 font-bold flex items-center justify-center transition-colors">
+                          className="w-8 h-8 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold flex items-center justify-center transition-colors">
                           <FiPlus size={14} />
                         </button>
                       </div>
@@ -314,7 +314,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                 })}
               </div>
               {totalRooms === 0 && (
-                <p className="text-xs text-orange-500 mt-3 flex items-center gap-1">
+                <p className="text-xs text-indigo-500 mt-3 flex items-center gap-1">
                   <FiInfo size={12} /> Please select at least one room to continue.
                 </p>
               )}
@@ -333,11 +333,11 @@ export default function BookingModal({ open, onClose, target }: Props) {
                       return (
                         <button key={opt.label} type="button" onClick={() => toggleOption(opt)}
                           className={`w-full flex items-center justify-between p-3 rounded-xl border-2 transition-colors ${
-                            selected ? 'border-orange-400 bg-orange-50' : 'border-gray-100 hover:border-gray-200'
+                            selected ? 'border-indigo-400 bg-indigo-50' : 'border-gray-100 hover:border-gray-200'
                           }`}>
                           <div className="flex items-center gap-3">
                             <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                              selected ? 'border-orange-400 bg-orange-400' : 'border-gray-300'
+                              selected ? 'border-indigo-400 bg-indigo-400' : 'border-gray-300'
                             }`}>
                               {selected && <FiCheckCircle size={12} className="text-white" />}
                             </div>
@@ -346,7 +346,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                               <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-semibold">Included</span>
                             )}
                           </div>
-                          <span className="text-sm font-bold text-orange-600">
+                          <span className="text-sm font-bold text-indigo-600">
                             {opt.price > 0 ? `+ LKR ${opt.price.toLocaleString()}` : 'Free'}
                           </span>
                         </button>
@@ -365,7 +365,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                 <textarea rows={3} placeholder="Any dietary requirements, special occasions, accessibility needs…"
                   value={form.notes}
                   onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 resize-none" />
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400 resize-none" />
               </Section>
             </>
           )}
@@ -406,7 +406,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                   ))}
                   <div className="border-t border-gray-100 pt-2 mt-2 flex justify-between font-bold text-gray-900">
                     <span>Estimated Total</span>
-                    <span className="text-lg text-orange-500">LKR {grandTotal.toLocaleString()}</span>
+                    <span className="text-lg text-indigo-500">LKR {grandTotal.toLocaleString()}</span>
                   </div>
                 </div>
               </Section>
@@ -418,7 +418,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                       {target.cancellationTiers.map((t, i) => (
                         <div key={i} className="flex justify-between text-xs text-gray-600 py-1 border-b border-gray-50 last:border-0">
                           <span>{t.label}</span>
-                          <span className={`font-semibold ${t.refundPercent === 100 ? 'text-green-600' : t.refundPercent === 0 ? 'text-red-500' : 'text-orange-500'}`}>
+                          <span className={`font-semibold ${t.refundPercent === 100 ? 'text-green-600' : t.refundPercent === 0 ? 'text-red-500' : 'text-indigo-500'}`}>
                             {t.refundPercent}% refund
                           </span>
                         </div>
@@ -491,7 +491,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
               {step !== 'summary' && grandTotal > 0 && (
                 <div className="text-right">
                   <p className="text-xs text-gray-400">Est. Total</p>
-                  <p className="font-black text-base text-orange-500">LKR {grandTotal.toLocaleString()}</p>
+                  <p className="font-black text-base text-indigo-500">LKR {grandTotal.toLocaleString()}</p>
                 </div>
               )}
               {step === 'dates' && (
@@ -557,12 +557,12 @@ function Counter({ label, sub, min = 0, max = 20, value, onChange }: {
       {sub && <p className="text-[10px] text-gray-400 mb-1">{sub}</p>}
       <div className="flex items-center justify-center gap-2">
         <button type="button" onClick={() => onChange(Math.max(min, value - 1))}
-          className="w-7 h-7 rounded-full border-2 border-gray-200 text-gray-600 hover:border-orange-400 hover:text-orange-500 font-bold text-base flex items-center justify-center transition-colors">
+          className="w-7 h-7 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold text-base flex items-center justify-center transition-colors">
           −
         </button>
         <span className="w-6 text-center font-bold text-gray-800">{value}</span>
         <button type="button" onClick={() => onChange(Math.min(max, value + 1))}
-          className="w-7 h-7 rounded-full border-2 border-gray-200 text-gray-600 hover:border-orange-400 hover:text-orange-500 font-bold text-base flex items-center justify-center transition-colors">
+          className="w-7 h-7 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold text-base flex items-center justify-center transition-colors">
           +
         </button>
       </div>

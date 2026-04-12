@@ -51,10 +51,10 @@ export default function MediaLibraryClient({ initialItems }: { initialItems: Med
         onDrop={e => { e.preventDefault(); const f = e.dataTransfer.files[0]; if (f) upload(f) }}
         onDragOver={e => e.preventDefault()}
         onClick={() => inputRef.current?.click()}
-        className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center cursor-pointer hover:border-orange-400 hover:bg-orange-50/20 transition-all"
+        className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/20 transition-all"
       >
         {uploading ? (
-          <div className="flex flex-col items-center gap-2 text-orange-500">
+          <div className="flex flex-col items-center gap-2 text-indigo-500">
             <FiLoader size={24} className="animate-spin" />
             <p className="text-sm font-medium">Uploading…</p>
           </div>

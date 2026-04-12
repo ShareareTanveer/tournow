@@ -40,7 +40,7 @@ const STAR_MAP: Record<string, number> = { THREE: 3, FOUR: 4, FIVE: 5 }
 const DIFFICULTY_COLOR: Record<string, string> = {
   EASY: 'bg-green-100 text-green-700',
   MODERATE: 'bg-yellow-100 text-yellow-700',
-  CHALLENGING: 'bg-orange-100 text-orange-700',
+  CHALLENGING: 'bg-indigo-100 text-indigo-700',
   EXTREME: 'bg-red-100 text-red-700',
 }
 

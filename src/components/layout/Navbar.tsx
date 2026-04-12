@@ -30,7 +30,7 @@ const PACKAGE_CATEGORIES = [
   { label: "Solo Packages",         slug: "solo",      desc: "Explore the world your way",      icon: FiUser,      color: "#8b5cf6" },
   { label: "Squad Packages",        slug: "squad",     desc: "Travel with your crew",           icon: FiSmile,     color: "#10b981" },
   { label: "Corporate Packages",    slug: "corporate", desc: "MICE & business travel",          icon: FiBriefcase, color: "#64748b" },
-  { label: "Special Packages",      slug: "special",   desc: "VIP & exclusive experiences",     icon: FiStar,      color: "#f59e0b" },
+  { label: "Special Packages",      slug: "special",   desc: "VIP & exclusive experiences",     icon: FiStar,      color: "#0a83f5" },
   { label: "2026 Holiday Packages", slug: "holiday",   desc: "Seasonal specials",               icon: FiSun,       color: "#f97316" },
 ];
 
@@ -80,7 +80,7 @@ const TOUR_REGIONS = [
     countries: ["Singapore", "Thailand", "Malaysia", "Bali", "Vietnam", "Cambodia"],
   },
   {
-    label: "Middle East",     slug: "middle-east",     color: "#f59e0b",
+    label: "Middle East",     slug: "middle-east",     color: "#0a83f5",
     countries: ["Dubai", "Abu Dhabi", "Qatar", "Oman", "Jordan", "Saudi Arabia"],
   },
   {
@@ -178,7 +178,7 @@ export default function Navbar() {
     (r) => r.region === activeRegion,
   );
 
-  const amber = "#f59e0b";
+  const amber = "#0a83f5";
   const teal = "#0d9488";
 
   const textColor = "#1e293b";
@@ -300,14 +300,14 @@ export default function Navbar() {
                               <Icon size={14} style={{ color: cat.color }} />
                             </div>
                             <div>
-                              <p className="text-sm font-semibold text-gray-800 group-hover/item:text-orange-500 transition-colors leading-none mb-0.5">
+                              <p className="text-sm font-semibold text-gray-800 group-hover/item:text-indigo-500 transition-colors leading-none mb-0.5">
                                 {cat.label}
                               </p>
                               <p className="text-xs text-gray-400">{cat.desc}</p>
                             </div>
                             <FiChevronRight
                               size={12}
-                              className="ml-auto text-gray-300 group-hover/item:text-orange-400 transition-colors"
+                              className="ml-auto text-gray-300 group-hover/item:text-indigo-400 transition-colors"
                             />
                           </Link>
                         )
@@ -696,7 +696,7 @@ export default function Navbar() {
               <div
                 className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black text-sm"
                 style={{
-                  background: "linear-gradient(135deg, #f59e0b, #d97706)",
+                  background: "linear-gradient(135deg, #0a83f5, #d97706)",
                 }}
               >
                 M

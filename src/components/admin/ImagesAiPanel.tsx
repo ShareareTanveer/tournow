@@ -79,14 +79,14 @@ interface SeoPanelProps {
 
 function SeoPanel({ meta, onUpdate, onAiAlt }: SeoPanelProps) {
   return (
-    <div className="border border-orange-300 rounded-2xl bg-orange-50/20 p-5">
+    <div className="border border-indigo-300 rounded-2xl bg-indigo-50/20 p-5">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
-        <p className="text-xs font-black text-orange-600 uppercase tracking-wider">
+        <p className="text-xs font-black text-indigo-600 uppercase tracking-wider">
           SEO Fields — {meta.filename}
         </p>
         <button type="button" onClick={() => onUpdate({ seoOpen: false })}
-          className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-orange-100 text-gray-400 transition-colors">
+          className="w-6 h-6 flex items-center justify-center rounded-lg hover:bg-indigo-100 text-gray-400 transition-colors">
           <FiX size={13} />
         </button>
       </div>
@@ -98,14 +98,14 @@ function SeoPanel({ meta, onUpdate, onAiAlt }: SeoPanelProps) {
           <input type="text" value={meta.altText}
             onChange={e => onUpdate({ altText: e.target.value })}
             placeholder="AC Collection Acne Patch 26 Patches"
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-orange-400 bg-white" />
+            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-400 bg-white" />
         </div>
         <div>
           <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Title</label>
           <input type="text" value={meta.title}
             onChange={e => onUpdate({ title: e.target.value })}
             placeholder="Hover title"
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-orange-400 bg-white" />
+            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-400 bg-white" />
         </div>
       </div>
 
@@ -116,14 +116,14 @@ function SeoPanel({ meta, onUpdate, onAiAlt }: SeoPanelProps) {
           <input type="text" value={meta.seoAlt}
             onChange={e => onUpdate({ seoAlt: e.target.value })}
             placeholder="SEO alt text"
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-orange-400 bg-white" />
+            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-400 bg-white" />
         </div>
         <div>
           <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">SEO Title</label>
           <input type="text" value={meta.seoTitle}
             onChange={e => onUpdate({ seoTitle: e.target.value })}
             placeholder="SEO title tag"
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-orange-400 bg-white" />
+            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-400 bg-white" />
         </div>
       </div>
 
@@ -135,7 +135,7 @@ function SeoPanel({ meta, onUpdate, onAiAlt }: SeoPanelProps) {
             onChange={e => onUpdate({ seoDesc: e.target.value })}
             placeholder="Structured data description"
             rows={3}
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-orange-400 resize-none bg-white" />
+            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-400 resize-none bg-white" />
         </div>
         <div>
           <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1.5">Caption</label>
@@ -143,7 +143,7 @@ function SeoPanel({ meta, onUpdate, onAiAlt }: SeoPanelProps) {
             onChange={e => onUpdate({ caption: e.target.value })}
             placeholder="Image caption"
             rows={3}
-            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-orange-400 resize-none bg-white" />
+            className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-indigo-400 resize-none bg-white" />
         </div>
       </div>
 
@@ -156,7 +156,7 @@ function SeoPanel({ meta, onUpdate, onAiAlt }: SeoPanelProps) {
           {meta.aiAltLoading ? 'Generating…' : 'AI Fill Alt'}
         </button>
         <button type="button" onClick={() => onUpdate({ seoOpen: false })}
-          className="flex items-center gap-1.5 text-sm font-bold bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-xl transition-colors">
+          className="flex items-center gap-1.5 text-sm font-bold bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2 rounded-xl transition-colors">
           <FiSave size={13} /> Save
         </button>
       </div>
@@ -187,7 +187,7 @@ function ImageCard({ meta, isFirst, onUpdate, onRemove, onFixName, onAiAlt, noPr
         <div className="relative shrink-0 w-40 rounded-xl overflow-hidden bg-gray-100" style={{ aspectRatio: '4/3' }}>
           <img src={meta.url} alt={meta.altText || meta.filename} className="w-full h-full object-cover" />
           {isFirst && (
-            <div className="absolute top-1.5 left-1.5 bg-orange-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+            <div className="absolute top-1.5 left-1.5 bg-indigo-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
               <FiStar size={7} /> Featured
             </div>
           )}
@@ -205,9 +205,9 @@ function ImageCard({ meta, isFirst, onUpdate, onRemove, onFixName, onAiAlt, noPr
                   if (e.key === 'Enter') onUpdate({ filename: meta.renameValue, renaming: false })
                   if (e.key === 'Escape') onUpdate({ renaming: false })
                 }}
-                className="flex-1 text-xs border border-orange-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-orange-400 font-mono" />
+                className="flex-1 text-xs border border-indigo-300 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-400 font-mono" />
               <button type="button" onClick={() => onUpdate({ filename: meta.renameValue, renaming: false })}
-                className="text-xs bg-orange-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-orange-600 flex items-center gap-1">
+                className="text-xs bg-indigo-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-indigo-600 flex items-center gap-1">
                 <FiCheck size={10} />
               </button>
               <button type="button" onClick={() => onUpdate({ renaming: false })}
@@ -218,7 +218,7 @@ function ImageCard({ meta, isFirst, onUpdate, onRemove, onFixName, onAiAlt, noPr
           ) : (
             <div className="flex items-center gap-1.5 mb-2">
               <p className="text-xs font-mono text-gray-600 truncate flex-1">{meta.filename}</p>
-              {isFirst && <FiStar size={11} className="text-orange-400 shrink-0" />}
+              {isFirst && <FiStar size={11} className="text-indigo-400 shrink-0" />}
             </div>
           )}
 
@@ -232,7 +232,7 @@ function ImageCard({ meta, isFirst, onUpdate, onRemove, onFixName, onAiAlt, noPr
             <button type="button"
               onClick={() => onUpdate({ seoOpen: !meta.seoOpen })}
               className={`flex items-center gap-1 text-[10px] font-black px-2.5 py-1.5 rounded-lg transition-colors ${
-                meta.seoOpen ? 'bg-orange-500 text-white' : 'bg-orange-100 text-orange-700 hover:bg-orange-200'
+                meta.seoOpen ? 'bg-indigo-500 text-white' : 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200'
               }`}>
               🎯 SEO
             </button>
@@ -274,7 +274,7 @@ function ImageCard({ meta, isFirst, onUpdate, onRemove, onFixName, onAiAlt, noPr
 
       {/* ── SEO panel — inline below, inside card, full width ── */}
       {meta.seoOpen && (
-        <div className="border-t border-orange-200 bg-orange-50/30 p-4">
+        <div className="border-t border-indigo-200 bg-indigo-50/30 p-4">
           <SeoPanel meta={meta} onUpdate={onUpdate} onAiAlt={onAiAlt} />
         </div>
       )}
@@ -411,10 +411,10 @@ export default function ImagesAiPanel({ images, title = '', onRemove }: Props) {
     <>
       {/* ── Floating button ── */}
       <button type="button" onClick={() => setOpen(true)} title="Images & AI Generation"
-        className="fixed bottom-32 right-6 z-40 w-11 h-11 flex items-center justify-center rounded-full bg-orange-500 hover:bg-orange-600 text-white shadow-xl transition-colors">
+        className="fixed bottom-32 right-6 z-40 w-11 h-11 flex items-center justify-center rounded-full bg-indigo-500 hover:bg-indigo-600 text-white shadow-xl transition-colors">
         <FiImage size={18} />
         {images.length > 0 && (
-          <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-white text-orange-600 text-[10px] font-black rounded-full flex items-center justify-center border-2 border-orange-500">
+          <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-white text-indigo-600 text-[10px] font-black rounded-full flex items-center justify-center border-2 border-indigo-500">
             {images.length}
           </span>
         )}
@@ -428,7 +428,7 @@ export default function ImagesAiPanel({ images, title = '', onRemove }: Props) {
           <div className="relative z-10 w-full max-w-3xl max-h-[90vh] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden">
 
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 bg-orange-500 shrink-0">
+            <div className="flex items-center justify-between px-6 py-4 bg-indigo-500 shrink-0">
               <h2 className="font-black text-white text-base flex items-center gap-2">
                 🎨 Images &amp; AI Generation
               </h2>
@@ -448,7 +448,7 @@ export default function ImagesAiPanel({ images, title = '', onRemove }: Props) {
                 <button key={t.id} type="button" onClick={() => setTab(t.id)}
                   className={`flex-1 px-4 py-3 text-xs font-bold transition-colors border-b-2 ${
                     tab === t.id
-                      ? 'border-orange-500 text-orange-600 bg-orange-50/50'
+                      ? 'border-indigo-500 text-indigo-600 bg-indigo-50/50'
                       : 'border-transparent text-gray-500 hover:text-gray-700'
                   }`}>
                   {t.label}
@@ -462,7 +462,7 @@ export default function ImagesAiPanel({ images, title = '', onRemove }: Props) {
                 <label className="text-xs font-bold text-gray-500 uppercase tracking-wide shrink-0">AI Model</label>
                 {providers.length > 0 ? (
                   <select value={selectedProvider} onChange={e => setSelectedProvider(e.target.value)}
-                    className="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-orange-400 bg-white">
+                    className="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-indigo-400 bg-white">
                     {providers.map(p => (
                       <option key={p.provider} value={p.provider}>
                         {providerLabel(p.provider)} — {p.model}{p.isPrimary ? ' ★' : ''}
@@ -484,7 +484,7 @@ export default function ImagesAiPanel({ images, title = '', onRemove }: Props) {
                   </p>
                   {images.length > 1 && (
                     <button type="button" onClick={generateAllAlts} disabled={noProviders}
-                      className="flex items-center gap-1.5 text-xs font-semibold text-orange-600 border border-orange-200 hover:bg-orange-50 disabled:opacity-50 px-3 py-1.5 rounded-lg transition-colors">
+                      className="flex items-center gap-1.5 text-xs font-semibold text-indigo-600 border border-indigo-200 hover:bg-indigo-50 disabled:opacity-50 px-3 py-1.5 rounded-lg transition-colors">
                       <FiZap size={11} /> Generate All Alt Texts
                     </button>
                   )}
@@ -521,11 +521,11 @@ export default function ImagesAiPanel({ images, title = '', onRemove }: Props) {
                   <label className="text-xs font-bold text-gray-500 block mb-1.5">Context (optional)</label>
                   <input type="text" value={customPromptCtx} onChange={e => setCustomPromptCtx(e.target.value)}
                     placeholder={title || 'e.g. Bali beach resort, sunset, luxury…'}
-                    className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400" />
+                    className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400" />
                   <p className="text-[11px] text-gray-400 mt-1">Leave blank to use the page title.</p>
                 </div>
                 <button type="button" onClick={generateImagePrompt} disabled={promptLoading || noProviders}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white text-sm font-bold transition-colors">
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50 text-white text-sm font-bold transition-colors">
                   {promptLoading ? <FiLoader size={14} className="animate-spin" /> : <FiZap size={14} />}
                   {promptLoading ? 'Generating…' : 'Generate Image Prompts'}
                 </button>
@@ -565,15 +565,15 @@ export default function ImagesAiPanel({ images, title = '', onRemove }: Props) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {SITES.map(site => (
                     <a key={site.name} href={site.url} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 border border-gray-200 rounded-2xl hover:border-orange-300 hover:shadow-sm transition-all group">
+                      className="flex items-center gap-3 p-3 border border-gray-200 rounded-2xl hover:border-indigo-300 hover:shadow-sm transition-all group">
                       <span className={`w-9 h-9 rounded-xl flex items-center justify-center text-[10px] font-black shrink-0 ${site.color}`}>
                         {site.name.slice(0, 2).toUpperCase()}
                       </span>
                       <div className="min-w-0">
-                        <p className="text-sm font-bold text-gray-800 group-hover:text-orange-600 transition-colors">{site.name}</p>
+                        <p className="text-sm font-bold text-gray-800 group-hover:text-indigo-600 transition-colors">{site.name}</p>
                         <p className="text-[11px] text-gray-400">{site.desc}</p>
                       </div>
-                      <FiExternalLink size={13} className="ml-auto text-gray-300 group-hover:text-orange-400 transition-colors shrink-0" />
+                      <FiExternalLink size={13} className="ml-auto text-gray-300 group-hover:text-indigo-400 transition-colors shrink-0" />
                     </a>
                   ))}
                 </div>

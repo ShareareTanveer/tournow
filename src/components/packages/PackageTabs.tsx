@@ -94,7 +94,7 @@ export default function PackageTabs({ pkg, stars }: { pkg: any; stars: number })
                 {pkg.maxGroupSize && <Fact icon={<FiUsers size={15} style={{ color: 'var(--brand)' }} />} label="Group Size" value={`Max ${pkg.maxGroupSize}`} />}
                 {pkg.difficulty && <Fact icon={<FiFlag size={15} style={{ color: 'var(--brand)' }} />} label="Difficulty"
                   value={pkg.difficulty.charAt(0) + pkg.difficulty.slice(1).toLowerCase()} />}
-                <Fact icon={<FiStar size={15} style={{ color: '#f59e0b' }} />} label="Hotel" value={`${stars} Star`} />
+                <Fact icon={<FiStar size={15} style={{ color: '#0a83f5' }} />} label="Hotel" value={`${stars} Star`} />
               </div>
             </div>
           </div>
@@ -227,11 +227,11 @@ export default function PackageTabs({ pkg, stars }: { pkg: any; stars: number })
               </InfoBlock>
             )}
             {pkg.notSuitable?.length > 0 && (
-              <InfoBlock icon={<FiAlertCircle size={15} className="text-orange-500" />} title="Not Suitable For" color="orange">
+              <InfoBlock icon={<FiAlertCircle size={15} className="text-indigo-500" />} title="Not Suitable For" color="indigo">
                 <ul className="space-y-1">
                   {pkg.notSuitable.map((item: string, i: number) => (
                     <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
-                      <FiXCircle size={12} className="text-orange-400 shrink-0" /> {item}
+                      <FiXCircle size={12} className="text-indigo-400 shrink-0" /> {item}
                     </li>
                   ))}
                 </ul>
@@ -380,11 +380,11 @@ function ItineraryDay({ day, last }: { day: any; last: boolean }) {
 function InfoBlock({ icon, title, color, children }: {
   icon: React.ReactNode
   title: string
-  color: 'amber' | 'teal' | 'orange' | 'red' | 'blue'
+  color: 'amber' | 'teal' | 'indigo' | 'red' | 'blue'
   children: React.ReactNode
 }) {
-  const bg = { amber: '#fffbeb', teal: '#f0fdf9', orange: '#fff7ed', red: '#fef2f2', blue: '#eff6ff' }[color]
-  const border = { amber: '#fde68a', teal: '#99f6e4', orange: '#fed7aa', red: '#fecaca', blue: '#bfdbfe' }[color]
+  const bg = { amber: '#fffbeb', teal: '#f0fdf9', indigo: '#fff7ed', red: '#fef2f2', blue: '#eff6ff' }[color]
+  const border = { amber: '#fde68a', teal: '#99f6e4', indigo: '#fed7aa', red: '#fecaca', blue: '#bfdbfe' }[color]
   return (
     <div className="rounded-xl p-4 border" style={{ background: bg, borderColor: border }}>
       <h3 className="text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">{icon}{title}</h3>

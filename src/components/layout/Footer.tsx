@@ -77,7 +77,7 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="hover:text-[#f59e0b] transition-colors"
+                    className="hover:text-[#0a83f5] transition-colors"
                   >
                     {label}
                   </Link>
@@ -105,7 +105,7 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="hover:text-[#f59e0b] transition-colors"
+                    className="hover:text-[#0a83f5] transition-colors"
                   >
                     {label}
                   </Link>
@@ -123,10 +123,10 @@ export default function Footer() {
               <li>
                 <a
                   href="tel:+94704545455"
-                  className="flex items-start gap-3 hover:text-[#f59e0b] transition-colors group"
+                  className="flex items-start gap-3 hover:text-[#0a83f5] transition-colors group"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-[#f59e0b]/10 flex items-center justify-center shrink-0 group-hover:bg-[#f59e0b]/20 transition-colors">
-                    <FiPhone className="text-[#f59e0b] text-sm" />
+                  <div className="w-8 h-8 rounded-lg bg-[#0a83f5]/10 flex items-center justify-center shrink-0 group-hover:bg-[#0a83f5]/20 transition-colors">
+                    <FiPhone className="text-[#0a83f5] text-sm" />
                   </div>
                   <span className="leading-relaxed pt-1">+94 70 454 5455</span>
                 </a>
@@ -134,10 +134,10 @@ export default function Footer() {
               <li>
                 <a
                   href="mailto:contact@metrovoyage.com"
-                  className="flex items-start gap-3 hover:text-[#f59e0b] transition-colors group"
+                  className="flex items-start gap-3 hover:text-[#0a83f5] transition-colors group"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-[#f59e0b]/10 flex items-center justify-center shrink-0 group-hover:bg-[#f59e0b]/20 transition-colors">
-                    <FiMail className="text-[#f59e0b] text-sm" />
+                  <div className="w-8 h-8 rounded-lg bg-[#0a83f5]/10 flex items-center justify-center shrink-0 group-hover:bg-[#0a83f5]/20 transition-colors">
+                    <FiMail className="text-[#0a83f5] text-sm" />
                   </div>
                   <span className="leading-relaxed pt-1">
                     contact@metrovoyage.com
@@ -145,8 +145,8 @@ export default function Footer() {
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#f59e0b]/10 flex items-center justify-center shrink-0">
-                  <FiMapPin className="text-[#f59e0b] text-sm" />
+                <div className="w-8 h-8 rounded-lg bg-[#0a83f5]/10 flex items-center justify-center shrink-0">
+                  <FiMapPin className="text-[#0a83f5] text-sm" />
                 </div>
                 <span className="text-gray-400 leading-relaxed pt-1">
                   Level 2, 9/1, Deal Place A,
@@ -155,8 +155,8 @@ export default function Footer() {
                 </span>
               </li>
               <li className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#f59e0b]/10 flex items-center justify-center shrink-0">
-                  <FiClock className="text-[#f59e0b] text-sm" />
+                <div className="w-8 h-8 rounded-lg bg-[#0a83f5]/10 flex items-center justify-center shrink-0">
+                  <FiClock className="text-[#0a83f5] text-sm" />
                 </div>
                 <span className="text-gray-400 leading-relaxed pt-1">
                   9 AM – 10 PM, Daily
@@ -195,7 +195,7 @@ export default function Footer() {
               <Link
                 key={href}
                 href={href}
-                className="hover:text-[#f59e0b] transition-colors"
+                className="hover:text-[#0a83f5] transition-colors"
               >
                 {label}
               </Link>

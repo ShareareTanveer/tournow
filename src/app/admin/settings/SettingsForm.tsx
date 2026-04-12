@@ -65,7 +65,7 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
       <label className="block text-xs font-semibold text-gray-500 mb-1.5">{label}</label>
       <input type={type} value={form[key]} placeholder={placeholder}
         onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
     </div>
   )
 
@@ -75,7 +75,7 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
       {hint && <p className="text-xs text-gray-400 mb-1.5">{hint}</p>}
       <textarea rows={rows} value={form[key]}
         onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none" />
+        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 resize-none" />
     </div>
   )
 
@@ -92,7 +92,7 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
       <div className="flex gap-1 bg-gray-100 rounded-xl p-1 flex-wrap">
         {TABS.map((t) => (
           <button key={t.id} type="button" onClick={() => setTab(t.id as any)}
-            className={`flex-1 text-xs font-semibold px-3 py-2 rounded-lg transition-colors min-w-25 ${tab === t.id ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+            className={`flex-1 text-xs font-semibold px-4 py-2.5 rounded-lg transition-all min-w-24 ${tab === t.id ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
             {t.label}
           </button>
         ))}
@@ -133,7 +133,7 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
             <div>
               <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Brand (Primary)</p>
               <div className="grid grid-cols-2 gap-4">
-                {tc('brand', 'Brand Color', '#f59e0b')}
+                {tc('brand', 'Brand Color', '#0a83f5')}
                 {tc('brandDark', 'Brand Dark', '#d97706')}
                 {tc('brandLight', 'Brand Light BG', '#fffbeb')}
                 {tc('brandMuted', 'Brand Muted BG', '#fef3c7')}
@@ -167,7 +167,7 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
                 value={JSON.stringify(theme, null, 2)}
                 onChange={e => { try { setTheme(JSON.parse(e.target.value)) } catch {} }}
                 rows={8}
-                className="w-full font-mono text-xs border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400 resize-none"
+                className="w-full font-mono text-xs border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-400 resize-none"
               />
             </div>
           </div>
@@ -175,10 +175,14 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
       </div>
 
       <div className="flex items-center gap-4">
-        <button type="submit" disabled={loading} className="bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+        <button type="submit" disabled={loading} className="bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors shadow-sm shadow-indigo-200">
           {loading ? 'Saving…' : 'Save Settings'}
         </button>
-        {saved && <span className="text-sm text-green-600 font-medium">✓ Saved successfully</span>}
+        {saved && (
+          <span className="flex items-center gap-1.5 text-sm text-emerald-600 font-semibold bg-emerald-50 px-3 py-2 rounded-lg border border-emerald-100">
+            ✓ Saved successfully
+          </span>
+        )}
       </div>
     </form>
   )

@@ -1,77 +1,102 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef } from 'react'
+import { FiDownload, FiMail } from 'react-icons/fi'
+import AdminTable, { Column } from '@/components/admin/AdminTable'
 
 export default function NewsletterActions({ subscribers }: { subscribers: any[] }) {
-  const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('all')
-
-  const filtered = subscribers.filter((s) => {
-    if (filter === 'active') return s.isActive
-    if (filter === 'inactive') return !s.isActive
-    return true
-  })
+  const filteredRef = useRef<any[]>(subscribers)
 
   const exportCSV = () => {
     const rows = [['Email', 'WhatsApp', 'Status', 'Subscribed At']]
-    filtered.forEach((s) => rows.push([
+    filteredRef.current.forEach(s => rows.push([
       s.email,
       s.whatsapp ?? '',
       s.isActive ? 'Active' : 'Unsubscribed',
       new Date(s.createdAt).toLocaleDateString(),
     ]))
-    const csv = rows.map((r) => r.map((v) => `"${v}"`).join(',')).join('\n')
+    const csv = rows.map(r => r.map(v => `"${v}"`).join(',')).join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `newsletter-subscribers-${new Date().toISOString()?.split('T')[0]}.csv`
+    a.download = `newsletter-subscribers-${new Date().toISOString().split('T')[0]}.csv`
     a.click()
     URL.revokeObjectURL(url)
   }
 
-  return (
-    <div>
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-        <div className="flex gap-2">
-          {(['all', 'active', 'inactive'] as const).map((f) => (
-            <button key={f} onClick={() => setFilter(f)}
-              className={`text-xs font-semibold px-4 py-2 rounded-lg capitalize transition-colors ${filter === f ? 'bg-orange-500 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
-              {f}
-            </button>
-          ))}
+  if (subscribers.length === 0) {
+    return (
+      <div className="bg-white rounded-2xl border border-gray-200 flex flex-col items-center justify-center py-20 gap-3">
+        <div className="w-14 h-14 rounded-2xl bg-pink-50 flex items-center justify-center">
+          <FiMail size={24} className="text-pink-400" />
         </div>
-        <button onClick={exportCSV} className="text-xs bg-white border border-gray-200 text-gray-600 font-semibold px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
-          ⬇ Export CSV ({filtered.length})
-        </button>
+        <p className="font-semibold text-gray-700">No subscribers yet</p>
+        <p className="text-sm text-gray-400">Newsletter subscribers will appear here</p>
       </div>
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              {['Email', 'WhatsApp', 'Status', 'Subscribed'].map((h) => (
-                <th key={h} className="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-50">
-            {filtered.length === 0 && (
-              <tr><td colSpan={4} className="px-5 py-10 text-center text-gray-400">No subscribers</td></tr>
-            )}
-            {filtered.map((s) => (
-              <tr key={s.id} className="hover:bg-gray-50">
-                <td className="px-5 py-3 text-gray-800">{s.email}</td>
-                <td className="px-5 py-3 text-gray-500">{s.whatsapp ?? '—'}</td>
-                <td className="px-5 py-3">
-                  <span className={`text-xs px-2 py-1 rounded-full font-medium ${s.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-400'}`}>
-                    {s.isActive ? 'Active' : 'Unsubscribed'}
-                  </span>
-                </td>
-                <td className="px-5 py-3 text-gray-400 text-xs">{new Date(s.createdAt).toLocaleDateString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    )
+  }
+
+  const columns: Column[] = [
+    {
+      key: 'email', label: 'Email', sortable: true,
+      render: s => (
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-full bg-pink-100 flex items-center justify-center text-pink-600 text-[11px] font-black shrink-0">
+            {s.email[0].toUpperCase()}
+          </div>
+          <span className="text-sm text-gray-800">{s.email}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'whatsapp', label: 'WhatsApp',
+      render: s => s.whatsapp
+        ? <span className="text-sm text-gray-500">{s.whatsapp}</span>
+        : <span className="text-gray-300 text-xs">—</span>,
+    },
+    {
+      key: 'isActive', label: 'Status', sortable: true,
+      render: s => (
+        <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${
+          s.isActive
+            ? 'bg-emerald-50 text-emerald-700 border border-emerald-100'
+            : 'bg-gray-100 text-gray-500 border border-gray-200'
+        }`}>
+          {s.isActive ? 'Active' : 'Unsubscribed'}
+        </span>
+      ),
+    },
+    {
+      key: 'createdAt', label: 'Subscribed', sortable: true,
+      render: s => (
+        <span className="text-xs text-gray-400">
+          {new Date(s.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+        </span>
+      ),
+    },
+  ]
+
+  const exportBtn = (
+    <button
+      onClick={exportCSV}
+      className="flex items-center gap-2 text-xs font-semibold bg-white border border-gray-200 text-gray-600 px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors"
+    >
+      <FiDownload size={13} /> Export CSV
+    </button>
+  )
+
+  return (
+    <AdminTable
+      data={subscribers}
+      columns={columns}
+      filterKey="isActive"
+      filterOptions={['ALL', 'true', 'false']}
+      filterLabels={{ ALL: 'All', true: 'Active', false: 'Unsubscribed' }}
+      searchKeys={['email', 'whatsapp']}
+      defaultSort={{ key: 'createdAt', dir: 'desc' }}
+      emptyMessage="No subscribers yet"
+      toolbarRight={exportBtn}
+    />
   )
 }

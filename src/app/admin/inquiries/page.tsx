@@ -17,15 +17,14 @@ async function getData() {
 
 export default async function InquiriesPage() {
   const { inquiries, staff } = await getData()
+  const newCount  = inquiries.filter((i: any) => i.status === 'NEW').length
+  const total     = inquiries.length
+
   return (
-    <AdminShell title="Inquiries">
-      <div className="mb-4 flex gap-3 text-sm">
-        {['ALL','NEW','CONTACTED','CONVERTED','CLOSED'].map((s) => (
-          <span key={s} className="px-3 py-1 rounded-full bg-gray-100 text-gray-600 font-medium cursor-pointer hover:bg-orange-100 hover:text-orange-600 transition-colors">
-            {s} {s !== 'ALL' ? `(${inquiries.filter((i: any) => i.status === s).length})` : `(${inquiries.length})`}
-          </span>
-        ))}
-      </div>
+    <AdminShell
+      title="Inquiries"
+      subtitle={`${total} total · ${newCount} new`}
+    >
       <InquiriesTable inquiries={inquiries} staff={staff} />
     </AdminShell>
   )

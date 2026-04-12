@@ -117,7 +117,7 @@ export default function InquiryModal({ open, onClose, packageId, packageTitle }:
                       onChange={(e) => setForm({ ...form, name: e.target.value })}
                       placeholder="Your name"
                       disabled={!!customer}
-                      className={`w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400 transition-colors ${customer ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''}`}
+                      className={`w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition-colors ${customer ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''}`}
                     />
                   </div>
 
@@ -131,7 +131,7 @@ export default function InquiryModal({ open, onClose, packageId, packageTitle }:
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
                       placeholder="your@email.com"
                       disabled={!!customer}
-                      className={`w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400 transition-colors ${customer ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''}`}
+                      className={`w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition-colors ${customer ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''}`}
                     />
                   </div>
 
@@ -143,7 +143,7 @@ export default function InquiryModal({ open, onClose, packageId, packageTitle }:
                       value={form.phone}
                       onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       placeholder="+94 70 xxx xxxx"
-                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400 transition-colors"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition-colors"
                     />
                   </div>
 
@@ -154,7 +154,7 @@ export default function InquiryModal({ open, onClose, packageId, packageTitle }:
                       type="date"
                       value={form.travelDate}
                       onChange={(e) => setForm({ ...form, travelDate: e.target.value })}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400 transition-colors"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition-colors"
                     />
                   </div>
 
@@ -164,7 +164,7 @@ export default function InquiryModal({ open, onClose, packageId, packageTitle }:
                     <select
                       value={form.paxCount}
                       onChange={(e) => setForm({ ...form, paxCount: parseInt(e.target.value) })}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400 transition-colors"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition-colors"
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
                         <option key={n} value={n}>{n} {n === 1 ? 'person' : 'people'}</option>
@@ -182,7 +182,7 @@ export default function InquiryModal({ open, onClose, packageId, packageTitle }:
                       value={form.message}
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
                       placeholder="Tell us about your dream holiday..."
-                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400 transition-colors resize-none"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition-colors resize-none"
                     />
                   </div>
                 </div>
@@ -203,7 +203,7 @@ export default function InquiryModal({ open, onClose, packageId, packageTitle }:
                 </button>
 
                 <p className="text-xs text-gray-400 text-center">
-                  Or call: <a href="tel:+94704545455" className="font-semibold text-orange-500">+94 70 454 5455</a>
+                  Or call: <a href="tel:+94704545455" className="font-semibold text-indigo-500">+94 70 454 5455</a>
                 </p>
               </form>
             )}

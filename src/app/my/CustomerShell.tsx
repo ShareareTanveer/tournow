@@ -74,7 +74,7 @@ export default function CustomerShell({ children }: { children: React.ReactNode 
           </Link>
 
           {/* User card */}
-          <div className="flex items-center gap-3 p-3 bg-orange-50 rounded-2xl border border-orange-100">
+          <div className="flex items-center gap-3 p-3 bg-indigo-50 rounded-2xl border border-indigo-100">
             <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm shrink-0"
               style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
               {initials}

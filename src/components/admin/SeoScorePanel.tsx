@@ -65,7 +65,7 @@ function GroupPill({ name, earned, max }: { name: string; earned: number; max: n
     pct >= 90 ? 'bg-emerald-100 text-emerald-700 border-emerald-200' :
     pct >= 75 ? 'bg-green-100 text-green-700 border-green-200' :
     pct >= 55 ? 'bg-yellow-100 text-yellow-700 border-yellow-200' :
-    pct >= 35 ? 'bg-orange-100 text-orange-700 border-orange-200' :
+    pct >= 35 ? 'bg-indigo-100 text-indigo-700 border-indigo-200' :
     'bg-red-100 text-red-700 border-red-200'
   return (
     <div className={`px-3 py-1.5 rounded-xl border text-xs font-semibold ${cls}`}>
@@ -99,13 +99,13 @@ function CheckRow({
           <p className="text-[11px] text-gray-400 mt-0.5">{check.detail}</p>
         )}
         {!check.passed && (
-          <p className="text-xs text-orange-600 mt-1 leading-snug">{check.fix}</p>
+          <p className="text-xs text-indigo-600 mt-1 leading-snug">{check.fix}</p>
         )}
         {!check.passed && check.key === 'no_h1' && onAutoFixH1 && (
           <button
             type="button"
             onClick={onAutoFixH1}
-            className="mt-1.5 flex items-center gap-1 text-xs font-bold text-white bg-orange-500 hover:bg-orange-600 px-2.5 py-1 rounded-lg transition-colors"
+            className="mt-1.5 flex items-center gap-1 text-xs font-bold text-white bg-indigo-500 hover:bg-indigo-600 px-2.5 py-1 rounded-lg transition-colors"
           >
             <FiZap size={11} /> Auto Fix — remove H1 tags
           </button>
@@ -170,7 +170,7 @@ export default function SeoScorePanel({ input, onAutoFixH1 }: Props) {
     result.total >= 90 ? 'bg-emerald-500 hover:bg-emerald-600' :
     result.total >= 75 ? 'bg-green-500 hover:bg-green-600' :
     result.total >= 55 ? 'bg-yellow-400 hover:bg-yellow-500' :
-    result.total >= 35 ? 'bg-orange-400 hover:bg-orange-500' :
+    result.total >= 35 ? 'bg-indigo-400 hover:bg-indigo-500' :
     'bg-red-500 hover:bg-red-600'
 
   return (

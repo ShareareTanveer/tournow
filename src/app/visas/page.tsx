@@ -65,14 +65,14 @@ export default async function VisasPage() {
         {/* Visa required */}
         <div>
           <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <FiFileText size={20} className="text-orange-500" /> Visa Required — We Assist
+            <FiFileText size={20} className="text-indigo-500" /> Visa Required — We Assist
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {displayVisas.filter((v: any) => !v.isVisaFree).map((visa: any) => (
               <Link key={visa.slug} href={`/visas/${visa.slug}`} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow card-hover">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-gray-800">{visa.country}</h3>
-                  <span className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded-full font-medium">We Assist</span>
+                  <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full font-medium">We Assist</span>
                 </div>
                 <div className="space-y-2 text-sm text-gray-500">
                   <p className="flex items-center gap-1.5"><FiClock size={12} /> {visa.processingTime}</p>

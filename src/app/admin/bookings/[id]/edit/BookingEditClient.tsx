@@ -115,7 +115,7 @@ function OriginalPanel({ snap }: { snap: OriginalSnapshot | null | undefined }) 
         {rows.map((r, i) => (
           <div key={i} className="flex justify-between gap-3 py-1 border-b border-blue-100 last:border-0">
             <span className="text-xs text-blue-500">{r.label}</span>
-            <span className="text-xs font-semibold text-blue-800 text-right max-w-[55%]">{r.value}</span>
+            <span className="text-xs font-semibold text-blue-800 text-right max-w-[55%] truncate">{r.value}</span>
           </div>
         ))}
         <div className="pt-3 mt-1 border-t border-blue-200 flex justify-between items-center">
@@ -285,8 +285,8 @@ export default function BookingEditClient({ booking, type }: { booking: Booking;
         <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden">
           <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-orange-400" />
-              <p className="text-xs font-bold text-orange-700 uppercase tracking-wide">Build / Edit Quote</p>
+              <div className="w-2 h-2 rounded-full bg-indigo-400" />
+              <p className="text-xs font-bold text-indigo-700 uppercase tracking-wide">Build / Edit Quote</p>
             </div>
             {snap && (
               <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
@@ -329,14 +329,14 @@ export default function BookingEditClient({ booking, type }: { booking: Booking;
                       placeholder="Description (e.g. Twin Room × 2 × 2 adults)"
                       value={item.label}
                       onChange={e => updateLine(i, 'label', e.target.value)}
-                      className="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400 min-w-0" />
+                      className="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-400 min-w-0" />
                     <div className="flex items-center gap-1 shrink-0">
                       <span className="text-xs text-gray-400">LKR</span>
                       <input
                         type="number" min="0" step="100"
                         value={item.price}
                         onChange={e => updateLine(i, 'price', Number(e.target.value))}
-                        className="w-32 text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400 text-right font-semibold" />
+                        className="w-32 text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-400 text-right font-semibold" />
                     </div>
                     <button onClick={() => removeLine(i)}
                       className="text-gray-300 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100">
@@ -347,7 +347,7 @@ export default function BookingEditClient({ booking, type }: { booking: Booking;
               </div>
 
               <button onClick={addLine}
-                className="mt-2 flex items-center gap-1 text-xs font-semibold text-orange-500 hover:text-orange-600 transition-colors">
+                className="mt-2 flex items-center gap-1 text-xs font-semibold text-indigo-500 hover:text-indigo-600 transition-colors">
                 <FiPlus size={12} /> Add line item
               </button>
             </div>
@@ -359,7 +359,7 @@ export default function BookingEditClient({ booking, type }: { booking: Booking;
                 <div className="flex flex-wrap gap-1.5">
                   {(item.options as { label: string; price: number }[]).map((opt, i) => (
                     <button key={i} type="button" onClick={() => addOption(opt)}
-                      className="text-xs bg-gray-50 border border-gray-200 hover:bg-orange-50 hover:border-orange-200 text-gray-600 hover:text-orange-600 px-2.5 py-1 rounded-lg font-medium transition-colors flex items-center gap-1">
+                      className="text-xs bg-gray-50 border border-gray-200 hover:bg-indigo-50 hover:border-indigo-200 text-gray-600 hover:text-indigo-600 px-2.5 py-1 rounded-lg font-medium transition-colors flex items-center gap-1">
                       <FiPlus size={10} /> {opt.label} {opt.price > 0 ? `(${fmt(opt.price)}/p)` : '(Free)'}
                     </button>
                   ))}
@@ -373,12 +373,12 @@ export default function BookingEditClient({ booking, type }: { booking: Booking;
                 <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1.5">Discount (LKR)</label>
                 <input type="number" min="0" step="100" value={discount}
                   onChange={e => setDiscount(Number(e.target.value))}
-                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400 font-semibold" />
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-400 font-semibold" />
               </div>
               <div>
                 <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1.5">Valid Until</label>
                 <input type="date" value={validUntil} onChange={e => setValidUntil(e.target.value)}
-                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-400" />
+                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-400" />
               </div>
             </div>
 
@@ -398,7 +398,7 @@ export default function BookingEditClient({ booking, type }: { booking: Booking;
                   <input type="number" min="0" step="100"
                     value={manualTotal ?? quoteTotal}
                     onChange={e => setManualTotal(Number(e.target.value))}
-                    className="flex-1 text-sm border border-orange-300 rounded-xl px-3 py-2 focus:outline-none focus:border-orange-500 font-bold text-orange-600" />
+                    className="flex-1 text-sm border border-indigo-300 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 font-bold text-indigo-600" />
                   <span className="text-xs text-gray-400">Final amount customer will pay</span>
                 </div>
               )}
@@ -409,7 +409,7 @@ export default function BookingEditClient({ booking, type }: { booking: Booking;
               <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1.5">Note to Customer (shown in quote email)</label>
               <textarea rows={2} placeholder="e.g. Hotel upgraded to Deluxe room, price adjusted as discussed…"
                 value={notes} onChange={e => setNotes(e.target.value)}
-                className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 resize-none" />
+                className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400 resize-none" />
             </div>
 
             {/* Admin notes */}
@@ -417,14 +417,14 @@ export default function BookingEditClient({ booking, type }: { booking: Booking;
               <label className="text-[10px] font-bold text-gray-400 uppercase block mb-1.5">Internal Admin Notes (not shown to customer)</label>
               <textarea rows={2} placeholder="Call notes, agent reference, payment terms…"
                 value={adminNotes} onChange={e => setAdminNotes(e.target.value)}
-                className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-orange-400 resize-none" />
+                className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400 resize-none" />
             </div>
 
             {/* Total preview */}
-            <div className="bg-orange-50 border border-orange-200 rounded-xl p-4">
+            <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-bold text-orange-600 uppercase">Quote Total</span>
-                <span className="text-2xl font-black text-orange-600">{fmt(quoteTotal)}</span>
+                <span className="text-xs font-bold text-indigo-600 uppercase">Quote Total</span>
+                <span className="text-2xl font-black text-indigo-600">{fmt(quoteTotal)}</span>
               </div>
               {discount > 0 && (
                 <div className="flex justify-between text-xs text-gray-500 mb-1">
@@ -437,7 +437,7 @@ export default function BookingEditClient({ booking, type }: { booking: Booking;
                 </div>
               )}
               {snap && (
-                <div className={`flex justify-between text-xs font-bold mt-2 pt-2 border-t border-orange-200 ${diffClass(originalTotal, quoteTotal)}`}>
+                <div className={`flex justify-between text-xs font-bold mt-2 pt-2 border-t border-indigo-200 ${diffClass(originalTotal, quoteTotal)}`}>
                   <span>vs original {fmt(originalTotal)}</span>
                   <span>{diff === 0 ? 'No change' : `${diff < 0 ? '− ' : '+ '}${fmt(Math.abs(diff))} (${diffPct}%)`}</span>
                 </div>
@@ -466,7 +466,7 @@ export default function BookingEditClient({ booking, type }: { booking: Booking;
                 {saving ? 'Saving…' : 'Save Draft'}
               </button>
               <button onClick={() => save(true)} disabled={saving || sending || lineItems.length === 0 || quoteTotal <= 0}
-                className="flex items-center gap-2 text-sm bg-orange-500 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-orange-600 disabled:opacity-50 transition-colors">
+                className="flex items-center gap-2 text-sm bg-indigo-500 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-indigo-600 disabled:opacity-50 transition-colors">
                 <FiSend size={14} />
                 {sending ? 'Sending…' : 'Save & Send Quote to Customer'}
               </button>

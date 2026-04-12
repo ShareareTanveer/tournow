@@ -50,24 +50,24 @@ export default function NewsForm({ news }: { news?: any }) {
           <label className="block text-xs font-semibold text-gray-500 mb-1.5">Title *</label>
           <input required value={form.title}
             onChange={(e) => setForm({ ...form, title: e.target.value, slug: autoSlug(e.target.value) })}
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1.5">Slug *</label>
             <input required value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })}
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1.5">Source</label>
             <input value={form.source} onChange={(e) => setForm({ ...form, source: e.target.value })}
-              placeholder="News First, Daily Mirror…" className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+              placeholder="News First, Daily Mirror…" className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
           </div>
         </div>
         <div>
           <label className="block text-xs font-semibold text-gray-500 mb-1.5">Excerpt / Summary</label>
           <input value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
+            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
         </div>
       </div>
 
@@ -94,13 +94,13 @@ export default function NewsForm({ news }: { news?: any }) {
       {/* Visibility */}
       <div className="bg-white rounded-2xl p-6 border border-gray-200">
         <label className="flex items-center gap-2 cursor-pointer">
-          <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="w-4 h-4 accent-orange-500" />
+          <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="w-4 h-4 accent-indigo-500" />
           <span className="text-sm text-gray-700 font-medium">Published (visible on website)</span>
         </label>
       </div>
 
       <div className="flex gap-3">
-        <button type="submit" disabled={loading} className="bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+        <button type="submit" disabled={loading} className="bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
           {loading ? 'Saving…' : isEdit ? 'Save Changes' : 'Publish Article'}
         </button>
         <button type="button" onClick={() => router.back()} className="border border-gray-200 text-gray-600 font-medium px-6 py-3 rounded-xl transition-colors hover:bg-gray-50">Cancel</button>

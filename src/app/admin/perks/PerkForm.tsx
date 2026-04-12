@@ -36,7 +36,7 @@ const DEFAULTS: Perk = {
   title: '',
   description: '',
   iconName: 'FiStar',
-  iconColor: '#f59e0b',
+  iconColor: '#0a83f5',
   bgColor: '#fffbeb',
   imageUrl: '',
   ctaLink: '',
@@ -119,7 +119,7 @@ export default function PerkForm({ perk }: Props) {
               value={form.title}
               onChange={e => set('title', e.target.value)}
               placeholder="e.g. Free Airport Transfer"
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition"
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition"
             />
           </div>
 
@@ -130,7 +130,7 @@ export default function PerkForm({ perk }: Props) {
               value={form.description}
               onChange={e => set('description', e.target.value)}
               placeholder="Describe what this perk offers to customers…"
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100 transition resize-none"
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 transition resize-none"
             />
           </div>
 
@@ -141,7 +141,7 @@ export default function PerkForm({ perk }: Props) {
                 type="number"
                 value={form.sortOrder}
                 onChange={e => set('sortOrder', parseInt(e.target.value) || 0)}
-                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400 transition"
+                className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition"
               />
               <p className="text-[11px] text-gray-400 mt-1">Lower numbers appear first</p>
             </div>
@@ -176,7 +176,7 @@ export default function PerkForm({ perk }: Props) {
               value={form.imageUrl ?? ''}
               onChange={e => set('imageUrl', e.target.value)}
               placeholder="https://example.com/image.jpg"
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400 transition"
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition"
             />
             {form.imageUrl && (
               <div className="mt-3 rounded-xl overflow-hidden h-36 border border-gray-200">
@@ -191,7 +191,7 @@ export default function PerkForm({ perk }: Props) {
               <select
                 value={form.iconName}
                 onChange={e => set('iconName', e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-orange-400 transition">
+                className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition">
                 {ICON_OPTIONS.map(i => <option key={i} value={i}>{i.replace('Fi', '')}</option>)}
               </select>
             </div>
@@ -248,7 +248,7 @@ export default function PerkForm({ perk }: Props) {
               value={form.ctaLink ?? ''}
               onChange={e => set('ctaLink', e.target.value)}
               placeholder="/packages-from-sri-lanka/family"
-              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-orange-400 transition"
+              className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition"
             />
             <p className="text-[11px] text-gray-400 mt-1.5">
               If set, clicking "Get it now" opens this URL instead of the claim flow.

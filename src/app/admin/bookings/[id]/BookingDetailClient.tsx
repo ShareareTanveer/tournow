@@ -244,29 +244,65 @@ function DiffBadge({ original, quoted }: { original: number; quoted: number }) {
 const TIMELINE_STEPS = ['REQUESTED', 'AWAITING_CONFIRM', 'CONFIRMED', 'RECEIPT_UPLOADED', 'ALL_CONFIRMED', 'MAIL_SENT']
 
 function StatusTimeline({ status }: { status: string }) {
-  const idx = TIMELINE_STEPS.indexOf(status)
+  const isCancelled = status === 'CANCELLED'
+  const idx = isCancelled ? -1 : TIMELINE_STEPS.indexOf(status)
+
   return (
-    <div className="flex items-center gap-0">
-      {TIMELINE_STEPS.map((s, i) => {
-        const done = idx >= i
-        const active = idx === i
-        const info = si(s)
-        return (
-          <div key={s} className="flex items-center">
-            <div className={`flex flex-col items-center gap-1`}>
-              <div className={`w-3 h-3 rounded-full border-2 transition-all ${
-                done ? `${info.dot} border-transparent` : 'bg-white border-gray-300'
-              } ${active ? 'ring-2 ring-offset-1 ring-indigo-300 scale-125' : ''}`} />
-              <span className={`text-[9px] font-semibold whitespace-nowrap ${done ? info.color : 'text-gray-300'}`}>
-                {info.label.replace(' ✓', '')}
-              </span>
-            </div>
-            {i < TIMELINE_STEPS.length - 1 && (
-              <div className={`h-0.5 w-8 mb-4 mx-0.5 ${i < idx ? 'bg-indigo-400' : 'bg-gray-200'}`} />
-            )}
-          </div>
-        )
-      })}
+    <div className="w-full">
+      {/* Cancelled banner */}
+      {isCancelled && (
+        <div className="flex items-center gap-2 bg-red-50 border border-red-100 rounded-xl px-4 py-2.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-red-500 shrink-0" />
+          <span className="text-sm font-bold text-red-600">Booking Cancelled</span>
+        </div>
+      )}
+
+      {!isCancelled && (
+        <div className="flex items-start w-full">
+          {TIMELINE_STEPS.map((s, i) => {
+            const done   = idx >= i
+            const active = idx === i
+            const info   = si(s)
+            const isLast = i === TIMELINE_STEPS.length - 1
+
+            return (
+              <div key={s} className={`flex flex-col items-center ${isLast ? 'flex-none' : 'flex-1'}`}>
+                {/* Dot + line row */}
+                <div className="flex items-center w-full">
+                  {/* Dot */}
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 border-2 transition-all ${
+                    active
+                      ? `${info.dot} border-transparent ring-4 ring-offset-2 ring-indigo-200`
+                      : done
+                      ? `${info.dot} border-transparent`
+                      : 'bg-white border-gray-200'
+                  }`}>
+                    {done && !active && (
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                    {active && (
+                      <div className="w-2 h-2 rounded-full bg-white" />
+                    )}
+                  </div>
+                  {/* Connector line */}
+                  {!isLast && (
+                    <div className={`flex-1 h-0.5 mx-1 transition-colors ${i < idx ? 'bg-indigo-400' : 'bg-gray-200'}`} />
+                  )}
+                </div>
+
+                {/* Label */}
+                <span className={`text-[10px] font-semibold mt-1.5 text-center leading-tight px-0.5 ${
+                  active ? info.color + ' font-bold' : done ? 'text-gray-500' : 'text-gray-300'
+                }`}>
+                  {info.label.replace(' ✓', '')}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }
@@ -590,7 +626,7 @@ export default function BookingDetailClient({ booking: initial, type }: {
           </div>
 
           {/* Timeline */}
-          <div className="overflow-x-auto pb-1">
+          <div className="pt-1 pb-2">
             <StatusTimeline status={booking.status} />
           </div>
 

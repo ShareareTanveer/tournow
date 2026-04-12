@@ -7,7 +7,7 @@ import {
   FiGrid, FiPackage, FiMapPin, FiInbox, FiVideo, FiBookOpen,
   FiStar, FiFileText, FiEdit3, FiShield, FiUsers, FiMail,
   FiHeart, FiCreditCard, FiZap, FiEdit2, FiImage, FiSettings,
-  FiGlobe, FiLogOut, FiTag, FiChevronDown, FiMenu, FiX,
+  FiGlobe, FiLogOut, FiTag, FiChevronDown, FiMenu, FiX, FiCalendar, FiBarChart2, FiTrendingUp,
 } from 'react-icons/fi'
 
 type NavItem  = { label: string; href: string; icon: React.ReactNode; badge?: number; exact?: boolean }
@@ -34,6 +34,7 @@ const GROUPS: NavGroup[] = [
       { label: 'Inquiries',     href: '/admin/inquiries',      icon: <FiInbox size={14} /> },
       { label: 'Consultations', href: '/admin/consultations',  icon: <FiVideo size={14} /> },
       { label: 'Bookings',      href: '/admin/bookings',       icon: <FiBookOpen size={14} /> },
+      { label: 'Calendar',      href: '/admin/calendar',       icon: <FiCalendar size={14} /> },
       { label: 'Tour Requests', href: '/admin/customizations', icon: <FiEdit2 size={14} /> },
       { label: 'Reviews',       href: '/admin/reviews',        icon: <FiStar size={14} /> },
     ],
@@ -46,6 +47,14 @@ const GROUPS: NavGroup[] = [
       { label: 'Perks',         href: '/admin/perks',      icon: <FiZap size={14} /> },
       { label: 'Newsletter',    href: '/admin/newsletter', icon: <FiMail size={14} /> },
       { label: 'Charity',       href: '/admin/charity',    icon: <FiHeart size={14} /> },
+    ],
+  },
+  {
+    label: 'Reporting',
+    icon: <FiBarChart2 size={14} />,
+    items: [
+      { label: 'Reports',          href: '/admin/reports',          icon: <FiBarChart2 size={14} /> },
+      { label: 'Growth Analytics', href: '/admin/growth-analytics', icon: <FiTrendingUp size={14} /> },
     ],
   },
   {

@@ -180,6 +180,23 @@ async function callProvider(
   }
 }
 
+// ─── Public raw call (used by per-field AI assist) ───────────────────────────
+
+/**
+ * Calls the provider and returns raw text (no JSON parsing, no job record).
+ * Used for per-field generation where the caller decides how to use the output.
+ */
+export async function callProviderRaw(
+  provider: string,
+  apiKey: string,
+  model: string,
+  systemPrompt: string,
+  userMessage: string,
+): Promise<string> {
+  const { text } = await callProvider(provider, apiKey, model, systemPrompt, userMessage)
+  return text
+}
+
 // ─── Template variable interpolation ─────────────────────────────────────────
 
 function interpolate(template: string, vars: Record<string, string>): string {
@@ -294,4 +311,25 @@ export async function upsertProvider(data: {
     create: { ...data, isActive: data.isActive ?? true, isPrimary: data.isPrimary ?? false },
     update: { ...data },
   })
+}
+
+export async function deleteProvider(provider: string) {
+  return prisma.aiProviderConfig.deleteMany({ where: { provider } })
+}
+
+/**
+ * Test a provider connection by sending a tiny ping message.
+ * Returns { ok: true } on success or throws with error message.
+ */
+export async function testProviderConnection(
+  provider: string,
+  apiKey: string,
+  model: string,
+): Promise<{ ok: true; model: string }> {
+  const systemPrompt = 'You are a connection test. Reply with exactly: {"ok":true}'
+  const userPrompt   = 'ping'
+  const { text } = await callProvider(provider, apiKey, model, systemPrompt, userPrompt)
+  // As long as we got any response without throwing, connection is good
+  void text
+  return { ok: true, model }
 }

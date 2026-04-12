@@ -6,8 +6,10 @@ import dynamic from 'next/dynamic'
 import { FiPlus, FiX, FiInfo } from 'react-icons/fi'
 import MultiImageUploader, { GalleryLayout } from '@/components/admin/MultiImageUploader'
 import SeoScorePanel from '@/components/admin/SeoScorePanel'
-import AiGeneratePanel, { AiApplyData } from '@/components/admin/AiGeneratePanel'
+import AiFieldAssist from '@/components/admin/AiFieldAssist'
 import InternalLinkPanel from '@/components/admin/InternalLinkPanel'
+import JsonEditorPanel from '@/components/admin/JsonEditorPanel'
+import ImagesAiPanel from '@/components/admin/ImagesAiPanel'
 import { SeoInput } from '@/lib/seo-score'
 
 const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor'), { ssr: false })
@@ -392,51 +394,34 @@ export default function PackageForm({ destinations, pkg }: Props) {
     setForm(f => ({ ...f, description: f.description.replace(/<h1[^>]*>[\s\S]*?<\/h1>/gi, '') }))
   }
 
-  // Apply AI-generated data to form
-  const handleAiApply = (data: AiApplyData) => {
-    setForm(f => ({
-      ...f,
-      ...(data.description        && { description:       data.description }),
-      ...(data.summary            && { summary:           data.summary }),
-      ...(data.highlights         && { highlights:        data.highlights.join('\n') }),
-      ...(data.inclusions         && { inclusions:        data.inclusions }),
-      ...(data.exclusions         && { exclusions:        data.exclusions }),
-      ...(data.metaTitle          && { metaTitle:         data.metaTitle }),
-      ...(data.metaDescription    && { metaDescription:   data.metaDescription }),
-      ...(data.focusKeyword       && { focusKeyword:      data.focusKeyword }),
-      ...(data.secondaryKeywords  && { secondaryKeywords: data.secondaryKeywords }),
-      ...(data.ogTitle            && { ogTitle:           data.ogTitle }),
-      ...(data.ogDescription      && { ogDescription:     data.ogDescription }),
-      ...(data.schemaMarkup       && { schemaMarkup:      data.schemaMarkup }),
-    }))
-  }
-
-  // Build AI vars from current form state
-  const aiVars = useMemo(() => ({
+  // AI context for per-field generation
+  const aiContext = useMemo(() => ({
     title:       form.title,
     category:    form.category,
-    summary:     form.summary,
     destination: destinations.find(d => d.id === form.destinationId)?.name ?? '',
     duration:    form.duration ? `${form.duration} days` : '',
-    keywords:    form.focusKeyword || form.title,
-  }), [form.title, form.category, form.summary, form.destinationId, form.duration, form.focusKeyword, destinations])
+    summary:     form.summary.slice(0, 200),
+    focusKeyword: form.focusKeyword,
+  }), [form.title, form.category, form.destinationId, form.duration, form.summary, form.focusKeyword, destinations])
 
   return (
     <>
     <SeoScorePanel input={seoInput} onAutoFixH1={handleAutoFixH1} />
-    <AiGeneratePanel
-      entityType="package"
-      entityId={pkg?.id}
-      seoTemplateKey="package-seo-generate"
-      fullTemplateKey="package-full-generate"
-      vars={aiVars}
-      onApply={handleAiApply}
-    />
     <InternalLinkPanel
       title={form.title}
       content={form.description}
       currentSlug={form.slug}
       onAutoLink={(newDesc) => setForm(f => ({ ...f, description: newDesc }))}
+    />
+    <JsonEditorPanel
+      formData={form as unknown as Record<string, unknown>}
+      onApply={(patch) => setForm(f => ({ ...f, ...patch }))}
+      entityLabel="Package"
+    />
+    <ImagesAiPanel
+      images={form.images}
+      title={form.title}
+      onRemove={(url) => setForm(f => ({ ...f, images: f.images.filter((i: string) => i !== url) }))}
     />
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Tab nav */}
@@ -457,10 +442,13 @@ export default function PackageForm({ destinations, pkg }: Props) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <label className="block text-xs font-semibold text-gray-500 mb-1.5">Title *</label>
-                <input required value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value, slug: autoSlug(e.target.value) })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400"
-                  placeholder="e.g. Dubai City Escape" />
+                <div className="flex gap-2">
+                  <input required value={form.title}
+                    onChange={(e) => setForm({ ...form, title: e.target.value, slug: autoSlug(e.target.value) })}
+                    className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400"
+                    placeholder="e.g. Dubai City Escape" />
+                  <AiFieldAssist fieldLabel="Title" fieldName="title" currentValue={form.title} formContext={aiContext} onApply={v => setForm(f => ({ ...f, title: v, slug: autoSlug(v) }))} />
+                </div>
               </div>
               {inp('slug', 'Slug *', 'text', 'dubai-city-escape', true)}
               <div>
@@ -540,14 +528,20 @@ export default function PackageForm({ destinations, pkg }: Props) {
           <div className="space-y-5">
             <h3 className="font-bold text-gray-800 mb-2">Description & Content</h3>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5">Short Summary</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-semibold text-gray-500">Short Summary</label>
+                <AiFieldAssist fieldLabel="Summary" fieldName="summary" currentValue={form.summary} formContext={aiContext} onApply={v => setForm(f => ({ ...f, summary: v }))} />
+              </div>
               <textarea rows={2} value={form.summary}
                 onChange={(e) => setForm({ ...form, summary: e.target.value })}
                 placeholder="One-paragraph overview shown in package cards…"
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-2">Full Description *</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-semibold text-gray-500">Full Description *</label>
+                <AiFieldAssist fieldLabel="Description" fieldName="description" currentValue={form.description.replace(/<[^>]+>/g, ' ').slice(0, 200)} formContext={aiContext} onApply={v => setForm(f => ({ ...f, description: v }))} />
+              </div>
               <RichTextEditor
                 value={form.description}
                 onChange={(html) => setForm({ ...form, description: html })}
@@ -556,7 +550,15 @@ export default function PackageForm({ destinations, pkg }: Props) {
             </div>
             <hr className="border-gray-100" />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {area('highlights', 'Highlights (one per line)', 5)}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-gray-500">Highlights (one per line)</label>
+                  <AiFieldAssist fieldLabel="Highlights" fieldName="highlights" currentValue={form.highlights} formContext={aiContext} onApply={v => setForm(f => ({ ...f, highlights: v }))} />
+                </div>
+                <textarea rows={5} value={form.highlights}
+                  onChange={e => setForm({ ...form, highlights: e.target.value })}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400 resize-none" />
+              </div>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <ChipList
@@ -670,7 +672,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-semibold text-gray-500">Focus Keyword</label>
-                  <span className="text-[10px] text-gray-400">Primary keyword you want to rank for</span>
+                  <AiFieldAssist fieldLabel="Focus Keyword" fieldName="focusKeyword" currentValue={form.focusKeyword} formContext={aiContext} onApply={v => setForm(f => ({ ...f, focusKeyword: v }))} />
                 </div>
                 <input value={form.focusKeyword}
                   onChange={e => setForm({ ...form, focusKeyword: e.target.value })}
@@ -680,8 +682,8 @@ export default function PackageForm({ destinations, pkg }: Props) {
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-semibold text-gray-500">Secondary Keywords</label>
-                  <span className="text-[10px] text-gray-400">Comma-separated</span>
+                  <label className="text-xs font-semibold text-gray-500">Secondary Keywords <span className="font-normal text-gray-400">comma-separated</span></label>
+                  <AiFieldAssist fieldLabel="Secondary Keywords" fieldName="secondaryKeywords" currentValue={form.secondaryKeywords} formContext={aiContext} onApply={v => setForm(f => ({ ...f, secondaryKeywords: v }))} />
                 </div>
                 <input value={form.secondaryKeywords}
                   onChange={e => setForm({ ...form, secondaryKeywords: e.target.value })}
@@ -692,18 +694,19 @@ export default function PackageForm({ destinations, pkg }: Props) {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-semibold text-gray-500">Meta Title</label>
-                  <span className={`text-[11px] font-semibold ${
-                    form.metaTitle.length === 0 ? 'text-gray-300' :
-                    form.metaTitle.length < 50 ? 'text-orange-500' :
-                    form.metaTitle.length <= 65 ? 'text-emerald-500' :
-                    'text-red-500'
-                  }`}>
-                    {form.metaTitle.length} / 65
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[11px] font-semibold ${
+                      form.metaTitle.length === 0 ? 'text-gray-300' :
+                      form.metaTitle.length < 50 ? 'text-orange-500' :
+                      form.metaTitle.length <= 65 ? 'text-emerald-500' :
+                      'text-red-500'
+                    }`}>{form.metaTitle.length} / 65</span>
+                    <AiFieldAssist fieldLabel="Meta Title" fieldName="metaTitle" currentValue={form.metaTitle} formContext={aiContext} onApply={v => setForm(f => ({ ...f, metaTitle: v }))} />
+                  </div>
                 </div>
                 <input value={form.metaTitle}
                   onChange={e => setForm({ ...form, metaTitle: e.target.value })}
-                  placeholder="e.g. Family Holiday Packages Sri Lanka | Metro Voyage"
+                  placeholder="e.g. Family Holiday Packages Sri Lanka | Halo Holidays"
                   maxLength={80}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-orange-400" />
                 <p className="text-[10px] text-gray-400 mt-1">Ideal: 50–65 characters. Shown as the blue link in Google results.</p>
@@ -712,14 +715,15 @@ export default function PackageForm({ destinations, pkg }: Props) {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-semibold text-gray-500">Meta Description</label>
-                  <span className={`text-[11px] font-semibold ${
-                    form.metaDescription.length === 0 ? 'text-gray-300' :
-                    form.metaDescription.length < 150 ? 'text-orange-500' :
-                    form.metaDescription.length <= 160 ? 'text-emerald-500' :
-                    'text-red-500'
-                  }`}>
-                    {form.metaDescription.length} / 160
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[11px] font-semibold ${
+                      form.metaDescription.length === 0 ? 'text-gray-300' :
+                      form.metaDescription.length < 150 ? 'text-orange-500' :
+                      form.metaDescription.length <= 160 ? 'text-emerald-500' :
+                      'text-red-500'
+                    }`}>{form.metaDescription.length} / 160</span>
+                    <AiFieldAssist fieldLabel="Meta Description" fieldName="metaDescription" currentValue={form.metaDescription} formContext={aiContext} onApply={v => setForm(f => ({ ...f, metaDescription: v }))} />
+                  </div>
                 </div>
                 <textarea rows={3} value={form.metaDescription}
                   onChange={e => setForm({ ...form, metaDescription: e.target.value })}
@@ -749,8 +753,11 @@ export default function PackageForm({ destinations, pkg }: Props) {
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-xs font-semibold text-gray-500">OG Title</label>
-                    <button type="button" onClick={() => setForm(f => ({ ...f, ogTitle: f.metaTitle }))}
-                      className="text-[10px] text-orange-500 hover:underline">Copy from Meta Title</button>
+                    <div className="flex items-center gap-2">
+                      <button type="button" onClick={() => setForm(f => ({ ...f, ogTitle: f.metaTitle }))}
+                        className="text-[10px] text-orange-500 hover:underline">Copy from Meta</button>
+                      <AiFieldAssist fieldLabel="OG Title" fieldName="ogTitle" currentValue={form.ogTitle} formContext={aiContext} onApply={v => setForm(f => ({ ...f, ogTitle: v }))} />
+                    </div>
                   </div>
                   <input value={form.ogTitle}
                     onChange={e => setForm({ ...form, ogTitle: e.target.value })}
@@ -775,8 +782,11 @@ export default function PackageForm({ destinations, pkg }: Props) {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-semibold text-gray-500">OG Description</label>
-                  <button type="button" onClick={() => setForm(f => ({ ...f, ogDescription: f.metaDescription }))}
-                    className="text-[10px] text-orange-500 hover:underline">Copy from Meta Description</button>
+                  <div className="flex items-center gap-2">
+                    <button type="button" onClick={() => setForm(f => ({ ...f, ogDescription: f.metaDescription }))}
+                      className="text-[10px] text-orange-500 hover:underline">Copy from Meta</button>
+                    <AiFieldAssist fieldLabel="OG Description" fieldName="ogDescription" currentValue={form.ogDescription} formContext={aiContext} onApply={v => setForm(f => ({ ...f, ogDescription: v }))} />
+                  </div>
                 </div>
                 <textarea rows={2} value={form.ogDescription}
                   onChange={e => setForm({ ...form, ogDescription: e.target.value })}
@@ -788,8 +798,11 @@ export default function PackageForm({ destinations, pkg }: Props) {
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-xs font-semibold text-gray-500">Twitter Title</label>
-                    <button type="button" onClick={() => setForm(f => ({ ...f, twitterTitle: f.ogTitle || f.metaTitle }))}
-                      className="text-[10px] text-orange-500 hover:underline">Copy from OG</button>
+                    <div className="flex items-center gap-2">
+                      <button type="button" onClick={() => setForm(f => ({ ...f, twitterTitle: f.ogTitle || f.metaTitle }))}
+                        className="text-[10px] text-orange-500 hover:underline">Copy from OG</button>
+                      <AiFieldAssist fieldLabel="Twitter Title" fieldName="twitterTitle" currentValue={form.twitterTitle} formContext={aiContext} onApply={v => setForm(f => ({ ...f, twitterTitle: v }))} />
+                    </div>
                   </div>
                   <input value={form.twitterTitle}
                     onChange={e => setForm({ ...form, twitterTitle: e.target.value })}
@@ -799,8 +812,11 @@ export default function PackageForm({ destinations, pkg }: Props) {
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-xs font-semibold text-gray-500">Twitter Description</label>
-                    <button type="button" onClick={() => setForm(f => ({ ...f, twitterDescription: f.ogDescription || f.metaDescription }))}
-                      className="text-[10px] text-orange-500 hover:underline">Copy from OG</button>
+                    <div className="flex items-center gap-2">
+                      <button type="button" onClick={() => setForm(f => ({ ...f, twitterDescription: f.ogDescription || f.metaDescription }))}
+                        className="text-[10px] text-orange-500 hover:underline">Copy from OG</button>
+                      <AiFieldAssist fieldLabel="Twitter Description" fieldName="twitterDescription" currentValue={form.twitterDescription} formContext={aiContext} onApply={v => setForm(f => ({ ...f, twitterDescription: v }))} />
+                    </div>
                   </div>
                   <textarea rows={2} value={form.twitterDescription}
                     onChange={e => setForm({ ...form, twitterDescription: e.target.value })}
@@ -829,7 +845,10 @@ export default function PackageForm({ destinations, pkg }: Props) {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-semibold text-gray-500">JSON-LD Schema Markup</label>
-                  <span className="text-[10px] text-gray-400">Optional — structured data for rich results</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-gray-400">Optional — structured data</span>
+                    <AiFieldAssist fieldLabel="Schema Markup" fieldName="schemaMarkup" currentValue={form.schemaMarkup} formContext={aiContext} onApply={v => setForm(f => ({ ...f, schemaMarkup: v }))} />
+                  </div>
                 </div>
                 <textarea rows={8} value={form.schemaMarkup}
                   onChange={e => setForm({ ...form, schemaMarkup: e.target.value })}

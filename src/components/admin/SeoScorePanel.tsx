@@ -177,14 +177,13 @@ export default function SeoScorePanel({ input, onAutoFixH1 }: Props) {
     <>
       {/* ── Floating badge ── */}
       <button
-        type="button"
-        onClick={() => setOpen(true)}
-        className={`fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-2.5 rounded-2xl text-white font-bold text-sm shadow-xl transition-colors ${badgeBg}`}
-        title="View SEO Score"
-      >
-        <span className="text-lg font-black">{result.total}</span>
-        <span className="text-xs opacity-90">SEO — {result.label}</span>
-      </button>
+  type="button"
+  onClick={() => setOpen(true)}
+  className={`fixed bottom-3 right-6 z-40 flex items-center justify-center w-11 h-11 rounded-full text-white font-bold text-sm shadow-xl transition-colors ${badgeBg}`}
+  title="View SEO Score"
+>
+  <span className="text-lg font-black">{result.total}</span>
+</button>
 
       {/* ── Modal ── */}
       {open && (

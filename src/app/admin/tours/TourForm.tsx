@@ -6,8 +6,10 @@ import dynamic from 'next/dynamic'
 import { FiPlus, FiX, FiInfo } from 'react-icons/fi'
 import MultiImageUploader, { GalleryLayout } from '@/components/admin/MultiImageUploader'
 import SeoScorePanel from '@/components/admin/SeoScorePanel'
-import AiGeneratePanel, { AiApplyData } from '@/components/admin/AiGeneratePanel'
+import AiFieldAssist from '@/components/admin/AiFieldAssist'
 import InternalLinkPanel from '@/components/admin/InternalLinkPanel'
+import JsonEditorPanel from '@/components/admin/JsonEditorPanel'
+import ImagesAiPanel from '@/components/admin/ImagesAiPanel'
 import { SeoInput } from '@/lib/seo-score'
 
 const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor'), { ssr: false })
@@ -394,47 +396,31 @@ export default function TourForm({ destinations, tour }: Props) {
     setForm(f => ({ ...f, description: f.description.replace(/<h1[^>]*>[\s\S]*?<\/h1>/gi, '') }))
   }
 
-  const handleAiApply = (data: AiApplyData) => {
-    setForm(f => ({
-      ...f,
-      ...(data.description        && { description:       data.description }),
-      ...(data.summary            && { summary:           data.summary }),
-      ...(data.highlights         && { highlights:        data.highlights.join('\n') }),
-      ...(data.inclusions         && { inclusions:        data.inclusions }),
-      ...(data.exclusions         && { exclusions:        data.exclusions }),
-      ...(data.metaTitle          && { metaTitle:         data.metaTitle }),
-      ...(data.metaDescription    && { metaDescription:   data.metaDescription }),
-      ...(data.focusKeyword       && { focusKeyword:      data.focusKeyword }),
-      ...(data.secondaryKeywords  && { secondaryKeywords: data.secondaryKeywords }),
-      ...(data.ogTitle            && { ogTitle:           data.ogTitle }),
-      ...(data.ogDescription      && { ogDescription:     data.ogDescription }),
-      ...(data.schemaMarkup       && { schemaMarkup:      data.schemaMarkup }),
-    }))
-  }
-
-  const aiVars = useMemo(() => ({
-    title:    form.title,
-    summary:  form.summary,
-    duration: form.duration ? `${form.duration} days` : '',
-    keywords: form.focusKeyword || form.title,
-  }), [form.title, form.summary, form.duration, form.focusKeyword])
+  const aiContext = useMemo(() => ({
+    title:        form.title,
+    duration:     form.duration ? `${form.duration} days` : '',
+    summary:      form.summary.slice(0, 200),
+    focusKeyword: form.focusKeyword,
+  }), [form.title, form.duration, form.summary, form.focusKeyword])
 
   return (
     <>
     <SeoScorePanel input={seoInput} onAutoFixH1={handleAutoFixH1} />
-    <AiGeneratePanel
-      entityType="tour"
-      entityId={tour?.id}
-      seoTemplateKey="tour-seo-generate"
-      fullTemplateKey="tour-full-generate"
-      vars={aiVars}
-      onApply={handleAiApply}
-    />
     <InternalLinkPanel
       title={form.title}
       content={form.description}
       currentSlug={form.slug}
       onAutoLink={(newDesc) => setForm(f => ({ ...f, description: newDesc }))}
+    />
+    <JsonEditorPanel
+      formData={form as unknown as Record<string, unknown>}
+      onApply={(patch) => setForm(f => ({ ...f, ...patch }))}
+      entityLabel="Tour"
+    />
+    <ImagesAiPanel
+      images={form.images}
+      title={form.title}
+      onRemove={(url) => setForm(f => ({ ...f, images: f.images.filter((i: string) => i !== url) }))}
     />
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Tab nav */}
@@ -455,10 +441,13 @@ export default function TourForm({ destinations, tour }: Props) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <label className="block text-xs font-semibold text-gray-500 mb-1.5">Title *</label>
-                <input required value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value, slug: autoSlug(e.target.value) })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400"
-                  placeholder="e.g. South East Asia Explorer" />
+                <div className="flex gap-2">
+                  <input required value={form.title}
+                    onChange={(e) => setForm({ ...form, title: e.target.value, slug: autoSlug(e.target.value) })}
+                    className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400"
+                    placeholder="e.g. South East Asia Explorer" />
+                  <AiFieldAssist fieldLabel="Title" fieldName="title" currentValue={form.title} formContext={aiContext} onApply={v => setForm(f => ({ ...f, title: v, slug: autoSlug(v) }))} accentColor="sky" />
+                </div>
               </div>
               {inp('slug', 'Slug *', 'text', 'south-east-asia-explorer', true)}
 
@@ -551,14 +540,20 @@ export default function TourForm({ destinations, tour }: Props) {
           <div className="space-y-5">
             <h3 className="font-bold text-gray-800 mb-2">Description & Content</h3>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5">Short Summary</label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="text-xs font-semibold text-gray-500">Short Summary</label>
+                <AiFieldAssist fieldLabel="Summary" fieldName="summary" currentValue={form.summary} formContext={aiContext} onApply={v => setForm(f => ({ ...f, summary: v }))} accentColor="sky" />
+              </div>
               <textarea rows={2} value={form.summary}
                 onChange={(e) => setForm({ ...form, summary: e.target.value })}
                 placeholder="One-paragraph overview shown on tour cards…"
                 className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400 resize-none" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-2">Full Description *</label>
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-semibold text-gray-500">Full Description *</label>
+                <AiFieldAssist fieldLabel="Description" fieldName="description" currentValue={form.description.replace(/<[^>]+>/g, ' ').slice(0, 200)} formContext={aiContext} onApply={v => setForm(f => ({ ...f, description: v }))} accentColor="sky" />
+              </div>
               <RichTextEditor
                 value={form.description}
                 onChange={(html) => setForm({ ...form, description: html })}
@@ -567,7 +562,15 @@ export default function TourForm({ destinations, tour }: Props) {
             </div>
             <hr className="border-gray-100" />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {area('highlights', 'Highlights (one per line)', 5)}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-gray-500">Highlights (one per line)</label>
+                  <AiFieldAssist fieldLabel="Highlights" fieldName="highlights" currentValue={form.highlights} formContext={aiContext} onApply={v => setForm(f => ({ ...f, highlights: v }))} accentColor="sky" />
+                </div>
+                <textarea rows={5} value={form.highlights}
+                  onChange={e => setForm({ ...form, highlights: e.target.value })}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400 resize-none" />
+              </div>
               {area('visaNotes', 'Visa Notes', 4, 'Notes about visa requirements for each country covered')}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -675,7 +678,7 @@ export default function TourForm({ destinations, tour }: Props) {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-semibold text-gray-500">Focus Keyword</label>
-                  <span className="text-[10px] text-gray-400">Primary keyword you want to rank for</span>
+                  <AiFieldAssist fieldLabel="Focus Keyword" fieldName="focusKeyword" currentValue={form.focusKeyword} formContext={aiContext} onApply={v => setForm(f => ({ ...f, focusKeyword: v }))} accentColor="sky" />
                 </div>
                 <input value={form.focusKeyword}
                   onChange={e => setForm({ ...form, focusKeyword: e.target.value })}
@@ -685,8 +688,8 @@ export default function TourForm({ destinations, tour }: Props) {
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-semibold text-gray-500">Secondary Keywords</label>
-                  <span className="text-[10px] text-gray-400">Comma-separated</span>
+                  <label className="text-xs font-semibold text-gray-500">Secondary Keywords <span className="font-normal text-gray-400">comma-separated</span></label>
+                  <AiFieldAssist fieldLabel="Secondary Keywords" fieldName="secondaryKeywords" currentValue={form.secondaryKeywords} formContext={aiContext} onApply={v => setForm(f => ({ ...f, secondaryKeywords: v }))} accentColor="sky" />
                 </div>
                 <input value={form.secondaryKeywords}
                   onChange={e => setForm({ ...form, secondaryKeywords: e.target.value })}
@@ -697,12 +700,10 @@ export default function TourForm({ destinations, tour }: Props) {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-semibold text-gray-500">Meta Title</label>
-                  <span className={`text-[11px] font-semibold ${
-                    form.metaTitle.length === 0 ? 'text-gray-300' :
-                    form.metaTitle.length < 50 ? 'text-orange-500' :
-                    form.metaTitle.length <= 65 ? 'text-emerald-500' :
-                    'text-red-500'
-                  }`}>{form.metaTitle.length} / 65</span>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[11px] font-semibold ${form.metaTitle.length === 0 ? 'text-gray-300' : form.metaTitle.length < 50 ? 'text-orange-500' : form.metaTitle.length <= 65 ? 'text-emerald-500' : 'text-red-500'}`}>{form.metaTitle.length} / 65</span>
+                    <AiFieldAssist fieldLabel="Meta Title" fieldName="metaTitle" currentValue={form.metaTitle} formContext={aiContext} onApply={v => setForm(f => ({ ...f, metaTitle: v }))} accentColor="sky" />
+                  </div>
                 </div>
                 <input value={form.metaTitle}
                   onChange={e => setForm({ ...form, metaTitle: e.target.value })}
@@ -715,12 +716,10 @@ export default function TourForm({ destinations, tour }: Props) {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-semibold text-gray-500">Meta Description</label>
-                  <span className={`text-[11px] font-semibold ${
-                    form.metaDescription.length === 0 ? 'text-gray-300' :
-                    form.metaDescription.length < 150 ? 'text-orange-500' :
-                    form.metaDescription.length <= 160 ? 'text-emerald-500' :
-                    'text-red-500'
-                  }`}>{form.metaDescription.length} / 160</span>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-[11px] font-semibold ${form.metaDescription.length === 0 ? 'text-gray-300' : form.metaDescription.length < 150 ? 'text-orange-500' : form.metaDescription.length <= 160 ? 'text-emerald-500' : 'text-red-500'}`}>{form.metaDescription.length} / 160</span>
+                    <AiFieldAssist fieldLabel="Meta Description" fieldName="metaDescription" currentValue={form.metaDescription} formContext={aiContext} onApply={v => setForm(f => ({ ...f, metaDescription: v }))} accentColor="sky" />
+                  </div>
                 </div>
                 <textarea rows={3} value={form.metaDescription}
                   onChange={e => setForm({ ...form, metaDescription: e.target.value })}
@@ -819,7 +818,10 @@ export default function TourForm({ destinations, tour }: Props) {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <label className="text-xs font-semibold text-gray-500">JSON-LD Schema Markup</label>
-                  <span className="text-[10px] text-gray-400">Structured data for rich results</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-gray-400">Structured data</span>
+                    <AiFieldAssist fieldLabel="Schema Markup" fieldName="schemaMarkup" currentValue={form.schemaMarkup} formContext={aiContext} onApply={v => setForm(f => ({ ...f, schemaMarkup: v }))} accentColor="sky" />
+                  </div>
                 </div>
                 <textarea rows={8} value={form.schemaMarkup}
                   onChange={e => setForm({ ...form, schemaMarkup: e.target.value })}

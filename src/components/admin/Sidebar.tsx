@@ -15,6 +15,7 @@ type NavItem = {
   href: string
   icon: React.ReactNode
   badge?: number
+  exact?: boolean
 }
 
 type NavGroup = {
@@ -62,15 +63,16 @@ const GROUPS: NavGroup[] = [
     label: 'System',
     icon: <FiSettings size={15} />,
     items: [
-      { label: 'Staff',         href: '/admin/staff',    icon: <FiUsers size={14} /> },
-      { label: 'Media Library', href: '/admin/media',    icon: <FiImage size={14} /> },
-      { label: 'Settings',      href: '/admin/settings', icon: <FiSettings size={14} /> },
+      { label: 'Staff',         href: '/admin/staff',        icon: <FiUsers size={14} /> },
+      { label: 'Media Library', href: '/admin/media',        icon: <FiImage size={14} /> },
+      { label: 'AI Provider Config', href: '/admin/settings/ai', icon: <FiZap size={14} /> },
+      { label: 'Settings',      href: '/admin/settings',     icon: <FiSettings size={14} />, exact: true },
     ],
   },
 ]
 
 function NavGroup({ group, pathname }: { group: NavGroup; pathname: string }) {
-  const isAnyActive = group.items.some(item => pathname.startsWith(item.href))
+  const isAnyActive = group.items.some(item => item.exact ? pathname === item.href : pathname.startsWith(item.href))
   const [open, setOpen] = useState(isAnyActive)
 
   return (
@@ -94,7 +96,7 @@ function NavGroup({ group, pathname }: { group: NavGroup; pathname: string }) {
       {open && (
         <div className="mt-0.5 ml-2 space-y-0.5">
           {group.items.map(item => {
-            const active = pathname.startsWith(item.href)
+            const active = item.exact ? pathname === item.href : pathname.startsWith(item.href)
             return (
               <Link
                 key={item.href}

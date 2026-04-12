@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { FiVideo, FiPhone, FiMail } from 'react-icons/fi'
 import AdminTable, { Column } from '@/components/admin/AdminTable'
 
@@ -14,7 +14,25 @@ const STATUS_STYLE: Record<string, string> = {
 
 export default function ConsultationsTable({ consultations, staff }: { consultations: any[]; staff: any[] }) {
   const router = useRouter()
+  const esRef  = useRef<EventSource | null>(null)
   const [updating, setUpdating] = useState<string | null>(null)
+
+  // Auto-refresh on new consultation SSE event
+  useEffect(() => {
+    const connect = () => {
+      const es = new EventSource('/api/admin/notifications/stream')
+      esRef.current = es
+      es.onmessage = (e) => {
+        try {
+          const notif = JSON.parse(e.data)
+          if (notif.type === 'NEW_CONSULTATION') router.refresh()
+        } catch {}
+      }
+      es.onerror = () => { es.close(); setTimeout(connect, 5000) }
+    }
+    connect()
+    return () => esRef.current?.close()
+  }, [router])
 
   const update = async (id: string, data: any) => {
     setUpdating(id)

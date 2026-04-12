@@ -7,7 +7,7 @@ import { FiEdit2, FiEye, FiEyeOff } from 'react-icons/fi'
 
 interface Visa {
   id: string; slug: string; country: string; visaType: string
-  processingTime?: string | null; fee?: number | null; isActive: boolean
+  processingTime?: string | null; fee?: number | null; isActive: boolean; createdAt: string
 }
 
 export default function VisasClient({ visas }: { visas: Visa[] }) {
@@ -50,6 +50,14 @@ export default function VisasClient({ visas }: { visas: Visa[] }) {
       ),
     },
     {
+      key: 'createdAt', label: 'Added', sortable: true,
+      render: v => (
+        <span className="text-xs text-gray-400">
+          {new Date(v.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}
+        </span>
+      ),
+    },
+    {
       key: 'actions', label: 'Actions',
       render: v => (
         <div className="flex items-center gap-1.5">
@@ -71,7 +79,7 @@ export default function VisasClient({ visas }: { visas: Visa[] }) {
       filterOptions={['ALL', 'true', 'false']}
       filterLabels={{ ALL: 'All', true: 'Active', false: 'Hidden' }}
       searchKeys={['country', 'visaType', 'processingTime']}
-      defaultSort={{ key: 'country', dir: 'asc' }}
+      defaultSort={{ key: 'createdAt', dir: 'desc' }}
       emptyMessage="No visa services yet"
     />
   )

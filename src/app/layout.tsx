@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import PublicLayout from '@/components/layout/PublicLayout'
 import { CustomerAuthProvider } from '@/lib/customerAuth'
+import NotificationListener from '@/components/NotificationListener'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${inter.className} min-h-full flex flex-col bg-white`}>
         <CustomerAuthProvider>
           <PublicLayout>{children}</PublicLayout>
+          <NotificationListener />
         </CustomerAuthProvider>
       </body>
     </html>

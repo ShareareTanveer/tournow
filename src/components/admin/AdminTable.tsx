@@ -74,11 +74,18 @@ function searchRow(row: any, keys: string[], q: string): boolean {
 
 function sortRows<T>(rows: T[], key: string, dir: 'asc' | 'desc'): T[] {
   return [...rows].sort((a, b) => {
-    const av = getValue(a, key)
-    const bv = getValue(b, key)
+    let av = getValue(a, key)
+    let bv = getValue(b, key)
     if (av == null && bv == null) return 0
     if (av == null) return 1
     if (bv == null) return -1
+
+    // Normalize Date objects and date-like strings to timestamps
+    if (av instanceof Date) av = av.getTime()
+    else if (typeof av === 'string' && /^\d{4}-\d{2}-\d{2}/.test(av)) av = new Date(av).getTime()
+    if (bv instanceof Date) bv = bv.getTime()
+    else if (typeof bv === 'string' && /^\d{4}-\d{2}-\d{2}/.test(bv)) bv = new Date(bv).getTime()
+
     const cmp = typeof av === 'number' && typeof bv === 'number'
       ? av - bv
       : String(av).localeCompare(String(bv))
@@ -175,6 +182,28 @@ export default function AdminTable<T = any>({
               </button>
             )}
           </div>
+
+          {/* Sort selector */}
+          {columns.some(c => c.sortable) && (
+            <div className="flex items-center gap-1.5">
+              <select
+                value={sortKey ? `${sortKey}:${sortDir}` : ''}
+                onChange={e => {
+                  if (!e.target.value) return
+                  const [k, d] = e.target.value.split(':')
+                  setSortKey(k)
+                  setSortDir(d as 'asc' | 'desc')
+                  setPage(1)
+                }}
+                className="border border-gray-200 rounded-lg px-2 py-1.5 text-xs bg-white focus:outline-none focus:border-indigo-300 cursor-pointer"
+              >
+                {columns.filter(c => c.sortable).flatMap(c => [
+                  <option key={`${c.key}:desc`} value={`${c.key}:desc`}>{c.label} ↓</option>,
+                  <option key={`${c.key}:asc`}  value={`${c.key}:asc`}>{c.label} ↑</option>,
+                ])}
+              </select>
+            </div>
+          )}
 
           {/* Page size */}
           <div className="flex items-center gap-1.5 text-xs text-gray-500">

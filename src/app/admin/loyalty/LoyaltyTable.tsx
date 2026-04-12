@@ -114,7 +114,7 @@ export default function LoyaltyTable({ cards }: { cards: any[] }) {
       filterKey="tier"
       filterOptions={['ALL', 'BRONZE', 'SILVER', 'GOLD']}
       searchKeys={['name', 'email', 'phone', 'cardNumber']}
-      defaultSort={{ key: 'points', dir: 'desc' }}
+      defaultSort={{ key: 'createdAt', dir: 'desc' }}
       emptyMessage="No loyalty members yet"
     />
   )

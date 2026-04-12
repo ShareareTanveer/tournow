@@ -43,6 +43,7 @@ const GROUPS: NavGroup[] = [
     label: 'Customers',
     icon: <FiUsers size={14} />,
     items: [
+      { label: 'Customers',     href: '/admin/customers',  icon: <FiUsers size={14} /> },
       { label: 'Loyalty Cards', href: '/admin/loyalty',    icon: <FiCreditCard size={14} /> },
       { label: 'Perks',         href: '/admin/perks',      icon: <FiZap size={14} /> },
       { label: 'Newsletter',    href: '/admin/newsletter', icon: <FiMail size={14} /> },

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import AdminBookingModal from '@/components/admin/AdminBookingModal'
 import AdminTable, { Column } from '@/components/admin/AdminTable'
@@ -20,8 +20,27 @@ export default function InquiriesTable({
   inquiries: any[]
   staff: any[]
 }) {
-  const router = useRouter()
-  const [updating, setUpdating]                      = useState<string | null>(null)
+  const router  = useRouter()
+  const esRef   = useRef<EventSource | null>(null)
+  const [updating, setUpdating] = useState<string | null>(null)
+
+  // Auto-refresh when a new inquiry arrives via SSE
+  useEffect(() => {
+    const connect = () => {
+      const es = new EventSource('/api/admin/notifications/stream')
+      esRef.current = es
+      es.onmessage = (e) => {
+        try {
+          const notif = JSON.parse(e.data)
+          if (notif.type === 'NEW_INQUIRY') router.refresh()
+        } catch {}
+      }
+      es.onerror = () => { es.close(); setTimeout(connect, 5000) }
+    }
+    connect()
+    return () => esRef.current?.close()
+  }, [router])
+
   const [convertingInquiry, setConvertingInquiry]    = useState<any | null>(null)
   const [bookingTarget, setBookingTarget]             = useState<any | null>(null)
   const [fetchingTarget, setFetchingTarget]           = useState(false)

@@ -9,7 +9,7 @@ const STAR_MAP: Record<string, string> = { THREE: '3★', FOUR: '4★', FIVE: '5
 interface Pkg {
   id: string; slug: string; title: string; category: string
   price: number; duration: number; nights: number; starRating: string
-  isFeatured: boolean; isActive: boolean
+  isFeatured: boolean; isActive: boolean; createdAt: string
   destination?: { name: string } | null
 }
 
@@ -72,6 +72,14 @@ export default function PackagesClient({ packages }: { packages: Pkg[] }) {
       ),
     },
     {
+      key: 'createdAt', label: 'Added', sortable: true,
+      render: pkg => (
+        <span className="text-xs text-gray-400">
+          {new Date(pkg.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}
+        </span>
+      ),
+    },
+    {
       key: 'actions', label: 'Actions',
       render: pkg => (
         <div className="flex items-center gap-1.5">
@@ -96,7 +104,7 @@ export default function PackagesClient({ packages }: { packages: Pkg[] }) {
       filterOptions={['ALL', 'true', 'false']}
       filterLabels={{ ALL: 'All', true: 'Active', false: 'Hidden' }}
       searchKeys={['title', 'slug', 'category', 'destination.name']}
-      defaultSort={{ key: 'isFeatured', dir: 'desc' }}
+      defaultSort={{ key: 'createdAt', dir: 'desc' }}
       emptyMessage="No packages found"
     />
   )

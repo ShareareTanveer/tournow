@@ -7,7 +7,7 @@ import { FiEdit2, FiExternalLink, FiGlobe, FiMapPin, FiEye, FiEyeOff, FiStar } f
 interface Tour {
   id: string; slug: string; title: string; region: string
   price: number; duration: number; nights: number
-  isFeatured: boolean; isActive: boolean
+  isFeatured: boolean; isActive: boolean; createdAt: string
   multiDestinations: string[]
   primaryDestination: { name: string }
 }
@@ -73,6 +73,14 @@ export default function ToursClient({ tours }: { tours: Tour[] }) {
       ),
     },
     {
+      key: 'createdAt', label: 'Added', sortable: true,
+      render: t => (
+        <span className="text-xs text-gray-400">
+          {new Date(t.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}
+        </span>
+      ),
+    },
+    {
       key: 'actions', label: 'Actions',
       render: t => (
         <div className="flex items-center gap-1.5">
@@ -97,7 +105,7 @@ export default function ToursClient({ tours }: { tours: Tour[] }) {
       filterOptions={['ALL', 'true', 'false']}
       filterLabels={{ ALL: 'All', true: 'Active', false: 'Hidden' }}
       searchKeys={['title', 'slug', 'region', 'primaryDestination.name']}
-      defaultSort={{ key: 'isFeatured', dir: 'desc' }}
+      defaultSort={{ key: 'createdAt', dir: 'desc' }}
       emptyMessage="No tours found"
     />
   )

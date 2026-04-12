@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import AdminShell from '@/components/admin/AdminShell'
 import { prisma } from '@/lib/prisma'
 import ConsultationsTable from './ConsultationsTable'

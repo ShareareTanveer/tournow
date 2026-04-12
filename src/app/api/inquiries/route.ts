@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getAuthUser } from '@/lib/auth'
 import { InquirySchema } from '@/lib/validations'
 import { sendInquiryConfirmation, sendInquiryNotification } from '@/lib/email'
+import { onNewInquiry } from '@/lib/notifications'
 
 export async function GET(req: NextRequest) {
   const user = await getAuthUser(req)
@@ -61,6 +62,9 @@ export async function POST(req: NextRequest) {
       message: inquiry.message,
       packageTitle: inquiry.package?.title,
     }).catch(console.error)
+
+    // Push real-time notification
+    onNewInquiry({ inquiryId: inquiry.id, name: inquiry.name, destination: inquiry.destination }).catch(console.error)
 
     return NextResponse.json(inquiry, { status: 201 })
   } catch {

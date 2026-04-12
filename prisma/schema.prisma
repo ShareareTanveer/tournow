@@ -103,6 +103,21 @@ enum DifficultyLevel {
   EXTREME
 }
 
+enum NotificationType {
+  NEW_BOOKING
+  BOOKING_STATUS
+  NEW_INQUIRY
+  NEW_CONSULTATION
+  NEW_REVIEW
+  PAYMENT_RECEIVED
+  SYSTEM
+}
+
+enum NotificationAudience {
+  ADMIN
+  CUSTOMER
+}
+
 // ─── USER / AUTH ──────────────────────────────────────────────────────────────
 
 model User {
@@ -967,4 +982,29 @@ model Media {
   createdAt DateTime @default(now())
 
   @@map("media")
+}
+
+// ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
+
+model Notification {
+  id         String               @id @default(cuid())
+  type       NotificationType
+  audience   NotificationAudience
+  title      String
+  body       String
+  link       String?              // href to navigate to on click
+  isRead     Boolean              @default(false)
+  // For admin notifications: userId (null = broadcast to all admins)
+  userId     String?
+  // For customer notifications: customerId
+  customerId String?
+  // Reference to the entity that triggered this
+  entityType String?              // "booking" | "inquiry" | "consultation" etc.
+  entityId   String?
+  createdAt  DateTime             @default(now())
+
+  @@index([audience, isRead])
+  @@index([userId])
+  @@index([customerId])
+  @@map("notifications")
 }

@@ -8,6 +8,7 @@ import {
   FiGrid, FiTag, FiCalendar, FiUser, FiLogOut,
   FiChevronRight, FiMenu, FiMapPin, FiAward,
 } from 'react-icons/fi'
+import NotificationBell from '@/components/NotificationBell'
 
 const NAV = [
   { href: '/my',                  label: 'Overview',        icon: FiGrid },
@@ -122,16 +123,23 @@ export default function CustomerShell({ children }: { children: React.ReactNode 
 
       {/* ── Main content area ── */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile topbar */}
-        <header className="lg:hidden sticky top-0 z-30 bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between">
+        {/* Topbar — desktop notification bell + mobile hamburger */}
+        <header className="sticky top-0 z-30 bg-white border-b border-gray-100 px-4 py-3 flex items-center justify-between">
           <button onClick={() => setSidebarOpen(true)}
-            className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-700">
+            className="lg:hidden w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center text-gray-700">
             <FiMenu size={18} />
           </button>
-          <span className="font-bold text-gray-800 text-sm">My Account</span>
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold"
-            style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
-            {initials}
+          <span className="font-bold text-gray-800 text-sm lg:hidden">My Account</span>
+          <div className="hidden lg:block" />
+          <div className="flex items-center gap-2">
+            <NotificationBell
+              apiBase="/api/my/notifications"
+              streamUrl="/api/my/notifications/stream"
+            />
+            <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold lg:hidden"
+              style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
+              {initials}
+            </div>
           </div>
         </header>
 

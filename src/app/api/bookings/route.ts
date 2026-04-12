@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAuthUser, verifyToken } from '@/lib/auth'
 import { BookingSchema } from '@/lib/validations'
+import { onNewBooking } from '@/lib/notifications'
 
 export async function GET(req: NextRequest) {
   const adminUser = await getAuthUser(req)
@@ -109,6 +110,15 @@ export async function POST(req: NextRequest) {
       },
       include: { package: { select: { title: true } } },
     })
+
+    // Fire notifications (non-blocking)
+    onNewBooking({
+      bookingId: booking.id,
+      bookingRef: booking.bookingRef,
+      customerName: booking.customerName,
+      customerId: booking.customerId,
+      packageTitle: booking.package.title,
+    }).catch(console.error)
 
     return NextResponse.json({ bookingRef: booking.bookingRef, id: booking.id }, { status: 201 })
   } catch {

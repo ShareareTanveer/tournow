@@ -7,7 +7,7 @@ import { FiEdit2, FiStar, FiEye, FiEyeOff } from 'react-icons/fi'
 
 interface Destination {
   id: string; slug: string; name: string; region: string; country: string
-  costLevel?: string | null; isFeatured: boolean; isActive: boolean
+  costLevel?: string | null; isFeatured: boolean; isActive: boolean; createdAt: string
 }
 
 const COST_STYLE: Record<string, string> = {
@@ -61,6 +61,14 @@ export default function DestinationsClient({ destinations }: { destinations: Des
       ),
     },
     {
+      key: 'createdAt', label: 'Added', sortable: true,
+      render: d => (
+        <span className="text-xs text-gray-400">
+          {new Date(d.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}
+        </span>
+      ),
+    },
+    {
       key: 'actions', label: 'Actions',
       render: d => (
         <div className="flex items-center gap-1.5">
@@ -82,7 +90,7 @@ export default function DestinationsClient({ destinations }: { destinations: Des
       filterOptions={['ALL', 'true', 'false']}
       filterLabels={{ ALL: 'All', true: 'Active', false: 'Hidden' }}
       searchKeys={['name', 'slug', 'region', 'country', 'costLevel']}
-      defaultSort={{ key: 'name', dir: 'asc' }}
+      defaultSort={{ key: 'createdAt', dir: 'desc' }}
       emptyMessage="No destinations yet"
     />
   )

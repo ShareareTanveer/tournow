@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { FiExternalLink, FiFileText, FiEdit2, FiAlertCircle, FiCalendar, FiX } from 'react-icons/fi'
 import AdminTable, { Column } from '@/components/admin/AdminTable'
+import { useRouter } from 'next/navigation'
 
 const PIPELINE = [
   { status: 'REQUESTED',        label: 'Requested',        color: 'text-blue-600',   bg: 'bg-blue-50' },
@@ -73,11 +74,30 @@ function resolveDate(val: string): string {
 }
 
 export default function BookingsTable({ bookings: initial }: { bookings: Booking[] }) {
+  const router = useRouter()
+  const esRef  = useRef<EventSource | null>(null)
   const [bookings, setBookings] = useState(initial)
   const [updating, setUpdating] = useState<string | null>(null)
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo,   setDateTo]   = useState('')
   const [activePreset, setActivePreset] = useState('All time')
+
+  // Auto-refresh on new booking SSE event
+  useEffect(() => {
+    const connect = () => {
+      const es = new EventSource('/api/admin/notifications/stream')
+      esRef.current = es
+      es.onmessage = (e) => {
+        try {
+          const notif = JSON.parse(e.data)
+          if (notif.type === 'NEW_BOOKING') router.refresh()
+        } catch {}
+      }
+      es.onerror = () => { es.close(); setTimeout(connect, 5000) }
+    }
+    connect()
+    return () => esRef.current?.close()
+  }, [router])
 
   const filteredBookings = useMemo(() => {
     const from = resolveDate(dateFrom)

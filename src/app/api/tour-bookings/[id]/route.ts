@@ -8,6 +8,7 @@ import {
   sendReceiptUploadedAdmin,
   sendTicketToCustomer,
 } from '@/lib/email'
+import { onBookingStatusChange, onPaymentReceived } from '@/lib/notifications'
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -57,6 +58,9 @@ export async function PUT(req: NextRequest, { params }: Params) {
         await prisma.tourBooking.update({ where: { id }, data: { customerId: payload.userId } })
       }
 
+      // Resolved customer ID — use payload.userId since booking.customerId may be stale null
+      const resolvedCustomerId = booking.customerId ?? payload.userId
+
       if (action === 'upload_receipt' || body.receiptUrl) {
         const updated = await prisma.tourBooking.update({
           where: { id },
@@ -70,6 +74,13 @@ export async function PUT(req: NextRequest, { params }: Params) {
             receiptNote: body.receiptNote,
           })
         } catch {}
+        onBookingStatusChange({
+          bookingId: id,
+          customerId: resolvedCustomerId,
+          packageTitle: booking.tour.title,
+          newStatus: 'RECEIPT_UPLOADED',
+          triggeredBy: 'customer',
+        }).catch(console.error)
         return NextResponse.json(updated)
       }
 
@@ -98,6 +109,13 @@ export async function PUT(req: NextRequest, { params }: Params) {
             totalPrice: updated.totalPrice,
           })
         } catch {}
+        onBookingStatusChange({
+          bookingId: id,
+          customerId: resolvedCustomerId,
+          packageTitle: booking.tour.title,
+          newStatus: 'CONFIRMED',
+          triggeredBy: 'customer',
+        }).catch(console.error)
         return NextResponse.json(updated)
       }
 
@@ -185,5 +203,25 @@ export async function PUT(req: NextRequest, { params }: Params) {
       ...(body.ticketUrl !== undefined && { ticketUrl: body.ticketUrl }),
     },
   })
+
+  if (body.status && body.status !== booking.status) {
+    onBookingStatusChange({
+      bookingId: id,
+      customerId: booking.customerId,
+      packageTitle: booking.tour.title,
+      newStatus: body.status,
+      triggeredBy: 'admin',
+    }).catch(console.error)
+  }
+
+  if (body.paymentStatus === 'PAID' && booking.paymentStatus !== 'PAID') {
+    onPaymentReceived({
+      bookingId: id,
+      customerId: booking.customerId,
+      amount: updated.totalPrice,
+      packageTitle: booking.tour.title,
+    }).catch(console.error)
+  }
+
   return NextResponse.json(updated)
 }

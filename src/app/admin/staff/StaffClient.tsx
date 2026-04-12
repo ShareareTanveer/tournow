@@ -7,7 +7,7 @@ import { FiEdit2 } from 'react-icons/fi'
 
 interface Staff {
   id: string; name: string; role: string; bio?: string | null
-  imageUrl?: string | null; isActive: boolean
+  imageUrl?: string | null; isActive: boolean; createdAt: string
 }
 
 export default function StaffClient({ staff }: { staff: Staff[] }) {
@@ -49,6 +49,14 @@ export default function StaffClient({ staff }: { staff: Staff[] }) {
       ),
     },
     {
+      key: 'createdAt', label: 'Added', sortable: true,
+      render: s => (
+        <span className="text-xs text-gray-400">
+          {new Date(s.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}
+        </span>
+      ),
+    },
+    {
       key: 'actions', label: 'Actions',
       render: s => (
         <div className="flex items-center gap-1.5">
@@ -70,7 +78,7 @@ export default function StaffClient({ staff }: { staff: Staff[] }) {
       filterOptions={['ALL', 'true', 'false']}
       filterLabels={{ ALL: 'All', true: 'Active', false: 'Hidden' }}
       searchKeys={['name', 'role', 'bio']}
-      defaultSort={{ key: 'name', dir: 'asc' }}
+      defaultSort={{ key: 'createdAt', dir: 'desc' }}
       emptyMessage="No staff members yet"
     />
   )

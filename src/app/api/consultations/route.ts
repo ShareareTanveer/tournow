@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getAuthUser } from '@/lib/auth'
 import { ConsultationSchema } from '@/lib/validations'
 import { sendConsultationConfirmation, sendConsultationNotification } from '@/lib/email'
+import { onNewConsultation } from '@/lib/notifications'
 
 export async function GET(req: NextRequest) {
   const user = await getAuthUser(req)
@@ -51,6 +52,8 @@ export async function POST(req: NextRequest) {
       method: consultation.method,
       additionalInfo: consultation.additionalInfo,
     }).catch(console.error)
+
+    onNewConsultation({ consultationId: consultation.id, name: consultation.name, method: consultation.method }).catch(console.error)
 
     return NextResponse.json(consultation, { status: 201 })
   } catch {

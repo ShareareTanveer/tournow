@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import {
   FiEdit2, FiSend, FiCheck, FiX, FiExternalLink, FiDownload,
@@ -460,7 +460,12 @@ interface DocEntry { url: string; name: string; note?: string }
 function ReceiptTicketSection({ booking, type, onUpdate }: {
   booking: Booking; type: 'package' | 'tour'; onUpdate: (u: Partial<Booking>) => void
 }) {
-  const existingDocs: DocEntry[] = booking.documents ?? []
+  const [existingDocs, setExistingDocs] = useState<DocEntry[]>(booking.documents ?? [])
+
+  // Keep existingDocs in sync when parent booking prop updates (e.g. after onUpdate)
+  useEffect(() => {
+    setExistingDocs(booking.documents ?? [])
+  }, [booking.documents])
 
   // New files to add
   const [newFiles, setNewFiles] = useState<{ file: File; name: string }[]>([])
@@ -488,7 +493,9 @@ function ReceiptTicketSection({ booking, type, onUpdate }: {
       }),
     })
     if (res.ok) {
-      onUpdate(await res.json())
+      const updated = await res.json()
+      setExistingDocs(updated.documents ?? merged)
+      onUpdate(updated)
       return true
     }
     return false

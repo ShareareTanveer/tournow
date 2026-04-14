@@ -225,20 +225,23 @@ function PriceComparison({ booking }: { booking: Booking }) {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {/* Original Request */}
-      <div className="rounded-2xl border border-blue-200 bg-linear-to-b from-blue-50 to-white overflow-hidden">
-        <div className="px-5 py-3.5 bg-blue-50 border-b border-blue-100 flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg bg-blue-100 flex items-center justify-center">
-            <FiUser size={13} className="text-blue-600" />
+      {/* ── Original Request ── */}
+      <div className="rounded-2xl bg-white border border-gray-200 overflow-hidden shadow-sm">
+        <div className="px-5 py-3.5 border-b border-gray-100 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
+              <FiUser size={13} className="text-white" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-gray-900">Customer Request</p>
+              <p className="text-[11px] text-gray-400">Original submission</p>
+            </div>
           </div>
-          <div>
-            <p className="text-xs font-bold text-blue-800 uppercase tracking-wide">Customer Request</p>
-            <p className="text-[10px] text-blue-500">Original submission</p>
-          </div>
+          <span className="text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200 px-2.5 py-0.5 rounded-full">Original</span>
         </div>
-        <div className="p-5">
+        <div className="p-5 divide-y divide-gray-100">
           {snap ? (
-            <div className="space-y-0">
+            <>
               {snap.rooms && snap.rooms.length > 0 && (
                 <QuoteRow label="Rooms" value={snap.rooms.map(r => `${r.label} ×${r.qty}`).join(', ')} />
               )}
@@ -255,49 +258,37 @@ function PriceComparison({ booking }: { booking: Booking }) {
                 <QuoteRow label="Add-ons" value={snap.selectedOptions.map(o => o.label).join(', ')} />
               )}
               {snap.notes && <QuoteRow label="Note" value={snap.notes} />}
-              <div className="mt-4 pt-3 border-t border-blue-100 flex items-center justify-between">
-                <span className="text-xs font-bold text-blue-700">Estimate</span>
-                <span className="text-lg font-black text-blue-700">{fmt(snap.totalPrice)}</span>
+              <div className="pt-3 flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-500">Estimate</span>
+                <span className="text-xl font-black text-gray-900">{fmt(snap.totalPrice)}</span>
               </div>
-            </div>
+            </>
           ) : (
-            <p className="text-xs text-blue-300 italic py-4 text-center">No snapshot recorded</p>
+            <p className="text-xs text-gray-400 italic py-4 text-center">No snapshot recorded</p>
           )}
         </div>
       </div>
 
-      {/* Staff Quote */}
-      <div className={`rounded-2xl border overflow-hidden ${
-        hasQuote ? 'border-indigo-200 bg-linear-to-b from-indigo-50 to-white' : 'border-gray-200 bg-gray-50'
-      }`}>
-        <div className={`px-5 py-3.5 border-b flex items-center justify-between gap-2 ${
-          hasQuote ? 'bg-indigo-50 border-indigo-100' : 'bg-gray-50 border-gray-100'
-        }`}>
+      {/* ── Admin Quote ── */}
+      <div className={`rounded-2xl bg-white overflow-hidden shadow-sm border ${hasQuote ? 'border-indigo-200' : 'border-gray-200'}`}>
+        <div className="px-5 py-3.5 border-b border-gray-100 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2.5">
-            <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${hasQuote ? 'bg-indigo-100' : 'bg-gray-200'}`}>
-              <FiFileText size={13} className={hasQuote ? 'text-indigo-600' : 'text-gray-400'} />
+            <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${hasQuote ? 'bg-indigo-600' : 'bg-gray-400'}`}>
+              <FiFileText size={13} className="text-white" />
             </div>
             <div>
-              <p className={`text-xs font-bold uppercase tracking-wide ${hasQuote ? 'text-indigo-800' : 'text-gray-400'}`}>
-                {hasQuote ? 'Admin Quote' : 'No Quote Yet'}
-              </p>
-              <p className={`text-[10px] ${hasQuote ? 'text-indigo-500' : 'text-gray-400'}`}>
-                {hasQuote ? 'Sent to customer' : 'Not built yet'}
-              </p>
+              <p className="text-sm font-bold text-gray-900">{hasQuote ? 'Admin Quote' : 'No Quote Yet'}</p>
+              <p className="text-[11px] text-gray-400">{hasQuote ? 'Sent to customer' : 'Not built yet'}</p>
             </div>
           </div>
           <Link href={`/admin/bookings/${booking.id}/edit`}
-            className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors ${
-              hasQuote
-                ? 'bg-white border border-indigo-200 text-indigo-600 hover:bg-indigo-50'
-                : 'bg-indigo-600 text-white hover:bg-indigo-700'
-            }`}>
+            className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-700 hover:border-indigo-300 hover:text-indigo-600 transition-colors">
             <FiEdit2 size={11} /> {hasQuote ? 'Edit' : 'Build Quote'}
           </Link>
         </div>
         <div className="p-5">
           {hasQuote && quote ? (
-            <div className="space-y-0">
+            <div className="divide-y divide-gray-100">
               {quote.rooms && quote.rooms.length > 0 && (
                 <QuoteRow label="Rooms" value={quote.rooms.map(r => `${r.label ?? r.type} ×${r.qty}`).join(', ')} />
               )}
@@ -306,31 +297,30 @@ function PriceComparison({ booking }: { booking: Booking }) {
               ))}
               {quote.notes && <QuoteRow label="Note" value={quote.notes} />}
               {quote.validUntil && <QuoteRow label="Valid Until" value={fmtDate(quote.validUntil)} highlight />}
-              <div className="mt-4 pt-3 border-t border-indigo-100 flex items-center justify-between">
-                <span className="text-xs font-bold text-indigo-700">Quote Total</span>
-                <span className="text-lg font-black text-indigo-700">{fmt(quote.totalPrice)}</span>
+              <div className="pt-3 flex items-center justify-between">
+                <span className="text-xs font-bold text-gray-500">Quote Total</span>
+                <span className="text-xl font-black text-indigo-600">{fmt(quote.totalPrice)}</span>
               </div>
               {diff !== null && diff !== 0 && (
-                <div className={`mt-2 flex items-center gap-2 text-xs font-bold px-3 py-2 rounded-xl w-fit ${
+                <div className={`mt-3 flex items-center gap-2 text-xs font-bold px-3 py-2 rounded-xl w-fit ${
                   diff < 0 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-600 border border-red-200'
                 }`}>
-                  <span>{diff < 0 ? '↓' : '↑'}</span>
-                  <span>{fmt(Math.abs(diff))} ({Math.abs(Math.round((diff / snap!.totalPrice) * 100))}%) {diff < 0 ? 'below' : 'above'} estimate</span>
+                  {diff < 0 ? '↓' : '↑'} {fmt(Math.abs(diff))} ({Math.abs(Math.round((diff / snap!.totalPrice) * 100))}%) {diff < 0 ? 'below' : 'above'} estimate
                 </div>
               )}
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-10 gap-3 text-center">
-              <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-                <FiFileText size={20} className="text-gray-300" />
+              <div className="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center">
+                <FiFileText size={22} className="text-gray-300" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-400">No quote built yet</p>
-                <p className="text-xs text-gray-300 mt-0.5">Build a custom quote with pricing for this customer</p>
+                <p className="text-sm font-semibold text-gray-600">No quote built yet</p>
+                <p className="text-xs text-gray-400 mt-1">Build a custom quote with pricing for this customer</p>
               </div>
               <Link href={`/admin/bookings/${booking.id}/edit`}
-                className="flex items-center gap-1.5 text-xs bg-indigo-600 text-white px-4 py-2 rounded-xl font-semibold hover:bg-indigo-700 transition-colors">
-                <FiEdit2 size={12} /> Build Quote Now
+                className="flex items-center gap-1.5 text-sm bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition-colors shadow-sm">
+                <FiEdit2 size={13} /> Build Quote Now
               </Link>
             </div>
           )}
@@ -342,9 +332,9 @@ function PriceComparison({ booking }: { booking: Booking }) {
 
 function QuoteRow({ label, value, money, highlight }: { label: string; value: React.ReactNode; money?: boolean; highlight?: boolean }) {
   return (
-    <div className="flex justify-between gap-3 py-2 border-b border-gray-100 last:border-0">
-      <span className="text-xs text-gray-400 shrink-0">{label}</span>
-      <span className={`text-xs font-semibold text-right max-w-[60%] ${money ? 'text-gray-800 font-mono' : highlight ? 'text-indigo-600' : 'text-gray-700'}`}>{value}</span>
+    <div className="flex justify-between gap-3 py-2.5">
+      <span className="text-xs text-gray-500 shrink-0">{label}</span>
+      <span className={`text-xs font-semibold text-right max-w-[60%] ${money ? 'text-gray-900 font-mono' : highlight ? 'text-indigo-600' : 'text-gray-900'}`}>{value}</span>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Script from 'next/script'
 import PackageGallery from '@/components/packages/PackageGallery'
 import PackageTabs from '@/components/packages/PackageTabs'
 import PackageInquirySection from '@/components/packages/PackageInquirySection'
@@ -10,6 +11,7 @@ import {
   FiShield, FiGlobe, FiArrowRight, FiFlag,
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa'
+import { buildMetadata, jsonLd, BASE_URL } from '@/lib/seo'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -29,10 +31,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const tour = await getTour(slug)
   if (!tour) return { title: 'Tour Not Found' }
-  return {
+  return buildMetadata({
     title: tour.title,
-    description: tour.description?.replace(/<[^>]*>/g, '').slice(0, 160),
-  }
+    metaTitle: tour.metaTitle,
+    metaDescription: tour.metaDescription,
+    description: tour.description,
+    focusKeyword: tour.focusKeyword,
+    secondaryKeywords: tour.secondaryKeywords,
+    canonicalUrl: tour.canonicalUrl,
+    ogTitle: tour.ogTitle,
+    ogDescription: tour.ogDescription,
+    ogImage: tour.ogImage,
+    images: tour.images,
+    metaRobots: tour.metaRobots,
+    path: `/tours/${slug}`,
+  })
 }
 
 const STAR_MAP: Record<string, number> = { THREE: 3, FOUR: 4, FIVE: 5 }
@@ -48,8 +61,48 @@ export default async function TourDetailPage({ params }: Props) {
     : null
   const reviewCount = tour.reviews?.length ?? 0
 
+  const regionSlug = tour.region?.toLowerCase().replace(/\s+/g, '-')
+  const schema = tour.schemaMarkup
+    ? JSON.parse(tour.schemaMarkup)
+    : {
+        '@context': 'https://schema.org',
+        '@type': 'TouristTrip',
+        name: tour.title,
+        description: tour.description?.replace(/<[^>]*>/g, '').slice(0, 300),
+        url: `${BASE_URL}/tours/${tour.slug}`,
+        image: tour.images?.[0] ?? tour.ogImage,
+        offers: {
+          '@type': 'Offer',
+          price: tour.price,
+          priceCurrency: 'LKR',
+          availability: 'https://schema.org/InStock',
+          url: `${BASE_URL}/tours/${tour.slug}`,
+        },
+        provider: {
+          '@type': 'TravelAgency',
+          name: 'Metro Voyage',
+          url: BASE_URL,
+        },
+        aggregateRating: reviewCount > 0
+          ? { '@type': 'AggregateRating', ratingValue: avgRating, reviewCount }
+          : undefined,
+      }
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Tours', item: `${BASE_URL}/tours-from-sri-lanka` },
+      ...(tour.region ? [{ '@type': 'ListItem', position: 3, name: tour.region, item: `${BASE_URL}/tours-from-sri-lanka/${regionSlug}` }] : []),
+      { '@type': 'ListItem', position: tour.region ? 4 : 3, name: tour.title, item: `${BASE_URL}/tours/${tour.slug}` },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-white">
+      <Script id="schema-tour" type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
+      <Script id="schema-breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema) }} />
 
       {/* ── Breadcrumb ── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-2">

@@ -1,7 +1,9 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Script from 'next/script'
 import PageHero from '@/components/ui/PageHero'
+import { buildMetadata, jsonLd, BASE_URL } from '@/lib/seo'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -17,7 +19,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const blog = await getBlog(slug)
   if (!blog) return { title: 'Blog Post' }
-  return { title: blog.title, description: blog.excerpt }
+  return buildMetadata({
+    title: blog.title,
+    description: blog.excerpt ?? blog.body,
+    ogImage: blog.imageUrl,
+    path: `/blogs/${slug}`,
+  })
 }
 
 export default async function BlogDetailPage({ params }: Props) {
@@ -25,8 +32,38 @@ export default async function BlogDetailPage({ params }: Props) {
   const blog = await getBlog(slug)
   if (!blog) notFound()
 
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: blog.title,
+    description: blog.excerpt,
+    image: blog.imageUrl,
+    url: `${BASE_URL}/blogs/${slug}`,
+    datePublished: blog.publishedAt,
+    dateModified: blog.updatedAt ?? blog.publishedAt,
+    author: { '@type': 'Person', name: blog.author },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Metro Voyage',
+      url: BASE_URL,
+    },
+  }
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Blog', item: `${BASE_URL}/blogs` },
+      { '@type': 'ListItem', position: 3, name: blog.title, item: `${BASE_URL}/blogs/${slug}` },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <Script id="schema-blog" type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
+      <Script id="schema-breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema) }} />
+
       <PageHero
         title={blog.title}
         subtitle={blog.excerpt}

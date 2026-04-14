@@ -2,9 +2,12 @@ import { Metadata } from 'next'
 import ReviewSubmitForm from './ReviewSubmitForm'
 import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 
+const BASE = process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.metrovoyage.com'
 export const metadata: Metadata = {
   title: 'Reviews',
   description: 'Read what thousands of happy travellers say about Metro Voyage.',
+  alternates: { canonical: `${BASE}/reviews` },
+  openGraph: { title: 'Customer Reviews | Metro Voyage', description: 'Read what thousands of happy travellers say about Metro Voyage.', url: `${BASE}/reviews`, siteName: 'Metro Voyage', type: 'website' },
 }
 
 async function getReviews() {

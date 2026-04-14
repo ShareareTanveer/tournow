@@ -47,6 +47,7 @@ export async function POST(req: NextRequest) {
         paxInfant: d.paxInfant,
         roomType: d.roomType,
         rooms: d.rooms as any,
+        isAirfareIncluded: d.isAirfareIncluded ?? false,
         pricePerPerson: d.pricePerPerson,
         priceTwin: d.priceTwin,
         extraNights: d.extraNights,

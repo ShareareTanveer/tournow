@@ -1,8 +1,10 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Script from 'next/script'
 import InquiryForm from '@/components/forms/InquiryForm'
 import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
+import { buildMetadata, jsonLd, BASE_URL } from '@/lib/seo'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -18,7 +20,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const visa = await getVisa(slug)
   if (!visa) return { title: 'Visa Info' }
-  return { title: `${visa.country} Visa`, description: visa.description?.slice(0, 160) }
+  return buildMetadata({
+    title: `${visa.country} Visa Guide`,
+    description: visa.description,
+    ogImage: visa.image,
+    path: `/visas/${slug}`,
+  })
 }
 
 export default async function VisaDetailPage({ params }: Props) {
@@ -26,8 +33,22 @@ export default async function VisaDetailPage({ params }: Props) {
   const visa = await getVisa(slug)
   if (!visa) notFound()
 
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'GovernmentService',
+    name: `${visa.country} Visa`,
+    description: visa.description?.slice(0, 300),
+    url: `${BASE_URL}/visas/${slug}`,
+    provider: {
+      '@type': 'TravelAgency',
+      name: 'Metro Voyage',
+      url: BASE_URL,
+    },
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <Script id="schema-visa" type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
       <PageHero
         title={`${visa.country} Visa Guide`}
         imageUrl={getPageHeroImage('visas')}

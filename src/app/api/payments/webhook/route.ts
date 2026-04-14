@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     await prisma.booking.update({
       where: { id: bookingId },
-      data: { paymentStatus: 'PAID', status: 'CONFIRMED' },
+      data: { paymentStatus: 'PAID', status: 'ALL_CONFIRMED' },
     })
   }
 

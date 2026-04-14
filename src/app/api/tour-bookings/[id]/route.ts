@@ -191,6 +191,23 @@ export async function PUT(req: NextRequest, { params }: Params) {
     return NextResponse.json(updated)
   }
 
+  if (action === 'save_documents') {
+    const { documents, documentNote } = body
+    try {
+      const updated = await prisma.tourBooking.update({
+        where: { id },
+        data: {
+          documents: documents ?? [],
+          ...(documentNote !== undefined && { documentNote }),
+        },
+      })
+      return NextResponse.json(updated)
+    } catch (err: any) {
+      console.error('[save_documents tourBooking]', err?.message ?? err)
+      return NextResponse.json({ error: err?.message ?? 'Failed to save documents' }, { status: 500 })
+    }
+  }
+
   const updated = await prisma.tourBooking.update({
     where: { id },
     data: {

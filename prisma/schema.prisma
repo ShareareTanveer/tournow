@@ -81,6 +81,7 @@ enum PaymentMethod {
   DEBIT_CARD
   BANK_TRANSFER
   STRIPE
+  PAYPAL
 }
 
 enum ReviewStatus {
@@ -490,8 +491,11 @@ model TourBooking {
   paxInfant     Int           @default(0)
   roomType      String?       // legacy
   rooms         Json?         // [{type, qty, label}] multi-room selection
+  isAirfareIncluded Boolean   @default(false)
   customerNote  String?       @db.Text  // customer counter-request note
-  ticketUrl     String?       // admin-uploaded voucher/ticket URL
+  ticketUrl     String?       // legacy — superseded by documents
+  documents     Json?         // [{url, name, note}] admin-uploaded files/vouchers
+  documentNote  String?       @db.Text  // note shown to customer alongside documents
 
   pricePerPerson   Float?
   priceTwin        Float?
@@ -668,8 +672,11 @@ model Booking {
   paxInfant     Int           @default(0)
   roomType      String?       // SINGLE | TWIN | DOUBLE | TRIPLE (legacy)
   rooms         Json?         // [{type, qty, label}] multi-room selection
+  isAirfareIncluded Boolean   @default(false)  // customer-selected during booking
   customerNote  String?       @db.Text  // customer counter-request note
-  ticketUrl     String?       // admin-uploaded voucher/ticket URL
+  ticketUrl     String?       // legacy — superseded by documents
+  documents     Json?         // [{url, name, note}] admin-uploaded files/vouchers
+  documentNote  String?       @db.Text  // note shown to customer alongside documents
 
   // Pricing breakdown
   pricePerPerson   Float?     // adult per-person price

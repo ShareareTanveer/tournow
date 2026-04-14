@@ -1,11 +1,25 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
-import { FiCalendar, FiMapPin, FiUpload, FiPhone, FiCheckCircle, FiClock, FiAlertCircle, FiDownload, FiSend } from 'react-icons/fi'
-import { FaWhatsapp } from 'react-icons/fa'
+import {
+  FiCalendar, FiMapPin, FiUpload, FiPhone, FiCheckCircle,
+  FiClock, FiAlertCircle, FiDownload, FiSend, FiCreditCard, FiLock,
+} from 'react-icons/fi'
+import { FaWhatsapp, FaPaypal } from 'react-icons/fa'
+import { loadStripe } from '@stripe/stripe-js'
+import {
+  Elements,
+  CardElement,
+  useStripe,
+  useElements,
+} from '@stripe/react-stripe-js'
+import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { useCustomerAuth } from '@/lib/customerAuth'
 import AuthModal from '@/components/auth/AuthModal'
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!
 
 const PIPELINE_STEPS = [
   { status: 'REQUESTED',        label: 'Requested' },
@@ -97,6 +111,8 @@ interface Booking {
   notes?: string | null; customerNote?: string | null
   staffQuote?: StaffQuote | null
   ticketUrl?: string | null
+  documents?: { url: string; name: string; note?: string }[] | null
+  documentNote?: string | null
   createdAt: string
 }
 
@@ -123,18 +139,16 @@ function QuoteReview({ booking, onAction }: { booking: Booking; onAction: () => 
       })
       const d = await res.json()
       if (res.ok) {
-        // Always reload from server to get fresh status
-        await onAction()
+        onAction()
       } else {
         setError(d.error || `Server error (${res.status}). Status in response: ${d.status ?? 'unknown'}`)
       }
-    } catch (e: any) {
+    } catch {
       setError('Network error — please try again.')
     }
     setLoading(false)
   }
 
-  // Safe line items — may be absent if admin only set a total price
   const lineItems = quote?.lineItems ?? []
 
   return (
@@ -143,7 +157,6 @@ function QuoteReview({ booking, onAction }: { booking: Booking; onAction: () => 
         <FiCheckCircle size={13} /> Your Quote is Ready — Action Required
       </p>
 
-      {/* Price breakdown — only if quote has line items or a total */}
       <div className="bg-white rounded-xl overflow-hidden mb-3">
         <table className="w-full text-xs">
           <tbody>
@@ -180,7 +193,6 @@ function QuoteReview({ booking, onAction }: { booking: Booking; onAction: () => 
 
       {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
 
-      {/* Request changes form */}
       {showRequestForm && (
         <div className="mb-3 space-y-2">
           <textarea rows={3} placeholder="Describe what you'd like changed (rooms, price, dates, extras…)"
@@ -215,21 +227,111 @@ function QuoteReview({ booking, onAction }: { booking: Booking; onAction: () => 
   )
 }
 
-// ── Receipt Upload ────────────────────────────────────────────────────────────
+// ── Stripe Card Form ──────────────────────────────────────────────────────────
 
-function ReceiptUpload({ booking, onUploaded }: { booking: Booking; onUploaded: () => void }) {
+function StripeCardForm({ booking, onSuccess }: { booking: Booking; onSuccess: () => void }) {
+  const stripe = useStripe()
+  const elements = useElements()
+  const [clientSecret, setClientSecret] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [initiated, setInitiated] = useState(false)
+
+  async function initiate() {
+    setLoading(true)
+    setError('')
+    try {
+      const res = await fetch('/api/payments/stripe-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId: booking.id, bookingType: booking._type }),
+        credentials: 'include',
+      })
+      const data = await res.json()
+      if (!res.ok) { setError(data.error ?? 'Failed to initialize payment'); return }
+      setClientSecret(data.clientSecret)
+      setInitiated(true)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handlePay() {
+    if (!stripe || !elements || !clientSecret) return
+    setLoading(true)
+    setError('')
+    const card = elements.getElement(CardElement)
+    if (!card) return
+
+    const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: { card },
+    })
+
+    if (stripeError) {
+      setError(stripeError.message ?? 'Payment failed')
+      setLoading(false)
+      return
+    }
+
+    if (paymentIntent?.status === 'succeeded') {
+      // Confirm in DB
+      await fetch('/api/payments/stripe-confirm', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paymentIntentId: paymentIntent.id, bookingId: booking.id, bookingType: booking._type }),
+        credentials: 'include',
+      })
+      onSuccess()
+    }
+    setLoading(false)
+  }
+
+  if (!initiated) {
+    return (
+      <button onClick={initiate} disabled={loading}
+        className="flex items-center gap-2 w-full justify-center text-sm bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+        <FiCreditCard size={14} /> {loading ? 'Loading…' : 'Pay with Card'}
+      </button>
+    )
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="border border-gray-200 rounded-xl px-3 py-3 bg-white">
+        <CardElement options={{
+          style: {
+            base: { fontSize: '14px', color: '#1f2937', '::placeholder': { color: '#9ca3af' } },
+          },
+        }} />
+      </div>
+      {error && <p className="text-xs text-red-500">{error}</p>}
+      <button onClick={handlePay} disabled={loading || !stripe}
+        className="flex items-center gap-2 w-full justify-center text-sm bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+        <FiLock size={13} /> {loading ? 'Processing…' : `Pay LKR ${booking.totalPrice.toLocaleString()}`}
+      </button>
+    </div>
+  )
+}
+
+// ── Payment Panel ─────────────────────────────────────────────────────────────
+
+type PayTab = 'stripe' | 'paypal' | 'receipt'
+
+function PaymentPanel({ booking, onDone }: { booking: Booking; onDone: () => void }) {
+  const [tab, setTab] = useState<PayTab>('stripe')
   const [file, setFile] = useState<File | null>(null)
   const [note, setNote] = useState('')
   const [uploading, setUploading] = useState(false)
-  const [error, setError] = useState('')
+  const [uploadError, setUploadError] = useState('')
 
-  const canUpload = booking.status === 'CONFIRMED' && !booking.receiptUrl
-  if (!canUpload) return null
+  // Only show when CONFIRMED and not yet paid
+  const canPay = booking.status === 'CONFIRMED' && booking.paymentStatus !== 'PAID' && !booking.receiptUrl
+  if (!canPay) return null
 
-  async function handleUpload() {
+  async function handleReceiptUpload() {
     if (!file) return
     setUploading(true)
-    setError('')
+    setUploadError('')
     const reader = new FileReader()
     reader.onload = async (e) => {
       const base64 = e.target?.result as string
@@ -238,49 +340,172 @@ function ReceiptUpload({ booking, onUploaded }: { booking: Booking; onUploaded: 
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'upload_receipt', receiptUrl: base64, receiptNote: note }),
+        credentials: 'include',
       })
-      if (res.ok) {
-        onUploaded()
-      } else {
-        setError('Upload failed. Please try again.')
-      }
+      if (res.ok) { onDone() } else { setUploadError('Upload failed. Please try again.') }
       setUploading(false)
     }
     reader.readAsDataURL(file)
   }
 
+  const tabs: { id: PayTab; label: string; icon: React.ReactNode }[] = [
+    { id: 'stripe',  label: 'Card',    icon: <FiCreditCard size={13} /> },
+    { id: 'paypal',  label: 'PayPal',  icon: <FaPaypal size={13} /> },
+    { id: 'receipt', label: 'Receipt', icon: <FiUpload size={13} /> },
+  ]
+
   return (
-    <div className="mx-4 mb-4 p-3 bg-teal-50 border border-teal-100 rounded-xl">
-      <p className="text-xs font-semibold text-teal-700 mb-2 flex items-center gap-1">
-        <FiUpload size={11} /> Upload Payment Receipt
+    <div className="mx-4 mb-4 p-4 bg-teal-50 border border-teal-200 rounded-2xl">
+      <p className="text-xs font-black text-teal-700 uppercase tracking-wide mb-3 flex items-center gap-1.5">
+        <FiCreditCard size={12} /> Complete Payment — LKR {booking.totalPrice.toLocaleString()}
       </p>
-      <input type="file" accept="image/*,.pdf" onChange={e => setFile(e.target.files?.[0] ?? null)}
-        className="text-xs text-gray-600 w-full mb-2" />
-      <input type="text" placeholder="Optional note (bank name, reference no, etc.)"
-        value={note} onChange={e => setNote(e.target.value)}
-        className="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 mb-2 focus:outline-none focus:border-teal-400" />
-      {error && <p className="text-xs text-red-500 mb-1">{error}</p>}
-      <button onClick={handleUpload} disabled={!file || uploading}
-        className="text-xs bg-teal-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-teal-700 disabled:opacity-50">
-        {uploading ? 'Uploading…' : 'Submit Receipt'}
-      </button>
+
+      {/* Tab switcher */}
+      <div className="flex gap-1 mb-4 bg-white rounded-xl p-1 border border-teal-100">
+        {tabs.map(t => (
+          <button key={t.id} onClick={() => setTab(t.id)}
+            className={`flex-1 flex items-center justify-center gap-1.5 text-xs font-semibold py-1.5 rounded-lg transition-all ${
+              tab === t.id
+                ? 'bg-teal-600 text-white shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}>
+            {t.icon} {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* Stripe */}
+      {tab === 'stripe' && (
+        <Elements stripe={stripePromise}>
+          <StripeCardForm booking={booking} onSuccess={onDone} />
+        </Elements>
+      )}
+
+      {/* PayPal */}
+      {tab === 'paypal' && (
+        <PayPalScriptProvider options={{ clientId: PAYPAL_CLIENT_ID, currency: 'USD' }}>
+          <PayPalButtons
+            style={{ layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' }}
+            createOrder={async () => {
+              const res = await fetch('/api/payments/paypal/create-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ bookingId: booking.id, bookingType: booking._type }),
+                credentials: 'include',
+              })
+              const data = await res.json()
+              if (!res.ok) throw new Error(data.error ?? 'Failed to create PayPal order')
+              return data.orderId
+            }}
+            onApprove={async (data) => {
+              const res = await fetch('/api/payments/paypal/capture-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId: data.orderID, bookingId: booking.id, bookingType: booking._type }),
+                credentials: 'include',
+              })
+              if (res.ok) { onDone() }
+            }}
+          />
+          <p className="text-[10px] text-gray-400 text-center mt-2">
+            Amount charged in USD (equivalent to LKR {booking.totalPrice.toLocaleString()})
+          </p>
+        </PayPalScriptProvider>
+      )}
+
+      {/* Receipt Upload */}
+      {tab === 'receipt' && (
+        <div className="space-y-2">
+          <p className="text-xs text-gray-500">Upload a bank transfer slip or payment receipt and our team will confirm it.</p>
+          <input type="file" accept="image/*,.pdf"
+            onChange={e => setFile(e.target.files?.[0] ?? null)}
+            className="text-xs text-gray-600 w-full" />
+          <input type="text" placeholder="Optional note (bank name, reference no, etc.)"
+            value={note} onChange={e => setNote(e.target.value)}
+            className="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-teal-400 bg-white" />
+          {uploadError && <p className="text-xs text-red-500">{uploadError}</p>}
+          <button onClick={handleReceiptUpload} disabled={!file || uploading}
+            className="flex items-center gap-1.5 text-xs bg-teal-600 text-white px-4 py-2 rounded-xl font-semibold hover:bg-teal-700 disabled:opacity-50 w-full justify-center">
+            <FiUpload size={12} /> {uploading ? 'Uploading…' : 'Submit Receipt'}
+          </button>
+        </div>
+      )}
     </div>
   )
 }
 
-// ── Ticket Download ───────────────────────────────────────────────────────────
+// ── Documents Section (tickets + receipt shown after payment) ─────────────────
 
-function TicketDownload({ booking }: { booking: Booking }) {
-  if (!booking.ticketUrl) return null
+function DocumentsSection({ booking }: { booking: Booking }) {
+  const isPaid = booking.paymentStatus === 'PAID'
+  const docs = booking.documents ?? []
+  // Fall back to legacy ticketUrl if no new documents yet
+  const legacyDocs = (!docs.length && booking.ticketUrl)
+    ? booking.ticketUrl.split('\n').filter(Boolean).map((url, i) => ({
+        url: url.replace(/\/api\/admin\/bookings\/([^/]+)\/ticket/, '/api/my/bookings/$1/ticket'),
+        name: url.includes('/ticket') ? 'Booking Voucher' : `Document ${i + 1}`,
+      }))
+    : []
+  const allDocs = [...docs, ...legacyDocs]
+  const hasAnything = isPaid || allDocs.length > 0 || !!booking.documentNote
+
+  if (!hasAnything) return null
+
   return (
-    <div className="mx-4 mb-4 p-3 bg-green-50 border border-green-200 rounded-xl">
-      <p className="text-xs font-black text-green-700 uppercase tracking-wide mb-2 flex items-center gap-1.5">
-        <FiCheckCircle size={12} /> Your Ticket is Ready!
-      </p>
-      <a href={booking.ticketUrl} target="_blank" rel="noopener noreferrer"
-        className="flex items-center gap-2 text-sm bg-green-500 text-white px-4 py-2 rounded-xl font-semibold hover:bg-green-600 transition-colors w-fit">
-        <FiDownload size={14} /> Download Ticket / Voucher
-      </a>
+    <div className="mx-4 mb-4 space-y-2">
+      {/* Payment confirmed banner */}
+      {isPaid && (
+        <div className="p-3 bg-green-50 border border-green-200 rounded-xl flex items-center gap-2">
+          <FiCheckCircle size={14} className="text-green-600 shrink-0" />
+          <p className="text-xs font-semibold text-green-700">Payment confirmed — your booking is fully paid.</p>
+        </div>
+      )}
+
+      {/* Note from team */}
+      {booking.documentNote && (
+        <div className="p-3 bg-indigo-50 border border-indigo-100 rounded-xl">
+          <p className="text-[10px] font-bold text-indigo-500 uppercase mb-1">Message from our team</p>
+          <p className="text-xs text-indigo-800 leading-relaxed">{booking.documentNote}</p>
+        </div>
+      )}
+
+      {/* Documents card */}
+      <div className="p-3 bg-white border border-gray-200 rounded-xl space-y-2">
+        <p className="text-xs font-black text-gray-600 uppercase tracking-wide flex items-center gap-1.5">
+          <FiDownload size={12} /> Your Documents
+        </p>
+
+        {/* Payment receipt — always when paid */}
+        {isPaid && (
+          <a href={`/api/my/bookings/${booking.id}/receipt`} target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-2 text-xs bg-green-600 text-white px-3 py-2 rounded-lg font-semibold hover:bg-green-700 transition-colors w-fit">
+            <FiDownload size={12} /> Payment Receipt
+          </a>
+        )}
+
+        {/* Admin documents */}
+        {allDocs.map((doc, i) => (
+          <a key={i} href={doc.url} target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-2 text-xs bg-indigo-600 text-white px-3 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition-colors w-fit">
+            <FiDownload size={12} /> {doc.name}
+          </a>
+        ))}
+
+        {/* Customer's uploaded receipt */}
+        {booking.receiptUrl && (
+          <a href={booking.receiptUrl} target="_blank" rel="noopener noreferrer"
+            className="flex items-center gap-2 text-xs bg-gray-600 text-white px-3 py-2 rounded-lg font-semibold hover:bg-gray-700 transition-colors w-fit">
+            <FiDownload size={12} /> My Payment Receipt
+          </a>
+        )}
+
+        {allDocs.length === 0 && !isPaid && (
+          <p className="text-[11px] text-gray-400 italic">Documents will appear here once our team sends them.</p>
+        )}
+        {allDocs.length === 0 && isPaid && (
+          <p className="text-[11px] text-gray-400 italic">Tickets & vouchers will appear here once our team sends them.</p>
+        )}
+      </div>
     </div>
   )
 }
@@ -293,7 +518,7 @@ export default function MyBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [fetching, setFetching] = useState(false)
 
-  async function loadBookings() {
+  const loadBookings = useCallback(async () => {
     setFetching(true)
     try {
       const [pkgRes, tourRes] = await Promise.all([
@@ -314,11 +539,11 @@ export default function MyBookingsPage() {
     } finally {
       setFetching(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     if (customer) loadBookings()
-  }, [customer])
+  }, [customer, loadBookings])
 
   if (loading) {
     return (
@@ -406,9 +631,16 @@ export default function MyBookingsPage() {
                     <p className="font-bold text-gray-900 text-sm leading-tight line-clamp-1">{b.title}</p>
                     <p className="text-[10px] font-mono text-gray-400 mt-0.5">{b.bookingRef.slice(-8).toUpperCase()}</p>
                   </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${STATUS_COLOR[b.status] ?? 'bg-gray-100 text-gray-600'}`}>
-                    {STATUS_LABELS[b.status] ?? b.status}
-                  </span>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {b.paymentStatus === 'PAID' && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-green-100 text-green-700">
+                        Paid
+                      </span>
+                    )}
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${STATUS_COLOR[b.status] ?? 'bg-gray-100 text-gray-600'}`}>
+                      {STATUS_LABELS[b.status] ?? b.status}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex flex-wrap gap-x-4 gap-y-0.5 mt-2 text-xs text-gray-500">
@@ -429,11 +661,11 @@ export default function MyBookingsPage() {
               </div>
             </div>
 
-            {/* Quote review (shown when AWAITING_CONFIRM) */}
+            {/* Quote review */}
             <QuoteReview booking={b} onAction={loadBookings} />
 
-            {/* Ticket download */}
-            <TicketDownload booking={b} />
+            {/* Tickets, vouchers & receipt */}
+            <DocumentsSection booking={b} />
 
             {/* Admin message */}
             {b.adminNotes && b.status !== 'AWAITING_CONFIRM' && (
@@ -445,10 +677,10 @@ export default function MyBookingsPage() {
               </div>
             )}
 
-            {/* Receipt upload */}
-            <ReceiptUpload booking={b} onUploaded={loadBookings} />
+            {/* Payment panel (Stripe + PayPal + Receipt) */}
+            <PaymentPanel booking={b} onDone={loadBookings} />
 
-            {/* Receipt uploaded confirmation */}
+            {/* Receipt uploaded — awaiting admin confirmation */}
             {b.receiptUrl && b.status === 'RECEIPT_UPLOADED' && (
               <div className="mx-4 mb-4 p-3 bg-indigo-50 border border-indigo-100 rounded-xl">
                 <p className="text-xs font-semibold text-indigo-700 flex items-center gap-1.5">

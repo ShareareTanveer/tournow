@@ -706,7 +706,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                 </div>
                 <input value={form.metaTitle}
                   onChange={e => setForm({ ...form, metaTitle: e.target.value })}
-                  placeholder="e.g. Family Holiday Packages Sri Lanka | Halo Holidays"
+                  placeholder="e.g. Family Holiday Packages Sri Lanka | Metro Voyage"
                   maxLength={80}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
                 <p className="text-[10px] text-gray-400 mt-1">Ideal: 50–65 characters. Shown as the blue link in Google results.</p>

@@ -295,7 +295,7 @@ function buildFullReportHTML(
 
   const body = `
   <div class="cover">
-    <div style="font-size:11px;opacity:0.7;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.1em">Halo Holidays / Metro Voyage</div>
+    <div style="font-size:11px;opacity:0.7;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.1em">Metro Voyage / Metro Voyage</div>
     <h1>Business Analytics Report</h1>
     <p>Period: ${period} &nbsp;·&nbsp; Generated: ${now}</p>
     <div style="margin-top:16px;display:flex;gap:24px;font-size:12px">
@@ -311,7 +311,7 @@ function buildFullReportHTML(
   ${inquirySection}
   ${monthlySection}
   ${bookingsTableSection}
-  <div class="footer">Halo Holidays / Metro Voyage &nbsp;·&nbsp; Analytics Report &nbsp;·&nbsp; ${now} &nbsp;·&nbsp; Confidential</div>`
+  <div class="footer">Metro Voyage / Metro Voyage &nbsp;·&nbsp; Analytics Report &nbsp;·&nbsp; ${now} &nbsp;·&nbsp; Confidential</div>`
 
   return toHTML(`Analytics Report — ${period}`, body)
 }

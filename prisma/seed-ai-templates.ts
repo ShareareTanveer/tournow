@@ -13,7 +13,7 @@ const TEMPLATES = [
     key: 'package-seo-generate',
     name: 'Package — SEO Fields',
     description: 'Generates metaTitle, metaDescription, focusKeyword, secondaryKeywords, ogTitle, ogDescription for a package.',
-    systemPrompt: `You are an expert travel SEO copywriter for a Sri Lanka-based travel agency called Halo Holidays.
+    systemPrompt: `You are an expert travel SEO copywriter for a Sri Lanka-based travel agency called Metro Voyage.
 Your job is to generate high-quality, keyword-rich SEO metadata for travel packages.
 Always respond with valid JSON only — no markdown, no explanations.`,
     userPrompt: `Generate SEO metadata for the following travel package:
@@ -43,7 +43,7 @@ Return a JSON object with these exact keys:
     key: 'package-full-generate',
     name: 'Package — Full Content',
     description: 'Generates complete package content: description, highlights, itinerary, inclusions, plus SEO fields.',
-    systemPrompt: `You are an expert travel content writer and SEO specialist for Halo Holidays, a premium Sri Lanka travel agency.
+    systemPrompt: `You are an expert travel content writer and SEO specialist for Metro Voyage, a premium Sri Lanka travel agency.
 Write engaging, detailed, conversion-optimised content for travel packages.
 Always respond with valid JSON only — no markdown, no explanations.`,
     userPrompt: `Generate complete content for the following travel package:
@@ -77,7 +77,7 @@ Return a JSON object with these exact keys:
     key: 'tour-seo-generate',
     name: 'Tour — SEO Fields',
     description: 'Generates SEO metadata for a tour.',
-    systemPrompt: `You are an expert travel SEO copywriter for Halo Holidays, a Sri Lanka-based travel agency.
+    systemPrompt: `You are an expert travel SEO copywriter for Metro Voyage, a Sri Lanka-based travel agency.
 Always respond with valid JSON only — no markdown, no explanations.`,
     userPrompt: `Generate SEO metadata for the following tour:
 
@@ -104,7 +104,7 @@ Return a JSON object with these exact keys:
     key: 'tour-full-generate',
     name: 'Tour — Full Content',
     description: 'Generates complete tour content plus SEO fields.',
-    systemPrompt: `You are an expert travel content writer and SEO specialist for Halo Holidays.
+    systemPrompt: `You are an expert travel content writer and SEO specialist for Metro Voyage.
 Write engaging, detailed, conversion-optimised content for day tours and excursions.
 Always respond with valid JSON only — no markdown, no explanations.`,
     userPrompt: `Generate complete content for the following tour:
@@ -136,7 +136,7 @@ Return a JSON object with these exact keys:
     key: 'blog-full-generate',
     name: 'Blog Post — Full Content',
     description: 'Generates a complete SEO-optimised blog post.',
-    systemPrompt: `You are an expert travel blogger and SEO content strategist for Halo Holidays.
+    systemPrompt: `You are an expert travel blogger and SEO content strategist for Metro Voyage.
 Write informative, engaging blog posts that rank well and convert readers into customers.
 Always respond with valid JSON only — no markdown, no explanations.`,
     userPrompt: `Write a blog post about:

@@ -3,9 +3,12 @@ import Link from 'next/link'
 import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 import { FiHeart, FiGlobe, FiNavigation, FiShield } from 'react-icons/fi'
 
+const BASE = process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.metrovoyage.com'
 export const metadata: Metadata = {
   title: 'About Us',
   description: 'Learn about Metro Voyage — Sri Lanka\'s trusted SLTDA-licensed travel agency, serving travellers since 2018.',
+  alternates: { canonical: `${BASE}/about` },
+  openGraph: { title: 'About Us | Metro Voyage', description: 'Learn about Metro Voyage — Sri Lanka\'s trusted SLTDA-licensed travel agency.', url: `${BASE}/about`, siteName: 'Metro Voyage', type: 'website' },
 }
 
 async function getStaff() {

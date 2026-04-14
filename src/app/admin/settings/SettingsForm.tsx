@@ -22,10 +22,12 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
     social_instagram: g(settings, 'social_instagram'),
     social_youtube: g(settings, 'social_youtube'),
     social_tiktok: g(settings, 'social_tiktok'),
+    // SEO
+    robots_disallow: g(settings, 'robots_disallow', ''),
   })
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [tab, setTab] = useState<'general' | 'contact' | 'social' | 'theme'>('general')
+  const [tab, setTab] = useState<'general' | 'contact' | 'social' | 'theme' | 'seo'>('general')
 
   // Theme fields parsed from JSON
   const [theme, setTheme] = useState(() => {
@@ -84,6 +86,7 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
     { id: 'contact', label: 'Contact' },
     { id: 'social', label: 'Social' },
     { id: 'theme', label: 'Theme Colors' },
+    { id: 'seo', label: 'SEO / Robots' },
   ] as const
 
   return (
@@ -125,6 +128,32 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
             {inp('social_youtube', 'YouTube URL', 'url', 'https://youtube.com/…')}
             {inp('social_tiktok', 'TikTok URL', 'url', 'https://tiktok.com/…')}
           </>
+        )}
+
+        {tab === 'seo' && (
+          <div className="space-y-5">
+            <div>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Robots.txt — Additional Disallow Rules</p>
+              <p className="text-xs text-gray-400 mb-3">
+                One path per line. These are added on top of the default blocked paths (<code className="bg-gray-100 px-1 rounded">/admin/</code>, <code className="bg-gray-100 px-1 rounded">/api/</code>, <code className="bg-gray-100 px-1 rounded">/my/</code>).<br />
+                Example: <code className="bg-gray-100 px-1 rounded">/internal-promo/</code>
+              </p>
+              <textarea
+                rows={8}
+                value={form.robots_disallow}
+                onChange={(e) => setForm({ ...form, robots_disallow: e.target.value })}
+                placeholder={'/internal-promo/\n/draft-pages/'}
+                className="w-full font-mono text-sm border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-400 resize-none"
+              />
+            </div>
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+              <p className="text-xs font-semibold text-amber-700 mb-1">Live sitemap & robots.txt</p>
+              <p className="text-xs text-amber-600">
+                After saving, your sitemap is available at <code className="bg-amber-100 px-1 rounded">/sitemap.xml</code> and robots.txt at <code className="bg-amber-100 px-1 rounded">/robots.txt</code>.
+                Changes to disallow rules take effect on next request (no restart needed).
+              </p>
+            </div>
+          </div>
         )}
 
         {tab === 'theme' && (

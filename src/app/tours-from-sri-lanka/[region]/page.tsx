@@ -32,7 +32,18 @@ type Props = { params: Promise<{ region: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { region } = await params
   const meta = REGION_META[region] ?? { label: 'Tours', desc: 'Browse our international tours' }
-  return { title: meta.label, description: meta.desc }
+  return {
+    title: meta.label,
+    description: meta.desc,
+    openGraph: {
+      type: 'website',
+      title: meta.label,
+      description: meta.desc,
+      siteName: 'Metro Voyage',
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/tours-from-sri-lanka/${region}`,
+    },
+    alternates: { canonical: `${process.env.NEXT_PUBLIC_APP_URL}/tours-from-sri-lanka/${region}` },
+  }
 }
 
 export default async function TourListingPage({

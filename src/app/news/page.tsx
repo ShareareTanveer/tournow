@@ -6,9 +6,12 @@ import Image from 'next/image'
 import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 import { getNews } from '@/lib/data'
 
+const BASE = process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.metrovoyage.com'
 export const metadata: Metadata = {
   title: 'Travel News',
   description: 'Latest travel news, destination updates, and industry insights from Metro Voyage.',
+  alternates: { canonical: `${BASE}/news` },
+  openGraph: { title: 'Travel News | Metro Voyage', description: 'Latest travel news, destination updates, and industry insights.', url: `${BASE}/news`, siteName: 'Metro Voyage', type: 'website' },
 }
 
 export default async function NewsPage() {

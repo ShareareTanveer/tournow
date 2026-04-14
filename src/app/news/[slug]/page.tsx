@@ -1,8 +1,10 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Script from 'next/script'
 import { FiArrowLeft, FiCalendar, FiExternalLink } from 'react-icons/fi'
 import PageHero from '@/components/ui/PageHero'
+import { buildMetadata, jsonLd, BASE_URL } from '@/lib/seo'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -31,10 +33,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const article = await getArticle(slug)
   if (!article) return { title: 'News' }
-  return {
+  return buildMetadata({
     title: article.title,
-    description: article.excerpt ?? article.body?.replace(/<[^>]*>/g, '').slice(0, 160),
-  }
+    description: article.excerpt ?? article.body,
+    ogImage: article.imageUrl,
+    path: `/news/${slug}`,
+  })
 }
 
 export default async function NewsDetailPage({ params }: Props) {
@@ -46,8 +50,25 @@ export default async function NewsDetailPage({ params }: Props) {
     day: 'numeric', month: 'long', year: 'numeric',
   })
 
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'NewsArticle',
+    headline: article.title,
+    description: article.excerpt,
+    image: article.imageUrl,
+    url: `${BASE_URL}/news/${slug}`,
+    datePublished: article.publishedAt,
+    dateModified: article.updatedAt ?? article.publishedAt,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Metro Voyage',
+      url: BASE_URL,
+    },
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <Script id="schema-news" type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
       <PageHero
         title={article.title}
         subtitle={article.excerpt}

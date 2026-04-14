@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Script from 'next/script'
 import PackageTabs from '@/components/packages/PackageTabs'
 import PackageGallery from '@/components/packages/PackageGallery'
 import PackageInquirySection from '@/components/packages/PackageInquirySection'
@@ -11,6 +12,7 @@ import {
   FiShield, FiGlobe, FiArrowRight,
 } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa'
+import { buildMetadata, jsonLd, BASE_URL } from '@/lib/seo'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -30,10 +32,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const pkg = await getPackage(slug)
   if (!pkg) return { title: 'Package Not Found' }
-  return {
+  return buildMetadata({
     title: pkg.title,
-    description: pkg.description?.replace(/<[^>]*>/g, '').slice(0, 160),
-  }
+    metaTitle: pkg.metaTitle,
+    metaDescription: pkg.metaDescription,
+    description: pkg.description,
+    focusKeyword: pkg.focusKeyword,
+    secondaryKeywords: pkg.secondaryKeywords,
+    canonicalUrl: pkg.canonicalUrl,
+    ogTitle: pkg.ogTitle,
+    ogDescription: pkg.ogDescription,
+    ogImage: pkg.ogImage,
+    images: pkg.images,
+    metaRobots: pkg.metaRobots,
+    path: `/packages/${slug}`,
+  })
 }
 
 const STAR_MAP: Record<string, number> = { THREE: 3, FOUR: 4, FIVE: 5 }
@@ -55,8 +68,55 @@ export default async function PackageDetailPage({ params }: Props) {
     : null
   const reviewCount = pkg.reviews?.length ?? 0
 
+  // JSON-LD schema
+  const schema = pkg.schemaMarkup
+    ? JSON.parse(pkg.schemaMarkup)
+    : {
+        '@context': 'https://schema.org',
+        '@type': 'TouristTrip',
+        name: pkg.title,
+        description: pkg.description?.replace(/<[^>]*>/g, '').slice(0, 300),
+        url: `${BASE_URL}/packages/${pkg.slug}`,
+        image: pkg.images?.[0] ?? pkg.ogImage,
+        offers: {
+          '@type': 'Offer',
+          price: pkg.price,
+          priceCurrency: 'LKR',
+          availability: 'https://schema.org/InStock',
+          url: `${BASE_URL}/packages/${pkg.slug}`,
+        },
+        ...(pkg.destination && {
+          touristType: pkg.category,
+          itinerary: {
+            '@type': 'ItemList',
+            name: `${pkg.duration}-Day Itinerary`,
+          },
+          provider: {
+            '@type': 'TravelAgency',
+            name: 'Metro Voyage',
+            url: BASE_URL,
+          },
+        }),
+        aggregateRating: reviewCount > 0
+          ? { '@type': 'AggregateRating', ratingValue: avgRating, reviewCount }
+          : undefined,
+      }
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Packages', item: `${BASE_URL}/packages-from-sri-lanka/family` },
+      ...(pkg.destination ? [{ '@type': 'ListItem', position: 3, name: pkg.destination.name, item: `${BASE_URL}/destinations/${pkg.destination.slug}` }] : []),
+      { '@type': 'ListItem', position: pkg.destination ? 4 : 3, name: pkg.title, item: `${BASE_URL}/packages/${pkg.slug}` },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-white">
+      <Script id="schema-package" type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
+      <Script id="schema-breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema) }} />
 
       {/* ── Breadcrumb ── */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-2">

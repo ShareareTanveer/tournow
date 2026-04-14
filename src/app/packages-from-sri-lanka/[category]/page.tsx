@@ -20,7 +20,18 @@ type Props = { params: Promise<{ category: string }> }
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params
   const meta = CATEGORY_META[category] ?? { label: 'Packages', desc: 'Browse our travel packages' }
-  return { title: meta.label, description: meta.desc }
+  return {
+    title: meta.label,
+    description: meta.desc,
+    openGraph: {
+      type: 'website',
+      title: meta.label,
+      description: meta.desc,
+      siteName: 'Metro Voyage',
+      url: `${process.env.NEXT_PUBLIC_APP_URL}/packages-from-sri-lanka/${category}`,
+    },
+    alternates: { canonical: `${process.env.NEXT_PUBLIC_APP_URL}/packages-from-sri-lanka/${category}` },
+  }
 }
 
 async function getCategoryConfig(slug: string) {

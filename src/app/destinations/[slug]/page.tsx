@@ -1,9 +1,11 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import Script from 'next/script'
 import PackageCard from '@/components/ui/PackageCard'
 import TourCard from '@/components/ui/TourCard'
 import PageHero from '@/components/ui/PageHero'
+import { buildMetadata, jsonLd, BASE_URL } from '@/lib/seo'
 
 type Props = { params: Promise<{ slug: string }> }
 
@@ -19,7 +21,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const dest = await getDestination(slug)
   if (!dest) return { title: 'Destination Not Found' }
-  return { title: dest.name, description: dest.description?.slice(0, 160) }
+  return buildMetadata({
+    title: `${dest.name} Travel Packages`,
+    description: dest.description,
+    ogImage: dest.images?.[0] ?? dest.imageUrl,
+    path: `/destinations/${slug}`,
+  })
 }
 
 export default async function DestinationDetailPage({ params }: Props) {
@@ -27,8 +34,32 @@ export default async function DestinationDetailPage({ params }: Props) {
   const dest = await getDestination(slug)
   if (!dest) notFound()
 
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'TouristDestination',
+    name: dest.name,
+    description: dest.description?.slice(0, 300),
+    url: `${BASE_URL}/destinations/${slug}`,
+    image: dest.images?.[0] ?? dest.imageUrl,
+    touristType: dest.region,
+    geo: { '@type': 'GeoCoordinates' },
+  }
+
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: BASE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Destinations', item: `${BASE_URL}/destinations` },
+      { '@type': 'ListItem', position: 3, name: dest.name, item: `${BASE_URL}/destinations/${slug}` },
+    ],
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
+      <Script id="schema-destination" type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
+      <Script id="schema-breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema) }} />
+
       <PageHero
         title={dest.name}
         subtitle={dest.region}

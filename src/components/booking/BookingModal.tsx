@@ -69,6 +69,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
     paxChild: 0,
     paxInfant: 0,
     extraNights: 0,
+    isAirfareIncluded: false,
     selectedOptions: [] as PricingOption[],
     notes: '',
   })
@@ -126,7 +127,9 @@ export default function BookingModal({ open, onClose, target }: Props) {
   const childTotal = (target.priceChild ?? target.price * 0.7) * form.paxChild
   const extraTotal = (target.extraNightPrice ?? 0) * form.extraNights * (form.paxAdult + form.paxChild)
   const optionsTotal = form.selectedOptions.reduce((s, o) => s + o.price * form.paxAdult, 0)
-  const grandTotal = roomTotal + childTotal + extraTotal + optionsTotal
+  // On step 1 (before rooms chosen), use base price × adults so the footer total updates live
+  const step1AdultTotal = step === 'dates' && rooms.length === 0 ? target.price * form.paxAdult : 0
+  const grandTotal = (roomTotal || step1AdultTotal) + childTotal + extraTotal + optionsTotal
 
   function toggleOption(opt: PricingOption) {
     setForm(f => {
@@ -156,6 +159,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
         paxChild: form.paxChild,
         paxInfant: form.paxInfant,
         rooms: rooms.map(r => ({ type: r.type, qty: r.qty, label: r.label })),
+        isAirfareIncluded: form.isAirfareIncluded,
         pricePerPerson: target.price,
         priceTwin: target.priceTwin,
         extraNights: form.extraNights,
@@ -246,12 +250,41 @@ export default function BookingModal({ open, onClose, target }: Props) {
               <Section title="Travellers">
                 <div className="grid grid-cols-3 gap-3">
                   <Counter label="Adults" min={1} value={form.paxAdult}
+                    priceHint={`LKR ${target.price.toLocaleString()}/pax`}
                     onChange={v => setForm(f => ({ ...f, paxAdult: v }))} />
                   <Counter label="Children" sub="2–11 yrs" min={0} value={form.paxChild}
+                    priceHint={target.priceChild ? `LKR ${target.priceChild.toLocaleString()}/pax` : `LKR ${Math.round(target.price * 0.7).toLocaleString()}/pax`}
                     onChange={v => setForm(f => ({ ...f, paxChild: v }))} />
                   <Counter label="Infants" sub="Under 2" min={0} value={form.paxInfant}
+                    priceHint="Free"
                     onChange={v => setForm(f => ({ ...f, paxInfant: v }))} />
                 </div>
+              </Section>
+
+              <Section title="Airfare">
+                <label className="flex items-start gap-3 cursor-pointer select-none">
+                  <div className="relative mt-0.5">
+                    <input
+                      type="checkbox"
+                      className="sr-only"
+                      checked={form.isAirfareIncluded}
+                      onChange={e => setForm(f => ({ ...f, isAirfareIncluded: e.target.checked }))}
+                    />
+                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${
+                      form.isAirfareIncluded ? 'border-indigo-500 bg-indigo-500' : 'border-gray-300 bg-white'
+                    }`}>
+                      {form.isAirfareIncluded && (
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800 leading-tight">Include airfare in booking</p>
+                    <p className="text-xs text-gray-400 mt-0.5">Request flight tickets as part of your package. Our team will add the airfare cost to your quote.</p>
+                  </div>
+                </label>
               </Section>
 
               {target.extraNightPrice && (
@@ -379,6 +412,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                   {form.returnDate && <Row label="Return Date" value={new Date(form.returnDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })} />}
                   <Row label="Travellers"
                     value={`${form.paxAdult} Adult${form.paxAdult > 1 ? 's' : ''}${form.paxChild > 0 ? `, ${form.paxChild} Child` : ''}${form.paxInfant > 0 ? `, ${form.paxInfant} Infant` : ''}`} />
+                  <Row label="Airfare" value={form.isAirfareIncluded ? 'Requested — team will quote' : 'Not included'} />
                 </div>
               </Section>
 
@@ -548,13 +582,14 @@ function Row({ label, value }: { label: string; value: string }) {
   )
 }
 
-function Counter({ label, sub, min = 0, max = 20, value, onChange }: {
-  label: string; sub?: string; min?: number; max?: number; value: number; onChange: (v: number) => void
+function Counter({ label, sub, priceHint, min = 0, max = 20, value, onChange }: {
+  label: string; sub?: string; priceHint?: string; min?: number; max?: number; value: number; onChange: (v: number) => void
 }) {
   return (
     <div className="text-center">
       {label && <p className="text-xs font-semibold text-gray-600 mb-0.5">{label}</p>}
-      {sub && <p className="text-[10px] text-gray-400 mb-1">{sub}</p>}
+      {sub && <p className="text-[10px] text-gray-400 mb-0.5">{sub}</p>}
+      {priceHint && <p className="text-[10px] text-indigo-500 font-semibold mb-1">{priceHint}</p>}
       <div className="flex items-center justify-center gap-2">
         <button type="button" onClick={() => onChange(Math.max(min, value - 1))}
           className="w-7 h-7 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold text-base flex items-center justify-center transition-colors">

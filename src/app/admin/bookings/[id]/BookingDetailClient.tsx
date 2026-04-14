@@ -61,10 +61,13 @@ interface Booking {
   adminNotes?: string | null
   staffQuote?: StaffQuote | null
   originalSnapshot?: OriginalSnapshot | null
+  isAirfareIncluded?: boolean
   customerNote?: string | null
   receiptUrl?: string | null
   receiptNote?: string | null
   ticketUrl?: string | null
+  documents?: { url: string; name: string; note?: string }[] | null
+  documentNote?: string | null
   notes?: string | null
   createdAt: string
   updatedAt: string
@@ -432,54 +435,140 @@ function AdminNotesEditor({ booking, type, onUpdate }: {
   )
 }
 
-// ─── Receipt & Ticket section ─────────────────────────────────────────────────
+// ─── Receipt & Ticket / Documents section ────────────────────────────────────
+
+const NOTE_TEMPLATES = [
+  { label: 'Booking confirmed', text: 'Your booking is confirmed. Please find your travel documents attached. Have a wonderful trip!' },
+  { label: 'Visa documents', text: 'Please find your visa documents attached. Ensure you carry printed copies when travelling.' },
+  { label: 'Tickets ready', text: 'Your flight tickets and hotel vouchers are attached. Please review all details carefully.' },
+  { label: 'Final itinerary', text: 'Your final itinerary is attached. Please contact us if you have any questions before departure.' },
+  { label: 'Payment receipt', text: 'Thank you for your payment. Your receipt and booking documents are attached for your records.' },
+]
+
+async function uploadFileToMedia(file: File): Promise<string> {
+  const fd = new FormData()
+  fd.append('file', file)
+  fd.append('folder', 'booking-docs')
+  const res = await fetch('/api/media/upload', { method: 'POST', body: fd })
+  if (!res.ok) throw new Error('File upload failed')
+  const data = await res.json()
+  return data.url as string
+}
+
+interface DocEntry { url: string; name: string; note?: string }
 
 function ReceiptTicketSection({ booking, type, onUpdate }: {
   booking: Booking; type: 'package' | 'tour'; onUpdate: (u: Partial<Booking>) => void
 }) {
-  const [ticketUrl, setTicketUrl] = useState(booking.ticketUrl ?? '')
-  const [uploading, setUploading] = useState(false)
-  const [generating, setGenerating] = useState(false)
+  const existingDocs: DocEntry[] = booking.documents ?? []
 
-  // Auto-generate ticket HTML served from our API
-  async function generateTicket() {
-    setGenerating(true)
-    // Hit the ticket route — it generates HTML and saves ticketUrl on the booking
-    const generatedUrl = `/api/admin/bookings/${booking.id}/ticket`
-    // Open in new tab for preview
-    window.open(generatedUrl, '_blank')
-    // Now send it to the customer via the upload_ticket action
-    const url = type === 'tour' ? `/api/tour-bookings/${booking.id}` : `/api/bookings/${booking.id}`
-    const res = await fetch(url, {
+  // New files to add
+  const [newFiles, setNewFiles] = useState<{ file: File; name: string }[]>([])
+  const [newUrl, setNewUrl] = useState('')
+  const [newUrlName, setNewUrlName] = useState('')
+  const [docNote, setDocNote] = useState(booking.documentNote ?? '')
+  const [uploading, setUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState('')
+  const [generating, setGenerating] = useState(false)
+  const [error, setError] = useState('')
+  const [savingNote, setSavingNote] = useState(false)
+  const [noteSaved, setNoteSaved] = useState(false)
+
+  const apiUrl = type === 'tour' ? `/api/tour-bookings/${booking.id}` : `/api/bookings/${booking.id}`
+
+  async function persistDocs(docsToAppend: DocEntry[], noteOverride?: string) {
+    const merged = [...existingDocs, ...docsToAppend]
+    const res = await fetch(apiUrl, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'upload_ticket', ticketUrl: generatedUrl }),
+      body: JSON.stringify({
+        action: 'save_documents',
+        documents: merged,
+        documentNote: noteOverride ?? docNote,
+      }),
+    })
+    if (res.ok) {
+      onUpdate(await res.json())
+      return true
+    }
+    return false
+  }
+
+  async function removeDoc(idx: number) {
+    const updated = existingDocs.filter((_, i) => i !== idx)
+    const res = await fetch(apiUrl, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'save_documents', documents: updated, documentNote: docNote }),
     })
     if (res.ok) onUpdate(await res.json())
-    setTicketUrl(generatedUrl)
+  }
+
+  async function handleUploadFiles() {
+    if (newFiles.length === 0) return
+    setUploading(true)
+    setError('')
+    try {
+      const appended: DocEntry[] = []
+      for (let i = 0; i < newFiles.length; i++) {
+        setUploadProgress(`Uploading ${i + 1} of ${newFiles.length}…`)
+        const url = await uploadFileToMedia(newFiles[i].file)
+        appended.push({ url, name: newFiles[i].name || newFiles[i].file.name })
+      }
+      setUploadProgress('')
+      const ok = await persistDocs(appended)
+      if (ok) setNewFiles([])
+      else setError('Failed to save documents.')
+    } catch {
+      setError('One or more uploads failed.')
+      setUploadProgress('')
+    }
+    setUploading(false)
+  }
+
+  async function handleAddUrl() {
+    if (!newUrl.trim()) return
+    setUploading(true)
+    setError('')
+    const ok = await persistDocs([{ url: newUrl.trim(), name: newUrlName.trim() || 'Document' }])
+    if (ok) { setNewUrl(''); setNewUrlName('') }
+    else setError('Failed to save URL.')
+    setUploading(false)
+  }
+
+  async function handleGenerateTicket() {
+    setGenerating(true)
+    setError('')
+    const generatedUrl = `/api/my/bookings/${booking.id}/ticket`
+    window.open(`/api/admin/bookings/${booking.id}/ticket`, '_blank')
+    const ok = await persistDocs([{ url: generatedUrl, name: 'Booking Voucher' }])
+    if (!ok) setError('Failed to save generated ticket.')
     setGenerating(false)
   }
 
-  async function uploadTicket() {
-    if (!ticketUrl) return
-    setUploading(true)
-    const url = type === 'tour' ? `/api/tour-bookings/${booking.id}` : `/api/bookings/${booking.id}`
-    const res = await fetch(url, {
+  async function saveNote() {
+    setSavingNote(true)
+    const res = await fetch(apiUrl, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'upload_ticket', ticketUrl }),
+      body: JSON.stringify({ action: 'save_documents', documents: existingDocs, documentNote: docNote }),
     })
-    if (res.ok) onUpdate(await res.json())
-    setUploading(false)
+    if (res.ok) { onUpdate(await res.json()); setNoteSaved(true); setTimeout(() => setNoteSaved(false), 2000) }
+    setSavingNote(false)
+  }
+
+  function updateFileName(idx: number, name: string) {
+    setNewFiles(f => f.map((item, i) => i === idx ? { ...item, name } : item))
   }
 
   return (
     <div className="space-y-5">
-      {/* Receipt */}
+
+      {/* ── Customer receipt (uploaded by customer) ── */}
       <div>
         <p className="text-xs font-bold text-gray-400 uppercase mb-2">Payment Receipt</p>
         {booking.receiptUrl ? (
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <a href={booking.receiptUrl} target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-1.5 text-sm text-indigo-600 font-semibold hover:underline">
               <FiExternalLink size={14} /> View Receipt
@@ -489,60 +578,133 @@ function ReceiptTicketSection({ booking, type, onUpdate }: {
             )}
           </div>
         ) : (
-          <p className="text-xs text-gray-400 italic">No receipt uploaded yet</p>
+          <p className="text-xs text-gray-400 italic">No receipt uploaded by customer yet</p>
         )}
       </div>
 
-      {/* Ticket */}
+      {/* ── Note to customer ── */}
       <div>
-        <p className="text-xs font-bold text-gray-400 uppercase mb-2">Ticket / Voucher</p>
-
-        {/* Auto-generate button — always shown */}
-        <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-xl">
-          <p className="text-xs font-semibold text-green-700 mb-2">Auto-generate a ticket from booking details</p>
-          <div className="flex items-center gap-2 flex-wrap">
-            <button onClick={generateTicket} disabled={generating}
-              className="flex items-center gap-1.5 text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 transition-colors">
-              <FiCheckCircle size={12} />
-              {generating ? 'Generating…' : booking.ticketUrl ? 'Re-generate & Resend Ticket' : 'Generate & Send Ticket'}
-            </button>
-            {booking.ticketUrl && (
-              <a href={booking.ticketUrl} target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-1 text-xs text-green-700 font-semibold hover:underline">
-                <FiDownload size={12} /> View current ticket
-              </a>
-            )}
+        <p className="text-xs font-bold text-gray-400 uppercase mb-2">Note to Customer</p>
+        <div className="space-y-2">
+          {/* Template picker */}
+          <div className="flex flex-wrap gap-1.5">
+            {NOTE_TEMPLATES.map(t => (
+              <button key={t.label} onClick={() => setDocNote(t.text)}
+                className="text-[10px] bg-gray-100 hover:bg-indigo-100 hover:text-indigo-700 text-gray-600 px-2 py-0.5 rounded-full font-medium transition-colors">
+                {t.label}
+              </button>
+            ))}
           </div>
-          <p className="text-[10px] text-green-600 mt-1.5">Opens a preview, emails the customer, and sets status to Mail Sent.</p>
+          <textarea rows={3} value={docNote} onChange={e => setDocNote(e.target.value)}
+            placeholder="Write a note that will be shown to the customer alongside their documents…"
+            className="w-full text-xs border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-400 resize-none bg-white" />
+          <button onClick={saveNote} disabled={savingNote}
+            className="flex items-center gap-1.5 text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+            <FiCheck size={11} /> {savingNote ? 'Saving…' : noteSaved ? 'Saved ✓' : 'Save Note'}
+          </button>
+        </div>
+      </div>
+
+      {/* ── Existing documents ── */}
+      <div>
+        <p className="text-xs font-bold text-gray-400 uppercase mb-2">
+          Documents ({existingDocs.length})
+        </p>
+        {existingDocs.length === 0 ? (
+          <p className="text-xs text-gray-400 italic">No documents added yet</p>
+        ) : (
+          <ul className="space-y-1.5">
+            {existingDocs.map((doc, i) => (
+              <li key={i} className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+                <FiDownload size={11} className="text-gray-400 shrink-0" />
+                <a href={doc.url} target="_blank" rel="noopener noreferrer"
+                  className="flex-1 text-xs text-indigo-600 font-semibold hover:underline truncate">
+                  {doc.name}
+                </a>
+                {doc.note && <span className="text-[10px] text-gray-400 italic truncate max-w-[120px]">{doc.note}</span>}
+                <button onClick={() => removeDoc(i)}
+                  className="text-gray-300 hover:text-red-500 transition-colors shrink-0">
+                  <FiX size={13} />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* ── Auto-generate voucher ── */}
+      <div className="p-3 bg-green-50 border border-green-200 rounded-xl">
+        <p className="text-xs font-semibold text-green-700 mb-2">Auto-generate booking voucher</p>
+        <button onClick={handleGenerateTicket} disabled={generating}
+          className="flex items-center gap-1.5 text-xs bg-green-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-green-700 disabled:opacity-50 transition-colors">
+          <FiCheckCircle size={12} />
+          {generating ? 'Generating…' : 'Generate & Add Voucher'}
+        </button>
+        <p className="text-[10px] text-green-600 mt-1.5">Opens a preview and adds it to the customer's documents.</p>
+      </div>
+
+      {/* ── Upload new files ── */}
+      <div className="space-y-3 p-3 bg-gray-50 border border-gray-200 rounded-xl">
+        <p className="text-xs font-semibold text-gray-600">Add Documents</p>
+
+        {/* File picker */}
+        <div>
+          <label className="flex items-center gap-2 text-xs border border-dashed border-gray-300 rounded-lg px-3 py-2.5 bg-white cursor-pointer hover:border-indigo-400 transition-colors">
+            <FiUpload size={13} className="text-gray-400 shrink-0" />
+            <span className="text-gray-500">
+              {newFiles.length > 0 ? `${newFiles.length} file(s) selected` : 'Click to choose PDFs or images (multiple)'}
+            </span>
+            <input type="file" accept="image/*,.pdf" multiple className="sr-only"
+              onChange={e => setNewFiles(Array.from(e.target.files ?? []).map(f => ({ file: f, name: f.name.replace(/\.[^.]+$/, '') })))} />
+          </label>
+
+          {newFiles.length > 0 && (
+            <ul className="mt-2 space-y-1.5">
+              {newFiles.map((item, i) => (
+                <li key={i} className="flex items-center gap-2">
+                  <input value={item.name} onChange={e => updateFileName(i, e.target.value)}
+                    placeholder="Document name…"
+                    className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-400 bg-white" />
+                  <span className="text-[10px] text-gray-400 truncate max-w-[100px]">{item.file.name}</span>
+                  <button onClick={() => setNewFiles(f => f.filter((_, j) => j !== i))}
+                    className="text-gray-300 hover:text-red-500 shrink-0"><FiX size={12} /></button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {newFiles.length > 0 && (
+            <button onClick={handleUploadFiles} disabled={uploading}
+              className="mt-2 flex items-center gap-1.5 text-xs bg-indigo-600 text-white px-4 py-1.5 rounded-lg font-semibold hover:bg-indigo-700 disabled:opacity-50 transition-colors">
+              <FiUpload size={11} />
+              {uploading ? (uploadProgress || 'Uploading…') : `Upload ${newFiles.length > 1 ? `${newFiles.length} files` : 'file'}`}
+            </button>
+          )}
         </div>
 
-        {booking.ticketUrl ? (
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <input value={ticketUrl} onChange={e => setTicketUrl(e.target.value)}
-                placeholder="Or paste a custom ticket URL (Cloudinary, S3…)"
-                className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-green-400" />
-              <button onClick={uploadTicket} disabled={uploading || !ticketUrl || ticketUrl === booking.ticketUrl}
-                className="text-xs bg-gray-700 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-gray-800 disabled:opacity-50 whitespace-nowrap">
-                {uploading ? '…' : 'Use Custom URL'}
-              </button>
-            </div>
+        {/* Divider */}
+        <div className="flex items-center gap-2 text-[10px] text-gray-400">
+          <div className="flex-1 h-px bg-gray-200" /> or add a URL <div className="flex-1 h-px bg-gray-200" />
+        </div>
+
+        {/* URL + name */}
+        <div className="space-y-1.5">
+          <input value={newUrlName} onChange={e => setNewUrlName(e.target.value)}
+            placeholder="Document name (e.g. Hotel Voucher)"
+            className="w-full text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-400 bg-white" />
+          <div className="flex gap-2">
+            <input value={newUrl} onChange={e => setNewUrl(e.target.value)}
+              placeholder="https://… (Cloudinary, Drive, S3…)"
+              className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-400 bg-white" />
+            <button onClick={handleAddUrl} disabled={uploading || !newUrl.trim()}
+              className="text-xs bg-gray-700 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-gray-800 disabled:opacity-50 whitespace-nowrap">
+              Add
+            </button>
           </div>
-        ) : (
-          <div className="space-y-2">
-            <p className="text-[11px] text-gray-400 mt-1">Or use a custom URL:</p>
-            <div className="flex items-center gap-2">
-              <input value={ticketUrl} onChange={e => setTicketUrl(e.target.value)}
-                placeholder="Paste ticket / voucher URL…"
-                className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-green-400" />
-              <button onClick={uploadTicket} disabled={uploading || !ticketUrl}
-                className="flex items-center gap-1 text-xs bg-gray-700 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-gray-800 disabled:opacity-50">
-                <FiUpload size={11} /> {uploading ? 'Sending…' : 'Send'}
-              </button>
-            </div>
-            <p className="text-[10px] text-gray-400">Uploading will email the ticket to the customer and mark status as Mail Sent.</p>
-          </div>
-        )}
+        </div>
+
+        {error && <p className="text-xs text-red-500">{error}</p>}
+        <p className="text-[10px] text-gray-400">Documents are shown to the customer in their booking panel.</p>
       </div>
     </div>
   )
@@ -701,6 +863,7 @@ export default function BookingDetailClient({ booking: initial, type }: {
             {booking.extraNights > 0 && (
               <InfoRow label="Extra Nights" value={`${booking.extraNights} night(s)`} />
             )}
+            <InfoRow label="✈ Airfare" value={booking.isAirfareIncluded ? 'Requested — include in quote' : 'Not included'} />
             {booking.notes && <InfoRow label="Customer Note" value={booking.notes} />}
             <div className="pt-2 mt-1 border-t border-gray-100 flex justify-between">
               <span className="text-xs font-bold text-gray-500">Current Total</span>

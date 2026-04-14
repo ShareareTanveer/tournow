@@ -49,7 +49,7 @@ export default function JsonEditorPanel({ formData, onApply, entityLabel }: Prop
   // Build SEO prompt from form data
   const seoPrompt = useMemo(() => {
     const d = formData as Record<string, string>
-    return `You are an expert travel SEO specialist for Halo Holidays.
+    return `You are an expert travel SEO specialist for Metro Voyage.
 Generate complete SEO metadata for this ${entityLabel}.
 
 CURRENT VALUES (for reference):

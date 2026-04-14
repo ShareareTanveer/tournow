@@ -6,9 +6,12 @@ import Image from 'next/image'
 import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 import { getBlogs } from '@/lib/data'
 
+const BASE = process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.metrovoyage.com'
 export const metadata: Metadata = {
   title: 'Travel Blog',
   description: 'Travel stories, tips and inspiration from the Metro Voyage team.',
+  alternates: { canonical: `${BASE}/blogs` },
+  openGraph: { title: 'Travel Blog | Metro Voyage', description: 'Travel stories, tips and inspiration from the Metro Voyage team.', url: `${BASE}/blogs`, siteName: 'Metro Voyage', type: 'website' },
 }
 
 const CATEGORY_COLORS: Record<string, string> = {

@@ -160,17 +160,14 @@ export async function PUT(req: NextRequest, { params }: Params) {
     return NextResponse.json(updated)
   }
 
-  // Upload ticket URL and mark MAIL_SENT
+  // Upload ticket URL and mark MAIL_SENT (legacy — kept for compatibility)
   if (action === 'upload_ticket') {
     const { ticketUrl } = body
     if (!ticketUrl) return NextResponse.json({ error: 'ticketUrl required' }, { status: 400 })
 
     const updated = await prisma.booking.update({
       where: { id },
-      data: {
-        ticketUrl,
-        status: 'MAIL_SENT',
-      },
+      data: { ticketUrl, status: 'MAIL_SENT' },
     })
     try {
       await sendTicketToCustomer({
@@ -183,6 +180,25 @@ export async function PUT(req: NextRequest, { params }: Params) {
       })
     } catch {}
     return NextResponse.json(updated)
+  }
+
+  // Save documents array + optional note to customer
+  if (action === 'save_documents') {
+    const { documents, documentNote } = body
+    try {
+      const updated = await prisma.booking.update({
+        where: { id },
+        data: {
+          documents: documents ?? [],
+          ...(documentNote !== undefined && { documentNote }),
+        },
+        include: { package: { select: { title: true } } },
+      })
+      return NextResponse.json(updated)
+    } catch (err: any) {
+      console.error('[save_documents booking]', err?.message ?? err)
+      return NextResponse.json({ error: err?.message ?? 'Failed to save documents' }, { status: 500 })
+    }
   }
 
   // Generic admin update

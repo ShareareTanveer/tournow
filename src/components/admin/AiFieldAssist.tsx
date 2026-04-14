@@ -113,7 +113,7 @@ export default function AiFieldAssist({
       .map(([k, v]) => `${k}: ${v.slice(0, 300)}`)
       .join('\n')
 
-    return `You are an expert travel content writer and SEO specialist for Halo Holidays, a premium Sri Lanka travel agency.
+    return `You are an expert travel content writer and SEO specialist for Metro Voyage, a premium Sri Lanka travel agency.
 You are generating content for the "${fieldLabel}" field.
 
 FORM CONTEXT (for reference):

@@ -73,9 +73,9 @@ export async function GET(req: NextRequest, { params }: Params) {
     issuedAt: new Date(),
   })
 
-  // Persist ticketUrl on the booking if not already set
+  // Persist the customer-accessible ticket URL (not the admin one)
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? ''
-  const ticketUrl = `${appUrl}/api/admin/bookings/${id}/ticket`
+  const ticketUrl = `${appUrl}/api/my/bookings/${id}/ticket`
 
   if (!booking.ticketUrl) {
     if (type === 'package') {

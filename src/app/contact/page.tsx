@@ -4,7 +4,13 @@ import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 import { FiPhone, FiMail, FiMessageSquare, FiMapPin, FiClock } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa'
 
-export const metadata: Metadata = { title: 'Contact Us', description: 'Get in touch with Metro Voyage. Call, WhatsApp, or visit our office in Colombo.' }
+const BASE = process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.metrovoyage.com'
+export const metadata: Metadata = {
+  title: 'Contact Us',
+  description: 'Get in touch with Metro Voyage. Call, WhatsApp, or visit our office in Colombo.',
+  alternates: { canonical: `${BASE}/contact` },
+  openGraph: { title: 'Contact Metro Voyage', description: 'Get in touch with our travel experts. Available 8 AM – 10 PM daily.', url: `${BASE}/contact`, siteName: 'Metro Voyage', type: 'website' },
+}
 
 const CONTACT_ITEMS = [
   { Icon: FiPhone,        iconBg: '#eff6ff', iconColor: '#3b82f6', title: 'Phone',    content: '+94 70 454 5455',          href: 'tel:+94704545455' },

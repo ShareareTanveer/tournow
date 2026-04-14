@@ -3,9 +3,13 @@ import Link from 'next/link'
 import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 import { FiCheckCircle, FiFileText, FiClock, FiDollarSign } from 'react-icons/fi'
 
+const BASE = process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.metrovoyage.com'
 export const metadata: Metadata = {
   title: 'Visa Services',
   description: 'Free visa consultation for Dubai, Malaysia, Schengen, Thailand and more. We handle your visa application end-to-end.',
+  alternates: { canonical: `${BASE}/visas` },
+  keywords: ['visa Sri Lanka', 'Dubai visa', 'Schengen visa', 'Malaysia visa', 'visa assistance'],
+  openGraph: { title: 'Visa Services | Metro Voyage', description: 'Free visa consultation. We handle Dubai, Malaysia, Schengen, Thailand & more.', url: `${BASE}/visas`, siteName: 'Metro Voyage', type: 'website' },
 }
 
 async function getVisas() {

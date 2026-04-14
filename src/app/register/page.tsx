@@ -4,6 +4,7 @@ import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { FiMail, FiLock, FiUser, FiEye, FiEyeOff, FiCheckCircle } from 'react-icons/fi'
+import { useCustomerAuth } from '@/lib/customerAuth'
 
 function RegisterForm() {
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' })
@@ -12,7 +13,8 @@ function RegisterForm() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirect = searchParams.get('redirect') ?? '/'
+  const redirect = searchParams.get('redirect') ?? '/my'
+  const { refresh: refreshAuth } = useCustomerAuth()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -30,9 +32,9 @@ function RegisterForm() {
       const data = await res.json()
       if (!res.ok) { setError(data.error ?? 'Registration failed'); return }
 
-      // New customers always go to /my after registering (unless there's an explicit redirect).
-      const hasExplicitRedirect = searchParams.get('redirect') !== null
-      router.push(hasExplicitRedirect ? redirect : '/my')
+      // Refresh auth context so the customer is immediately recognised as logged in
+      await refreshAuth()
+      router.push(redirect)
       router.refresh()
     } catch {
       setError('Something went wrong. Please try again.')

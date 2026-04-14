@@ -2,9 +2,12 @@ import { Metadata } from 'next'
 import DestinationCard from '@/components/ui/DestinationCard'
 import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 
+const BASE = process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.metrovoyage.com'
 export const metadata: Metadata = {
   title: 'Destinations',
   description: 'Explore 50+ travel destinations from Sri Lanka. Asia, Europe, Middle East, Africa & more.',
+  alternates: { canonical: `${BASE}/destinations` },
+  openGraph: { title: 'Travel Destinations | Metro Voyage', description: 'Explore 50+ travel destinations from Sri Lanka.', url: `${BASE}/destinations`, siteName: 'Metro Voyage', type: 'website' },
 }
 
 async function getDestinations() {

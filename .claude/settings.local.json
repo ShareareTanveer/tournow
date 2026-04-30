@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(scp -r \"c:/Users/admin/Downloads/tvhasan website/halo-holidays/.next\" root@64.227.185.113:/var/www/tournow/)"
+    ]
+  }
+}

@@ -1,0 +1,1039 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── ENUMS ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  STAFF
+  CUSTOMER
+}
+
+enum PackageCategory {
+  FAMILY
+  HONEYMOON
+  SOLO
+  SQUAD
+  CORPORATE
+  SPECIAL
+  HOLIDAY
+}
+
+enum StarRating {
+  THREE
+  FOUR
+  FIVE
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  CONVERTED
+  CLOSED
+}
+
+enum ConsultationMethod {
+  VIDEO_CALL
+  PHONE_CALL
+}
+
+enum ConsultationStatus {
+  PENDING
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum BookingStatus {
+  // Customer-side flow
+  REQUESTED          // Customer submitted booking form
+  CALL_REQUIRED      // Staff needs to call & finalise
+  EDIT_RESEND        // Staff edited quote, resent to customer
+  AWAITING_CONFIRM   // Waiting for customer confirmation
+  // Confirmed flow
+  CONFIRMED          // Customer confirmed
+  RECEIPT_UPLOADED   // Customer uploaded payment receipt
+  ADMIN_CONFIRMING   // Admin reviewing receipt / finalising
+  ALL_CONFIRMED      // Fully confirmed by admin
+  MAIL_SENT          // Confirmation + tickets emailed
+  // Terminal states
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PARTIAL
+  PAID
+  REFUNDED
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  BANK_TRANSFER
+  STRIPE
+  PAYPAL
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum DonationStatus {
+  PENDING
+  PICKUP_ARRANGED
+  RECEIVED
+  DISTRIBUTED
+}
+
+enum DifficultyLevel {
+  EASY
+  MODERATE
+  CHALLENGING
+  EXTREME
+}
+
+enum NotificationType {
+  NEW_BOOKING
+  BOOKING_STATUS
+  NEW_INQUIRY
+  NEW_CONSULTATION
+  NEW_REVIEW
+  PAYMENT_RECEIVED
+  SYSTEM
+}
+
+enum NotificationAudience {
+  ADMIN
+  CUSTOMER
+}
+
+// ─── USER / AUTH ──────────────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  password      String
+  role          Role      @default(STAFF)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  assignedInquiries     Inquiry[]      @relation("AssignedStaff")
+  assignedTourInquiries TourInquiry[]  @relation("AssignedTourStaff")
+  assignedConsultations Consultation[] @relation("AssignedConsultant")
+  sessions              Session[]
+  claimedPerks          ClaimedPerk[]
+  loyaltyCard           LoyaltyCard?
+  aiJobs                AiGenerationJob[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// ─── CUSTOMER ACCOUNTS (separate from admin Users) ────────────────────────────
+
+model Customer {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  password     String
+  phone        String?
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  bookings     Booking[]
+  tourBookings TourBooking[]
+  sessions     CustomerSession[]
+  claimedPerks ClaimedPerk[]
+
+  @@map("customers")
+}
+
+model CustomerSession {
+  id         String   @id @default(cuid())
+  customerId String
+  token      String   @unique
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@map("customer_sessions")
+}
+
+// ─── PACKAGE ─────────────────────────────────────────────────────────────────
+
+model Package {
+  id             String          @id @default(cuid())
+  title          String
+  slug           String          @unique
+  category       PackageCategory
+  destinationId  String
+  price          Float
+  oldPrice       Float?
+  duration       Int
+  nights         Int
+  starRating     StarRating
+  description    String          @db.Text
+  summary        String?         @db.Text
+
+  highlights     String[]
+  inclusions     String[]
+  exclusions     String[]
+  images         String[]
+  galleryLayout  String   @default("grid-2x2") // grid-2x2 | grid-3col | featured-left | featured-right | strip
+
+  isFoodIncluded        Boolean  @default(false)
+  isTransportIncluded   Boolean  @default(false)
+  meetingPoint          String?  @db.Text
+  dropOff               String?  @db.Text
+  hostLanguage          String[]
+  audioGuideLanguage    String[]
+  bookletLanguage       String[]
+  inclusionService      String[]
+  exclusionService      String[]
+  emergencyContact      String?
+  notSuitable           String[]
+  notAllowed            String[]
+  mustCarryItem         String[]
+  difficulty            DifficultyLevel @default(EASY)
+  minAge                Int?
+  maxGroupSize          Int?
+  cancellationPolicy    String?  @db.Text
+  importantInfo         String?  @db.Text
+  isCustomizable        Boolean  @default(false)
+  customizationNotes    String?  @db.Text
+
+  // Pricing options
+  priceTwin          Float?    // per person twin-sharing price
+  priceChild         Float?    // child price
+  extraNightPrice    Float?    // per extra night
+  options            Json?     // [{label, price, isDefault}] add-on options
+
+  // Cancellation policy (structured)
+  cancellationTiers  Json?     // [{daysBeforeDep, refundPercent, label}]
+
+  isFeatured     Boolean         @default(false)
+  isActive       Boolean         @default(true)
+  paxType        String?
+
+  // ── SEO ────────────────────────────────────────────────────────────────────
+  // Basic
+  metaTitle          String?           // 50–65 chars ideal
+  metaDescription    String?  @db.Text // 150–160 chars ideal
+  focusKeyword       String?           // primary target keyword
+  secondaryKeywords  String?           // comma-separated extra keywords
+  canonicalUrl       String?
+  // Social / Open Graph
+  ogTitle            String?
+  ogDescription      String?  @db.Text
+  ogImage            String?           // URL; falls back to images[0] in head
+  twitterTitle       String?
+  twitterDescription String?  @db.Text
+  // Technical
+  metaRobots         String?  @default("index, follow")
+  schemaMarkup       String?  @db.Text // raw JSON-LD string
+  // ───────────────────────────────────────────────────────────────────────────
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  destination    Destination          @relation(fields: [destinationId], references: [id])
+  itinerary      ItineraryDay[]
+  inquiries      Inquiry[]
+  bookings       Booking[]
+  reviews        Review[]
+  accommodations PackageAccommodation[]
+
+  @@map("packages")
+}
+
+model ItineraryDay {
+  id            String   @id @default(cuid())
+  packageId     String
+  dayNumber     Int
+  title         String
+  description   String   @db.Text
+  activities    String[]
+  meals         String[]
+  accommodation String?
+  imageUrl      String?
+
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  @@map("itinerary_days")
+}
+
+model PackageAccommodation {
+  id          String  @id @default(cuid())
+  packageId   String
+  name        String
+  starRating  Int?
+  location    String?
+  imageUrl    String?
+  description String? @db.Text
+  nightsStay  Int     @default(1)
+  sortOrder   Int     @default(0)
+
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+
+  @@map("package_accommodations")
+}
+
+// ─── TOUR ─────────────────────────────────────────────────────────────────────
+
+model Tour {
+  id            String   @id @default(cuid())
+  title         String
+  slug          String   @unique
+  region        String   // e.g. "South East Asia"
+  multiDestinations String[] // e.g. ["Singapore", "Malaysia", "Thailand"]
+  primaryDestinationId String
+  price         Float
+  oldPrice      Float?
+  duration      Int
+  nights        Int
+  starRating    StarRating
+  description   String   @db.Text
+  summary       String?  @db.Text
+
+  highlights    String[]
+  inclusions    String[]
+  exclusions    String[]
+  images        String[]
+  galleryLayout String   @default("grid-2x2") // grid-2x2 | grid-3col | featured-left | featured-right | strip
+
+  // Tour-specific detail fields
+  isFoodIncluded        Boolean  @default(false)
+  isTransportIncluded   Boolean  @default(false)
+  meetingPoint          String?  @db.Text
+  dropOff               String?  @db.Text
+  hostLanguage          String[]
+  audioGuideLanguage    String[]
+  bookletLanguage       String[]
+  inclusionService      String[]
+  exclusionService      String[]
+  emergencyContact      String?
+  notSuitable           String[]
+  notAllowed            String[]
+  mustCarryItem         String[]
+  difficulty            DifficultyLevel @default(EASY)
+  minAge                Int?
+  maxGroupSize          Int?
+  cancellationPolicy    String?  @db.Text
+  importantInfo         String?  @db.Text
+
+  // Tour-specific: customizable group/private tours
+  isCustomizable        Boolean  @default(false)
+  customizationNotes    String?  @db.Text
+
+  // Tour-specific: visa notes across multiple countries
+  visaNotes             String?  @db.Text
+
+  // Pricing options
+  priceTwin          Float?
+  priceChild         Float?
+  extraNightPrice    Float?
+  options            Json?     // [{label, price, isDefault}]
+  cancellationTiers  Json?     // [{daysBeforeDep, refundPercent, label}]
+
+  isFeatured    Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  paxType       String?
+
+  // ── SEO ────────────────────────────────────────────────────────────────────
+  // Basic
+  metaTitle          String?
+  metaDescription    String?  @db.Text
+  focusKeyword       String?
+  secondaryKeywords  String?
+  canonicalUrl       String?
+  // Social / Open Graph
+  ogTitle            String?
+  ogDescription      String?  @db.Text
+  ogImage            String?
+  twitterTitle       String?
+  twitterDescription String?  @db.Text
+  // Technical
+  metaRobots         String?  @default("index, follow")
+  schemaMarkup       String?  @db.Text
+  // ───────────────────────────────────────────────────────────────────────────
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  primaryDestination Destination      @relation(fields: [primaryDestinationId], references: [id])
+  itinerary          TourItineraryDay[]
+  accommodations     TourAccommodation[]
+  inquiries          TourInquiry[]
+  bookings           TourBooking[]
+  reviews            TourReview[]
+  customizations     TourCustomization[]
+
+  @@map("tours")
+}
+
+model TourItineraryDay {
+  id            String   @id @default(cuid())
+  tourId        String
+  dayNumber     Int
+  title         String
+  description   String   @db.Text
+  country       String?  // which country this day is in
+  activities    String[]
+  meals         String[]
+  accommodation String?
+  imageUrl      String?
+
+  tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@map("tour_itinerary_days")
+}
+
+model TourAccommodation {
+  id          String  @id @default(cuid())
+  tourId      String
+  name        String
+  starRating  Int?
+  location    String?
+  country     String?
+  imageUrl    String?
+  description String? @db.Text
+  nightsStay  Int     @default(1)
+  sortOrder   Int     @default(0)
+
+  tour Tour @relation(fields: [tourId], references: [id], onDelete: Cascade)
+
+  @@map("tour_accommodations")
+}
+
+model TourCustomization {
+  id            String   @id @default(cuid())
+  tourId        String
+  customerName  String
+  customerEmail String
+  customerPhone String?
+  travelDate    DateTime?
+  paxCount      Int
+  requests      String   @db.Text
+  budget        Float?
+  currency      String   @default("LKR")
+  status        String   @default("PENDING") // PENDING, REVIEWED, QUOTED, CONFIRMED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  tour Tour @relation(fields: [tourId], references: [id])
+
+  @@map("tour_customizations")
+}
+
+// Tour-specific inquiry, booking, review (keeps clean separation)
+model TourInquiry {
+  id           String        @id @default(cuid())
+  name         String
+  email        String
+  phone        String?
+  tourId       String?
+  destination  String?
+  travelDate   DateTime?
+  paxCount     Int?
+  message      String        @db.Text
+  status       InquiryStatus @default(NEW)
+  assignedToId String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  tour       Tour? @relation(fields: [tourId], references: [id])
+  assignedTo User? @relation("AssignedTourStaff", fields: [assignedToId], references: [id])
+
+  @@map("tour_inquiries")
+}
+
+model TourBooking {
+  id            String        @id @default(cuid())
+  bookingRef    String        @unique @default(cuid())
+  tourId        String
+  customerId    String?
+
+  customerName  String
+  customerEmail String
+  customerPhone String
+
+  travelDate    DateTime
+  returnDate    DateTime?
+  paxAdult      Int           @default(1)
+  paxChild      Int           @default(0)
+  paxInfant     Int           @default(0)
+  roomType      String?       // legacy
+  rooms         Json?         // [{type, qty, label}] multi-room selection
+  isAirfareIncluded Boolean   @default(false)
+  customerNote  String?       @db.Text  // customer counter-request note
+  ticketUrl     String?       // legacy — superseded by documents
+  documents     Json?         // [{url, name, note}] admin-uploaded files/vouchers
+  documentNote  String?       @db.Text  // note shown to customer alongside documents
+
+  pricePerPerson   Float?
+  priceTwin        Float?
+  extraNights      Int        @default(0)
+  extraNightPrice  Float?
+  selectedOptions  Json?
+
+  totalPrice    Float
+  currency      String        @default("LKR")
+  discount      Float         @default(0)
+
+  status        BookingStatus @default(REQUESTED)
+  paymentStatus PaymentStatus @default(UNPAID)
+
+  adminNotes       String?       @db.Text
+  staffQuote       Json?
+  originalSnapshot Json?         // snapshot of customer's original request
+  receiptUrl       String?
+  receiptNote      String?
+
+  notes         String?       @db.Text
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  tour     Tour        @relation(fields: [tourId], references: [id])
+  customer Customer?   @relation(fields: [customerId], references: [id])
+  payments TourPayment[]
+
+  @@map("tour_bookings")
+}
+
+model TourPayment {
+  id          String        @id @default(cuid())
+  tourBookingId String
+  amount      Float
+  currency    String        @default("LKR")
+  method      PaymentMethod
+  reference   String?
+  status      PaymentStatus @default(UNPAID)
+  stripeId    String?
+  paidAt      DateTime?
+  createdAt   DateTime      @default(now())
+
+  tourBooking TourBooking @relation(fields: [tourBookingId], references: [id], onDelete: Cascade)
+
+  @@map("tour_payments")
+}
+
+model TourReview {
+  id        String       @id @default(cuid())
+  name      String
+  location  String?
+  rating    Int
+  body      String       @db.Text
+  photoUrl  String?
+  videoUrl  String?
+  tourId    String?
+  status    ReviewStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  tour Tour? @relation(fields: [tourId], references: [id])
+
+  @@map("tour_reviews")
+}
+
+// ─── DESTINATION ──────────────────────────────────────────────────────────────
+
+model Destination {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  region      String
+  country     String
+  language    String
+  bestSeason  String
+  costLevel   String
+  description String   @db.Text
+  images      String[]
+  imageUrl    String?  // Primary featured image
+  isFeatured  Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  packages Package[]
+  tours    Tour[]
+  sections DestinationSection[]
+
+  @@map("destinations")
+}
+
+model DestinationSection {
+  id            String   @id @default(cuid())
+  destinationId String
+  sectionType   String
+  title         String
+  presetKey     String?
+  order         Int      @default(0)
+  isVisible     Boolean  @default(true)
+  mode          String   @default("template")
+  style         Json?
+  content       Json?
+  canvas        Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
+
+  @@index([destinationId, order])
+  @@map("destination_sections")
+}
+
+// ─── VISA SERVICES ────────────────────────────────────────────────────────────
+
+model VisaService {
+  id             String   @id @default(cuid())
+  country        String
+  slug           String   @unique
+  isVisaFree     Boolean  @default(false)
+  description    String   @db.Text
+  requirements   String[]
+  processingTime String?
+  fee            String?
+  documents      String[]
+  notes          String?
+  image          String?
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("visa_services")
+}
+
+// ─── INQUIRY ──────────────────────────────────────────────────────────────────
+
+model Inquiry {
+  id           String        @id @default(cuid())
+  name         String
+  email        String
+  phone        String?
+  packageId    String?
+  destination  String?
+  travelDate   DateTime?
+  paxCount     Int?
+  message      String        @db.Text
+  status       InquiryStatus @default(NEW)
+  assignedToId String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  package    Package? @relation(fields: [packageId], references: [id])
+  assignedTo User?    @relation("AssignedStaff", fields: [assignedToId], references: [id])
+
+  @@map("inquiries")
+}
+
+// ─── CONSULTATION ─────────────────────────────────────────────────────────────
+
+model Consultation {
+  id                   String             @id @default(cuid())
+  name                 String
+  email                String
+  phone                String?
+  method               ConsultationMethod
+  additionalInfo       String?            @db.Text
+  status               ConsultationStatus @default(PENDING)
+  assignedConsultantId String?
+  scheduledAt          DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  assignedConsultant User? @relation("AssignedConsultant", fields: [assignedConsultantId], references: [id])
+
+  @@map("consultations")
+}
+
+// ─── BOOKING ──────────────────────────────────────────────────────────────────
+
+model Booking {
+  id            String        @id @default(cuid())
+  bookingRef    String        @unique @default(cuid())
+  packageId     String
+  customerId    String?       // linked Customer account (if logged in)
+
+  // Traveller info
+  customerName  String
+  customerEmail String
+  customerPhone String
+
+  // Travel dates & pax
+  travelDate    DateTime
+  returnDate    DateTime?
+  paxAdult      Int           @default(1)
+  paxChild      Int           @default(0)
+  paxInfant     Int           @default(0)
+  roomType      String?       // SINGLE | TWIN | DOUBLE | TRIPLE (legacy)
+  rooms         Json?         // [{type, qty, label}] multi-room selection
+  isAirfareIncluded Boolean   @default(false)  // customer-selected during booking
+  customerNote  String?       @db.Text  // customer counter-request note
+  ticketUrl     String?       // legacy — superseded by documents
+  documents     Json?         // [{url, name, note}] admin-uploaded files/vouchers
+  documentNote  String?       @db.Text  // note shown to customer alongside documents
+
+  // Pricing breakdown
+  pricePerPerson   Float?     // adult per-person price
+  priceTwin        Float?     // twin-sharing price per person
+  extraNights      Int        @default(0)
+  extraNightPrice  Float?
+  selectedOptions  Json?      // array of {label, price} add-ons
+
+  totalPrice    Float
+  currency      String        @default("LKR")
+  discount      Float         @default(0)
+
+  // Pipeline status
+  status        BookingStatus @default(REQUESTED)
+  paymentStatus PaymentStatus @default(UNPAID)
+
+  // Admin workflow
+  adminNotes       String?       @db.Text
+  staffQuote       Json?         // detailed quote JSON sent to customer
+  originalSnapshot Json?         // snapshot of customer's original request (rooms, pax, totalPrice, options)
+  receiptUrl       String?       // customer-uploaded payment receipt
+  receiptNote      String?
+
+  notes         String?       @db.Text
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  package  Package   @relation(fields: [packageId], references: [id])
+  customer Customer? @relation(fields: [customerId], references: [id])
+  payments Payment[]
+
+  @@map("bookings")
+}
+
+model Payment {
+  id        String        @id @default(cuid())
+  bookingId String
+  amount    Float
+  currency  String        @default("LKR")
+  method    PaymentMethod
+  reference String?
+  status    PaymentStatus @default(UNPAID)
+  stripeId  String?
+  paidAt    DateTime?
+  createdAt DateTime      @default(now())
+
+  booking Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+// ─── REVIEWS ──────────────────────────────────────────────────────────────────
+
+model Review {
+  id        String       @id @default(cuid())
+  name      String
+  location  String?
+  rating    Int
+  body      String       @db.Text
+  photoUrl  String?
+  videoUrl  String?
+  packageId String?
+  status    ReviewStatus @default(PENDING)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  package Package? @relation(fields: [packageId], references: [id])
+
+  @@map("reviews")
+}
+
+// ─── STAFF ────────────────────────────────────────────────────────────────────
+
+model Staff {
+  id          String   @id @default(cuid())
+  name        String
+  role        String
+  bio         String?  @db.Text
+  photoUrl    String?
+  specialties String[]
+  yearsExp    Int?
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("staff")
+}
+
+// ─── NEWS ─────────────────────────────────────────────────────────────────────
+
+model News {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  body        String   @db.Text
+  excerpt     String?
+  source      String?
+  imageUrl    String?
+  publishedAt DateTime @default(now())
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("news")
+}
+
+// ─── BLOG ─────────────────────────────────────────────────────────────────────
+
+model Blog {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  body        String   @db.Text
+  excerpt     String?
+  category    String
+  author      String
+  readingTime Int
+  imageUrl    String?
+  publishedAt DateTime @default(now())
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("blogs")
+}
+
+// ─── NEWSLETTER ───────────────────────────────────────────────────────────────
+
+model NewsletterSubscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  whatsapp     String?
+  subscribedAt DateTime @default(now())
+  isActive     Boolean  @default(true)
+
+  @@map("newsletter_subscribers")
+}
+
+// ─── LOYALTY / PRIVILEGE CARD ─────────────────────────────────────────────────
+
+model LoyaltyCard {
+  id             String   @id @default(cuid())
+  // Optional link to a registered User account
+  userId         String?  @unique
+  customerName   String
+  customerEmail  String   @unique
+  customerPhone  String?
+  pointsEarned   Int      @default(0)
+  pointsRedeemed Int      @default(0)
+  tier           String   @default("BRONZE")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("loyalty_cards")
+}
+
+// ─── CHARITY ──────────────────────────────────────────────────────────────────
+
+model CharityDonation {
+  id             String         @id @default(cuid())
+  name           String
+  phone          String
+  email          String
+  pickupRequired Boolean        @default(false)
+  address        String?
+  notes          String?
+  status         DonationStatus @default(PENDING)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@map("charity_donations")
+}
+
+// ─── PERKS ────────────────────────────────────────────────────────────────────
+
+model Perk {
+  id          String        @id @default(cuid())
+  title       String
+  description String        @db.Text
+  iconName    String
+  iconColor   String        @default("#0a83f5")
+  bgColor     String        @default("#fffbeb")
+  imageUrl    String?
+  ctaLink     String?
+  sortOrder   Int           @default(0)
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  claimedPerks ClaimedPerk[]
+
+  @@map("perks")
+}
+
+model ClaimedPerk {
+  id         String    @id @default(cuid())
+  // Either userId (admin/staff) or customerId (customer portal) will be set
+  userId     String?
+  customerId String?
+  perkId     String
+  claimedAt  DateTime  @default(now())
+  status     String    @default("PENDING") // PENDING | APPROVED | USED | EXPIRED
+
+  user     User?     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  customer Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  perk     Perk      @relation(fields: [perkId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, perkId])
+  @@unique([customerId, perkId])
+  @@map("claimed_perks")
+}
+
+// ─── CATEGORY (with image) ────────────────────────────────────────────────────
+
+model PackageCategoryConfig {
+  id          String   @id @default(cuid())
+  slug        String   @unique  // matches PackageCategory enum lowercase
+  label       String
+  description String?
+  imageUrl    String?
+  iconName    String?
+  sortOrder   Int      @default(0)
+  isActive    Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+
+  @@map("package_category_configs")
+}
+
+// ─── SITE SETTINGS ────────────────────────────────────────────────────────────
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+// ─── AI ───────────────────────────────────────────────────────────────────────
+
+model AiProviderConfig {
+  id         String   @id @default(cuid())
+  provider   String   @unique // openai | groq | gemini | openrouter
+  apiKey     String   @db.Text
+  model      String   // e.g. gpt-4o, llama3-70b-8192, gemini-1.5-pro
+  isActive   Boolean  @default(true)
+  isPrimary  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("ai_provider_configs")
+}
+
+model AiPromptTemplate {
+  id          String   @id @default(cuid())
+  key         String   @unique // e.g. package-seo-generate, tour-full-generate
+  name        String
+  description String?
+  systemPrompt String  @db.Text
+  userPrompt  String   @db.Text // supports {{title}}, {{category}}, {{keywords}} etc.
+  outputFormat String  @default("json") // json | markdown | text
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  jobs AiGenerationJob[]
+
+  @@map("ai_prompt_templates")
+}
+
+model AiGenerationJob {
+  id           String   @id @default(cuid())
+  templateKey  String
+  entityType   String   // package | tour | blog | news
+  entityId     String?
+  status       String   @default("PENDING") // PENDING | RUNNING | DONE | FAILED
+  inputData    String   @db.Text // JSON: the vars passed to the prompt
+  outputData   String?  @db.Text // JSON: the raw AI response
+  parsedOutput String?  @db.Text // JSON: parsed & validated output
+  error        String?  @db.Text
+  provider     String?  // which provider was used
+  tokensUsed   Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  createdBy    String?  // userId
+
+  template AiPromptTemplate? @relation(fields: [templateKey], references: [key], onDelete: SetNull)
+  creator  User?             @relation(fields: [createdBy], references: [id], onDelete: SetNull)
+
+  @@index([entityType, entityId])
+  @@index([status])
+  @@map("ai_generation_jobs")
+}
+
+// ─── MEDIA ────────────────────────────────────────────────────────────────────
+
+model Media {
+  id        String   @id @default(cuid())
+  filename  String
+  url       String
+  size      Int?     // bytes
+  mimeType  String?
+  storage   String   @default("local") // local, s3, cloudinary
+  folder    String?
+  altText   String?
+  createdAt DateTime @default(now())
+
+  @@map("media")
+}
+
+// ─── NOTIFICATIONS ────────────────────────────────────────────────────────────
+
+model Notification {
+  id         String               @id @default(cuid())
+  type       NotificationType
+  audience   NotificationAudience
+  title      String
+  body       String
+  link       String?              // href to navigate to on click
+  isRead     Boolean              @default(false)
+  // For admin notifications: userId (null = broadcast to all admins)
+  userId     String?
+  // For customer notifications: customerId
+  customerId String?
+  // Reference to the entity that triggered this
+  entityType String?              // "booking" | "inquiry" | "consultation" etc.
+  entityId   String?
+  createdAt  DateTime             @default(now())
+
+  @@index([audience, isRead])
+  @@index([userId])
+  @@index([customerId])
+  @@map("notifications")
+}

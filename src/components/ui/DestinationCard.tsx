@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { FiSun, FiPackage, FiArrowRight } from 'react-icons/fi'
+import { getTravelImage } from '@/lib/travel-images'
 
 interface DestinationCardProps {
   name: string
@@ -12,64 +14,67 @@ interface DestinationCardProps {
   packageCount?: number
 }
 
-const COST_COLOR: Record<string, string> = {
-  Budget: 'bg-green-50 text-green-800',
-  Moderate: 'bg-blue-50 text-blue-800',
-  Luxury: 'bg-purple-50 text-purple-800',
+const COST_STYLE: Record<string, { bg: string; color: string; dot: string }> = {
+  Budget:   { bg: 'rgba(16,185,129,0.12)', color: '#10b981', dot: '#10b981' },
+  Moderate: { bg: 'rgba(0,127,137,0.12)', color: '#007f89', dot: '#007f89' },
+  Luxury:   { bg: 'rgba(63,143,100,0.12)', color: '#3f8f64', dot: '#3f8f64' },
 }
 
 export default function DestinationCard({
   name,
   slug,
   region,
-  language,
   bestSeason,
   costLevel,
   images,
   packageCount,
 }: DestinationCardProps) {
-  const img = images[0] ?? '/images/placeholder.jpg'
+  const img = images[0] || getTravelImage(name)
+  const cost = COST_STYLE[costLevel] ?? { bg: 'rgba(100,116,139,0.12)', color: '#64748b', dot: '#64748b' }
 
   return (
     <Link
       href={`/destinations/${slug}`}
-      className="block rounded-lg overflow-hidden bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-300"
+      className="group block overflow-hidden rounded-lg border border-[#e5e8e4] bg-white shadow-[0_8px_28px_rgba(16,24,23,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-[#cdd7d1] hover:shadow-[0_24px_50px_rgba(16,24,23,0.14)]"
     >
-      {/* Image */}
-      <div className="relative h-44 w-full overflow-hidden">
+      <div className="relative h-48 overflow-hidden bg-[#edf0ed] sm:h-56">
         <Image
           src={img}
           alt={name}
           fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, 300px"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          sizes="(max-width: 640px) 50vw, 25vw"
         />
-        {/* Overlay for text */}
-        <div className="absolute bottom-0 left-0 w-full bg-black/25 p-3">
-          <h3 className="font-semibold text-white text-base">{name}</h3>
-          <p className="text-xs text-white/80">{region}</p>
-        </div>
-        {/* Package count */}
+
+        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,24,23,0.86),rgba(16,24,23,0.12),rgba(16,24,23,0.02))]" />
+
         {packageCount !== undefined && (
-          <span className="absolute top-3 right-3 bg-gray-800 text-white text-xs font-medium px-2 py-1 rounded">
-            {packageCount} tours
-          </span>
+          <div className="absolute top-3 right-3 flex items-center gap-1 text-[10px] font-black text-white px-2.5 py-1.5 rounded-full backdrop-blur-md border border-white/15 bg-black/[0.38]">
+            <FiPackage size={9} /> {packageCount}
+          </div>
         )}
+
+        <div className="absolute bottom-0 left-0 right-0 p-4">
+          <p className="text-white/[0.62] text-[10px] font-bold uppercase tracking-[0.16em] mb-1">{region}</p>
+          <h3 className="text-white font-black text-xl leading-tight">{name}</h3>
+        </div>
       </div>
 
-      {/* Info section */}
-      <div className="p-3 space-y-1">
-        <div className="flex flex-wrap gap-2">
-          <span
-            className={`text-xs px-2 py-1 rounded font-medium ${COST_COLOR[costLevel] ?? 'bg-gray-100 text-gray-600'}`}
-          >
+      <div className="bg-white px-4 py-3.5">
+        <div className="mb-3 flex items-center justify-between">
+          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#52615d]">
+          <FiSun size={11} style={{ color: '#c99a45' }} />
+          {bestSeason}
+          </div>
+          <span className="text-[10px] font-black px-2.5 py-1 rounded-full flex items-center gap-1"
+            style={{ background: cost.bg, color: cost.color }}>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: cost.dot }} />
             {costLevel}
           </span>
-          <span className="text-xs px-2 py-1 rounded bg-gray-100 text-gray-600">
-            🗣 {language}
-          </span>
         </div>
-        <p className="text-xs text-gray-500">🌤 Best: {bestSeason}</p>
+        <span className="flex items-center gap-1.5 text-xs font-black text-[#007f89] transition group-hover:gap-2.5">
+          Explore destination <FiArrowRight size={11} />
+        </span>
       </div>
     </Link>
   )

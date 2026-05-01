@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import {
   FiStar, FiCheckCircle, FiXCircle, FiAlertCircle, FiInfo,
   FiMapPin, FiFlag, FiUsers, FiPackage, FiMessageSquare,
@@ -29,7 +30,7 @@ export default function PackageTabs({ pkg, stars }: { pkg: any; stars: number })
   })
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
       {/* Tab bar */}
       <div className="flex overflow-x-auto border-b border-gray-100 scrollbar-none">
         {activeTabs.map(t => (
@@ -125,9 +126,11 @@ export default function PackageTabs({ pkg, stars }: { pkg: any; stars: number })
             <h2 className="text-lg font-bold text-gray-800 mb-5">Accommodation</h2>
             <div className="space-y-4">
               {pkg.accommodations?.map((acc: any) => (
-                <div key={acc.id} className="flex gap-4 p-4 border border-gray-100 rounded-xl hover:border-gray-200 transition-colors">
+                <div key={acc.id} className="flex gap-4 p-4 border border-gray-100 rounded-lg hover:border-gray-200 transition-colors">
                   {acc.imageUrl ? (
-                    <img src={acc.imageUrl} alt={acc.name} className="w-24 h-20 object-cover rounded-lg shrink-0" />
+                    <div className="relative w-24 h-20 overflow-hidden rounded-lg shrink-0">
+                      <Image src={acc.imageUrl} alt={acc.name} fill className="object-cover" sizes="96px" />
+                    </div>
                   ) : (
                     <div className="w-24 h-20 rounded-lg shrink-0 flex items-center justify-center bg-gray-50">
                       <MdHotel size={24} className="text-gray-300" />
@@ -273,7 +276,7 @@ export default function PackageTabs({ pkg, stars }: { pkg: any; stars: number })
             {pkg.reviews?.length > 0 ? (
               <div className="space-y-4">
                 {pkg.reviews.map((r: any) => (
-                  <div key={r.id} className="border border-gray-100 rounded-xl p-4">
+                  <div key={r.id} className="border border-gray-100 rounded-lg p-4">
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div>
                         <p className="font-semibold text-gray-800 text-sm">{r.name}</p>
@@ -302,7 +305,7 @@ export default function PackageTabs({ pkg, stars }: { pkg: any; stars: number })
 
 function Fact({ icon, label, value, positive }: { icon: React.ReactNode; label: string; value: string; positive?: boolean }) {
   return (
-    <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-xl">
+    <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
       {icon}
       <div>
         <p className="text-[10px] text-gray-400 leading-none">{label}</p>
@@ -320,7 +323,7 @@ function ItineraryDay({ day, last }: { day: any; last: boolean }) {
       <div className="absolute left-3.5 top-4 w-3 h-3 rounded-full border-2 z-10"
         style={{ borderColor: 'var(--brand)', background: open ? 'var(--brand)' : '#fff' }} />
 
-      <div className="border border-gray-100 rounded-xl overflow-hidden hover:border-gray-200 transition-colors">
+      <div className="border border-gray-100 rounded-lg overflow-hidden hover:border-gray-200 transition-colors">
         <button
           type="button"
           onClick={() => setOpen(!open)}
@@ -347,7 +350,9 @@ function ItineraryDay({ day, last }: { day: any; last: boolean }) {
         {open && (
           <div className="px-4 pb-4 border-t border-gray-100">
             {day.imageUrl && (
-              <img src={day.imageUrl} alt={day.title} className="w-full h-32 object-cover rounded-lg mt-3 mb-3" />
+              <div className="relative mt-3 mb-3 h-32 w-full overflow-hidden rounded-lg">
+                <Image src={day.imageUrl} alt={day.title} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 720px" />
+              </div>
             )}
             <p className="text-sm text-gray-600 leading-relaxed mt-3">{day.description}</p>
             {day.activities?.length > 0 && (
@@ -386,7 +391,7 @@ function InfoBlock({ icon, title, color, children }: {
   const bg = { amber: '#fffbeb', teal: '#f0fdf9', indigo: '#fff7ed', red: '#fef2f2', blue: '#eff6ff' }[color]
   const border = { amber: '#fde68a', teal: '#99f6e4', indigo: '#fed7aa', red: '#fecaca', blue: '#bfdbfe' }[color]
   return (
-    <div className="rounded-xl p-4 border" style={{ background: bg, borderColor: border }}>
+    <div className="rounded-lg p-4 border" style={{ background: bg, borderColor: border }}>
       <h3 className="text-sm font-bold text-gray-800 mb-2 flex items-center gap-2">{icon}{title}</h3>
       {children}
     </div>

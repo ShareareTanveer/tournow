@@ -117,7 +117,10 @@ export default function DestinationForm({ destination }: { destination?: any }) 
             <Input
               required
               value={form.name}
-              onChange={v => set('name', v) || (!isEdit && set('slug', autoSlug(v)))}
+              onChange={v => {
+                set('name', v)
+                if (!isEdit) set('slug', autoSlug(v))
+              }}
               placeholder="e.g. Australia"
             />
           </div>

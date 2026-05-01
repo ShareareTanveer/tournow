@@ -114,24 +114,24 @@ export default async function PackageDetailPage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#fbfaf7]">
       <Script id="schema-package" type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
       <Script id="schema-breadcrumb" type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema) }} />
 
       {/* ── Breadcrumb ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-2">
-        <nav className="flex items-center gap-1 text-xs text-gray-400 flex-wrap">
-          <Link href="/" className="hover:text-gray-600">Home</Link>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-2">
+        <nav className="flex items-center gap-1 text-xs text-[#8a9691] flex-wrap">
+          <Link href="/" className="hover:text-[#101817]">Home</Link>
           <FiArrowRight size={10} />
-          <Link href="/packages-from-sri-lanka/family" className="hover:text-gray-600">Packages</Link>
+          <Link href="/packages-from-sri-lanka/family" className="hover:text-[#101817]">Packages</Link>
           <FiArrowRight size={10} />
           {pkg.destination && (
             <>
-              <Link href={`/destinations/${pkg.destination.slug}`} className="hover:text-gray-600">{pkg.destination.name}</Link>
+              <Link href={`/destinations/${pkg.destination.slug}`} className="hover:text-[#101817]">{pkg.destination.name}</Link>
               <FiArrowRight size={10} />
             </>
           )}
-          <span className="text-gray-600 truncate max-w-[200px]">{pkg.title}</span>
+          <span className="text-[#52615d] truncate max-w-[200px]">{pkg.title}</span>
         </nav>
       </div>
 
@@ -156,17 +156,17 @@ export default async function PackageDetailPage({ params }: Props) {
           )}
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 leading-tight">{pkg.title}</h1>
+        <h1 className="text-3xl sm:text-5xl font-black text-[#101817] mb-3 leading-tight">{pkg.title}</h1>
 
         {/* Rating + meta row */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-gray-500">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-[#52615d]">
           {avgRating && (
-            <span className="flex items-center gap-1 font-semibold text-gray-800">
+            <span className="flex items-center gap-1 font-semibold text-[#101817]">
               {Array.from({ length: 5 }).map((_, i) => (
                 <FiStar key={i} size={13} className={i < Math.round(Number(avgRating)) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200 fill-gray-200'} />
               ))}
               <span className="ml-1">{avgRating}</span>
-              <span className="text-gray-400 font-normal text-xs">({reviewCount} reviews)</span>
+              <span className="text-[#8a9691] font-normal text-xs">({reviewCount} reviews)</span>
             </span>
           )}
           {pkg.destination && (
@@ -202,19 +202,19 @@ export default async function PackageDetailPage({ params }: Props) {
           <div className="lg:sticky lg:top-20 space-y-4">
 
             {/* Price + Book card */}
-            <div className="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-lg shadow-[0_12px_40px_rgba(16,24,23,0.10)] border border-[#e5e8e4] overflow-hidden">
 
-              <div className="p-5 border-b border-gray-100">
-                <p className="text-xs text-gray-400 mb-0.5">From</p>
+              <div className="p-5 border-b border-[#edf0ed]">
+                <p className="text-xs text-[#8a9691] mb-0.5">From</p>
                 <div className="flex items-end gap-2 flex-wrap">
-                  <span className="text-3xl font-black leading-none" style={{ color: 'var(--brand)' }}>
+                  <span className="text-3xl font-black leading-none text-[#007f89]">
                     LKR {pkg.price?.toLocaleString()}
                   </span>
                   {pkg.oldPrice && (
-                    <span className="text-sm text-gray-400 line-through mb-0.5">LKR {pkg.oldPrice?.toLocaleString()}</span>
+                    <span className="text-sm text-[#8a9691] line-through mb-0.5">LKR {pkg.oldPrice?.toLocaleString()}</span>
                   )}
                 </div>
-                {pkg.paxType && <p className="text-xs text-gray-400 mt-0.5">{pkg.paxType}</p>}
+                {pkg.paxType && <p className="text-xs text-[#8a9691] mt-0.5">{pkg.paxType}</p>}
 
                 {/* Quick stats */}
                 <div className="grid grid-cols-3 gap-2 mt-4">
@@ -223,16 +223,16 @@ export default async function PackageDetailPage({ params }: Props) {
                     { label: 'Nights', val: pkg.nights },
                     { label: 'Stars', val: `${stars}★` },
                   ].map((s) => (
-                    <div key={s.label} className="text-center bg-gray-50 rounded-xl py-2">
-                      <p className="font-bold text-gray-800">{s.val}</p>
-                      <p className="text-[10px] text-gray-400">{s.label}</p>
+                    <div key={s.label} className="text-center bg-[#f4f1ea] rounded-lg py-2">
+                      <p className="font-bold text-[#101817]">{s.val}</p>
+                      <p className="text-[10px] text-[#8a9691]">{s.label}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Food / Transport */}
-              <div className="px-5 py-3 border-b border-gray-100 flex gap-4">
+              <div className="px-5 py-3 border-b border-[#edf0ed] flex gap-4">
                 <span className={`flex items-center gap-1.5 text-xs font-medium ${pkg.isFoodIncluded ? 'text-green-600' : 'text-gray-300'}`}>
                   {pkg.isFoodIncluded ? <FiCheckCircle size={13} /> : <FiXCircle size={13} />} Food
                 </span>
@@ -243,8 +243,8 @@ export default async function PackageDetailPage({ params }: Props) {
 
               {/* Cancellation policy from DB */}
               {pkg.cancellationPolicy && (
-                <div className="px-5 py-3 border-b border-gray-100">
-                  <div className="flex items-start gap-2 text-xs text-gray-600">
+                <div className="px-5 py-3 border-b border-[#edf0ed]">
+                  <div className="flex items-start gap-2 text-xs text-[#52615d]">
                     <FiCheckCircle size={13} className="text-green-500 mt-0.5 shrink-0" />
                     <span>{pkg.cancellationPolicy}</span>
                   </div>
@@ -280,19 +280,18 @@ export default async function PackageDetailPage({ params }: Props) {
             )}
 
             {/* Contact card */}
-            <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-200">
-              <p className="text-sm font-semibold text-gray-800 mb-1 flex items-center gap-2">
+            <div className="bg-white rounded-lg p-5 shadow-sm border border-[#e5e8e4]">
+              <p className="text-sm font-bold text-[#101817] mb-1 flex items-center gap-2">
                 <FiShield size={14} style={{ color: 'var(--teal)' }} /> Need Help?
               </p>
-              <p className="text-xs text-gray-500 mb-3">Travel experts available 8 AM – 10 PM daily.</p>
+              <p className="text-xs text-[#52615d] mb-3">Travel experts available 8 AM - 10 PM daily.</p>
               <div className="space-y-2">
                 <a href="tel:+94704545455"
-                  className="flex items-center justify-center gap-2 text-white text-sm font-semibold py-2.5 rounded-xl transition-all hover:opacity-90"
-                  style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
+                  className="flex items-center justify-center gap-2 text-white text-sm font-black py-2.5 rounded-lg transition-all hover:bg-[#063c43] bg-[#007f89]">
                   <FiPhone size={14} /> +94 70 454 5455
                 </a>
                 <a href="https://wa.me/94704545455" target="_blank" rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 text-white text-sm font-semibold py-2.5 rounded-xl bg-green-500 hover:bg-green-600 transition-colors">
+                  className="flex items-center justify-center gap-2 text-white text-sm font-black py-2.5 rounded-lg bg-[#25d366] hover:bg-[#1fb85a] transition-colors">
                   <FaWhatsapp size={15} /> WhatsApp Us
                 </a>
               </div>
@@ -300,26 +299,26 @@ export default async function PackageDetailPage({ params }: Props) {
 
             {/* Languages */}
             {(pkg.hostLanguage?.length > 0 || pkg.audioGuideLanguage?.length > 0) && (
-              <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-200 space-y-3">
-                <p className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+              <div className="bg-white rounded-lg p-5 shadow-sm border border-[#e5e8e4] space-y-3">
+                <p className="text-sm font-bold text-[#101817] flex items-center gap-2">
                   <FiGlobe size={14} style={{ color: 'var(--teal)' }} /> Languages
                 </p>
                 {pkg.hostLanguage?.length > 0 && (
                   <div>
-                    <p className="text-xs text-gray-400 mb-1">Host / Guide</p>
+                    <p className="text-xs text-[#8a9691] mb-1">Host / Guide</p>
                     <div className="flex flex-wrap gap-1">
                       {pkg.hostLanguage.map((l: string) => (
-                        <span key={l} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{l}</span>
+                        <span key={l} className="text-xs bg-[#f4f1ea] text-[#52615d] px-2 py-0.5 rounded-full">{l}</span>
                       ))}
                     </div>
                   </div>
                 )}
                 {pkg.audioGuideLanguage?.length > 0 && (
                   <div>
-                    <p className="text-xs text-gray-400 mb-1">Audio Guide</p>
+                    <p className="text-xs text-[#8a9691] mb-1">Audio Guide</p>
                     <div className="flex flex-wrap gap-1">
                       {pkg.audioGuideLanguage.map((l: string) => (
-                        <span key={l} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{l}</span>
+                        <span key={l} className="text-xs bg-[#f4f1ea] text-[#52615d] px-2 py-0.5 rounded-full">{l}</span>
                       ))}
                     </div>
                   </div>

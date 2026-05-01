@@ -36,12 +36,12 @@ export default function ReviewSubmitForm() {
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">Your Name *</label>
           <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)]" placeholder="Your name" />
+            className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)]" placeholder="Your name" />
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">Location</label>
           <input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })}
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)]" placeholder="Colombo, Sri Lanka" />
+            className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)]" placeholder="Colombo, Sri Lanka" />
         </div>
       </div>
 
@@ -61,11 +61,11 @@ export default function ReviewSubmitForm() {
         <label className="block text-xs font-medium text-gray-700 mb-1">Your Review *</label>
         <textarea required rows={4} value={form.body} onChange={(e) => setForm({ ...form, body: e.target.value })}
           placeholder="Tell us about your experience..."
-          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] resize-none" />
+          className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] resize-none" />
       </div>
 
       <button type="submit" disabled={loading}
-        className="w-full brand-gradient text-white font-semibold py-3 rounded-xl hover:opacity-90 disabled:opacity-60">
+        className="w-full brand-gradient text-white font-semibold py-3 rounded-lg hover:opacity-90 disabled:opacity-60">
         {loading ? 'Submitting...' : 'Submit Review'}
       </button>
     </form>

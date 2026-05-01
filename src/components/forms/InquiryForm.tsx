@@ -51,7 +51,7 @@ export default function InquiryForm({ packageId, packageTitle }: InquiryFormProp
 
   if (success) {
     return (
-      <div className="bg-green-50 border border-green-200 rounded-2xl p-6 text-center">
+      <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
         <div className="text-4xl mb-3">✅</div>
         <h3 className="font-bold text-green-800 text-lg mb-2">Inquiry Received!</h3>
         <p className="text-green-700 text-sm">Our travel expert will contact you within a few hours. You can also reach us on WhatsApp for faster response.</p>
@@ -63,7 +63,7 @@ export default function InquiryForm({ packageId, packageTitle }: InquiryFormProp
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {packageTitle && (
-        <div className="bg-[var(--brand-light)] rounded-xl p-3 text-sm text-gray-700">
+        <div className="bg-[var(--brand-light)] rounded-lg p-3 text-sm text-gray-700">
           <span className="font-medium">Inquiring about:</span> {packageTitle}
         </div>
       )}
@@ -76,7 +76,7 @@ export default function InquiryForm({ packageId, packageTitle }: InquiryFormProp
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder="Your name"
             disabled={!!customer}
-            className={`w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors ${customer ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''}`}
+            className={`w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors ${customer ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''}`}
           />
         </div>
         <div>
@@ -86,7 +86,7 @@ export default function InquiryForm({ packageId, packageTitle }: InquiryFormProp
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             placeholder="your@email.com"
             disabled={!!customer}
-            className={`w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors ${customer ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''}`}
+            className={`w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors ${customer ? 'bg-gray-50 text-gray-600 cursor-not-allowed' : ''}`}
           />
         </div>
         <div>
@@ -95,7 +95,7 @@ export default function InquiryForm({ packageId, packageTitle }: InquiryFormProp
             type="tel" value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             placeholder="+94 70 xxx xxxx"
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors"
+            className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors"
           />
         </div>
         <div>
@@ -103,7 +103,7 @@ export default function InquiryForm({ packageId, packageTitle }: InquiryFormProp
           <input
             type="date" value={form.travelDate}
             onChange={(e) => setForm({ ...form, travelDate: e.target.value })}
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors"
+            className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors"
           />
         </div>
       </div>
@@ -113,7 +113,7 @@ export default function InquiryForm({ packageId, packageTitle }: InquiryFormProp
         <select
           value={form.paxCount}
           onChange={(e) => setForm({ ...form, paxCount: parseInt(e.target.value) })}
-          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors"
+          className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors"
         >
           {[1,2,3,4,5,6,7,8,9,10].map((n) => (
             <option key={n} value={n}>{n} {n === 1 ? 'person' : 'people'}</option>
@@ -128,7 +128,7 @@ export default function InquiryForm({ packageId, packageTitle }: InquiryFormProp
           required rows={4} value={form.message}
           onChange={(e) => setForm({ ...form, message: e.target.value })}
           placeholder="Tell us about your dream holiday, any special requirements..."
-          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors resize-none"
+          className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] transition-colors resize-none"
         />
       </div>
 
@@ -137,7 +137,7 @@ export default function InquiryForm({ packageId, packageTitle }: InquiryFormProp
       <button
         type="submit"
         disabled={loading}
-        className="w-full brand-gradient text-white font-semibold py-3.5 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-60"
+        className="w-full brand-gradient text-white font-semibold py-3.5 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-60"
       >
         {loading ? 'Sending...' : 'Send Inquiry'}
       </button>

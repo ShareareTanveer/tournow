@@ -60,12 +60,12 @@ export default function FilterBar() {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
+    <div className="bg-white rounded-lg shadow-[0_8px_30px_rgba(16,24,23,0.06)] border border-[#e5e8e4] p-5">
       <div className="flex flex-col sm:flex-row gap-3">
         <select
           value={duration}
           onChange={(e) => setDuration(e.target.value)}
-          className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[var(--brand)] text-gray-700"
+          className="flex-1 border border-[#d8ded9] bg-[#fbfaf7] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#007f89] focus:ring-4 focus:ring-[#007f89]/10 text-[#17211f]"
         >
           {DURATIONS.map((d) => <option key={d.value} value={d.value}>{d.label}</option>)}
         </select>
@@ -73,7 +73,7 @@ export default function FilterBar() {
         <select
           value={budget}
           onChange={(e) => setBudget(e.target.value)}
-          className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[var(--brand)] text-gray-700"
+          className="flex-1 border border-[#d8ded9] bg-[#fbfaf7] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#007f89] focus:ring-4 focus:ring-[#007f89]/10 text-[#17211f]"
         >
           {BUDGETS.map((b) => <option key={b.value} value={b.value}>{b.label}</option>)}
         </select>
@@ -81,7 +81,7 @@ export default function FilterBar() {
         <select
           value={starRating}
           onChange={(e) => setStarRating(e.target.value)}
-          className="flex-1 border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[var(--brand)] text-gray-700"
+          className="flex-1 border border-[#d8ded9] bg-[#fbfaf7] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#007f89] focus:ring-4 focus:ring-[#007f89]/10 text-[#17211f]"
         >
           {STARS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
         </select>
@@ -89,14 +89,14 @@ export default function FilterBar() {
         <button
           onClick={applyFilters}
           disabled={isPending}
-          className="brand-gradient text-white font-semibold px-6 py-2.5 rounded-xl hover:opacity-90 transition-opacity text-sm whitespace-nowrap"
+          className="bg-[#007f89] text-white font-black px-6 py-2.5 rounded-lg hover:bg-[#063c43] transition-colors text-sm whitespace-nowrap disabled:opacity-60"
         >
           {isPending ? 'Filtering…' : 'Apply Filters'}
         </button>
 
         <button
           onClick={clearFilters}
-          className="text-sm text-gray-500 hover:text-[var(--brand)] px-4 py-2.5 rounded-xl border border-gray-200 hover:border-[var(--brand)] transition-colors whitespace-nowrap"
+          className="text-sm font-bold text-[#52615d] hover:text-[#007f89] px-4 py-2.5 rounded-lg border border-[#d8ded9] hover:border-[#007f89] transition-colors whitespace-nowrap"
         >
           Clear
         </button>

@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { FiMapPin, FiMoon, FiCalendar, FiStar } from 'react-icons/fi'
+import { FiMoon, FiCalendar, FiStar, FiArrowRight, FiMapPin } from 'react-icons/fi'
 import { useCurrency } from '@/lib/useCurrency'
+import { getTravelImage } from '@/lib/travel-images'
 
 interface PackageCardProps {
   title: string
@@ -22,6 +23,16 @@ interface PackageCardProps {
 
 const STAR_MAP: Record<string, number> = { THREE: 3, FOUR: 4, FIVE: 5 }
 
+const CATEGORY_COLORS: Record<string, string> = {
+  FAMILY:    '#007f89',
+  HONEYMOON: '#b85c38',
+  SOLO:      '#3f8f64',
+  SQUAD:     '#2f6f9f',
+  CORPORATE: '#64748b',
+  SPECIAL:   '#c99a45',
+  HOLIDAY:   '#5f4b8b',
+}
+
 export default function PackageCard({
   title,
   slug,
@@ -33,117 +44,90 @@ export default function PackageCard({
   category,
   images,
   destination,
-  paxType
+  isFeatured,
+  paxType,
 }: PackageCardProps) {
   const { format } = useCurrency()
   const stars = STAR_MAP[starRating] ?? 4
-  const img = images[0]
+  const img = images[0] || getTravelImage(destination?.name ?? category)
+  const catColor = CATEGORY_COLORS[category ?? ''] ?? '#007f89'
 
   return (
     <Link
       href={`/packages/${slug}`}
-      className="group block rounded-3xl overflow-hidden bg-white shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-1 border border-gray-100"
+      className="group block overflow-hidden rounded-lg border border-[#e5e8e4] bg-white shadow-[0_8px_30px_rgba(16,24,23,0.06)] transition duration-300 hover:-translate-y-1 hover:border-[#cdd7d1] hover:shadow-[0_24px_54px_rgba(16,24,23,0.14)]"
     >
-      {/* Image */}
-      <div className="relative h-64 overflow-hidden">
-        {img ? (
-          <Image
-            src={img}
-            alt={title}
-            fill
-            className="object-cover group-hover:scale-110 transition-transform duration-700"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-          />
-        ) : (
-          <div
-            className="w-full h-full flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, var(--brand-muted), #f0fdf9)' }}
-          >
-            <span className="text-5xl font-black opacity-10" style={{ color: 'var(--brand)' }}>
-              {title[0]}
+      <div className="relative h-60 overflow-hidden bg-[#edf0ed]">
+        <Image
+          src={img}
+          alt={title}
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+        />
+
+        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,24,23,0.82),rgba(16,24,23,0.12),rgba(16,24,23,0.04))]" />
+
+        {isFeatured && (
+          <div className="absolute top-3 left-3">
+            <span className="text-[10px] font-black uppercase tracking-[0.14em] px-2.5 py-1 rounded-full text-[#101817] bg-[#f0d492]">
+              Top Rated
             </span>
           </div>
         )}
 
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-
-        {/* Category */}
-        {category && (
-  <span
-    className="absolute top-4 left-4 text-white text-xs font-medium px-3 py-1 rounded-full bg-black/40 backdrop-blur-sm"
-  >
-    {category}
-  </span>
-)}
-
-        {/* Stars */}
-        <div className="absolute top-4 right-4 flex gap-0.5 bg-black/30 backdrop-blur px-2 py-1 rounded-full">
+        <div className="absolute top-3 right-3 flex gap-0.5 rounded-full border border-white/15 bg-black/[0.38] px-2.5 py-1.5 backdrop-blur-md">
           {Array.from({ length: stars }).map((_, i) => (
-            <FiStar key={i} size={11} className="text-yellow-400 fill-yellow-400" />
+            <FiStar key={i} size={10} className="text-yellow-400 fill-yellow-400" />
           ))}
         </div>
 
-        {/* Floating Bottom Info */}
-        <div className="absolute bottom-0 left-0 w-full p-4">
+        <div className="absolute bottom-0 left-0 right-0 p-4">
           {destination && (
-            <p className="text-xs text-white/80 flex items-center gap-1 mb-1">
-              <FiMapPin size={12} />
+            <p className="text-white/70 text-[11px] flex items-center gap-1 mb-1">
+              <FiMapPin size={10} />
               {destination.name}, {destination.region}
             </p>
           )}
-
-          <h3 className="text-white font-semibold text-sm leading-snug line-clamp-2">
-            {title}
-          </h3>
+          <h3 className="text-white font-black text-lg leading-snug line-clamp-2">{title}</h3>
         </div>
       </div>
 
-      {/* Content */}
       <div className="p-4">
-
-        {/* Trip Info */}
-        <div className="flex items-center gap-4 text-xs text-gray-500 mb-4">
-          <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md">
-            <FiMoon size={12} /> {nights} Nights
+        <div className="flex items-center gap-2 mb-4">
+          <span className="flex items-center gap-1 text-[11px] font-bold text-[#52615d] bg-[#f4f1ea] px-2.5 py-1.5 rounded-full">
+            <FiMoon size={10} /> {nights}N
           </span>
-          <span className="flex items-center gap-1 bg-gray-100 px-2 py-1 rounded-md">
-            <FiCalendar size={12} /> {duration} Days
+          <span className="flex items-center gap-1 text-[11px] font-bold text-[#52615d] bg-[#f4f1ea] px-2.5 py-1.5 rounded-full">
+            <FiCalendar size={10} /> {duration}D
           </span>
+          {category && (
+            <span className="text-[10px] font-black px-2.5 py-1.5 rounded-full capitalize"
+              style={{ background: `${catColor}15`, color: catColor }}>
+              {category.toLowerCase()}
+            </span>
+          )}
         </div>
 
-        {/* Price + CTA */}
         <div className="flex items-end justify-between">
           <div>
-            <span className="text-[10px] text-gray-400">Starting from</span>
-
-            <p className="text-lg font-extrabold leading-tight" style={{ color: 'var(--brand)' }}>
+            <p className="text-[10px] text-[#8a9691] font-bold uppercase tracking-[0.14em] mb-1">From</p>
+            <p className="text-xl font-black leading-none" style={{ color: '#007f89' }}>
               {format(price)}
             </p>
-
             {oldPrice && (
-              <p className="text-[11px] text-gray-400 line-through">
+              <p className="text-[11px] text-[#9ca7a2] line-through mt-0.5">
                 {format(oldPrice)}
               </p>
             )}
-
             {paxType && (
-              <span className="text-[10px] text-gray-400 block">
-                {paxType}
-              </span>
+              <p className="text-[10px] text-[#8a9691] mt-0.5">{paxType}</p>
             )}
           </div>
 
-          {/* CTA */}
-        <span
-  className="text-xs font-medium px-4 py-2 rounded-full border transition-all duration-200 group-hover:bg-gray-100"
-  style={{
-    color: 'var(--brand)',
-    borderColor: 'var(--brand)',
-  }}
->
-  View Package
-</span>
+          <span className="flex items-center gap-1.5 rounded-lg border border-[#007f89] px-4 py-2 text-xs font-black text-[#007f89] transition-all duration-300 group-hover:bg-[#007f89] group-hover:text-white">
+            View <FiArrowRight size={11} />
+          </span>
         </div>
       </div>
     </Link>

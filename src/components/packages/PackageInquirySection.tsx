@@ -18,14 +18,14 @@ export default function PackageInquirySection({
     <>
       <div className="px-5 pb-5">
         <div className="relative flex items-center gap-1 my-1">
-          <div className="flex-1 border-t border-gray-100" />
-          <div className="flex-1 border-t border-gray-100" />
+          <div className="flex-1 border-t border-[#edf0ed]" />
+          <div className="flex-1 border-t border-[#edf0ed]" />
         </div>
         <button
           onClick={() => setModalOpen(true)}
-          className="w-full py-3 rounded-xl font-semibold text-sm transition-all duration-200 
-             border-brand text-brand border
-             hover:opacity-90 hover:shadow-md 
+          className="w-full py-3 rounded-lg font-black text-sm transition-all duration-200 
+             border-[#007f89] text-[#007f89] border
+             hover:bg-[#edf8f6] hover:shadow-md 
              active:scale-[0.98]"
         >
           Send Inquiry

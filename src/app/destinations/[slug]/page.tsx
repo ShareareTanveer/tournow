@@ -2,9 +2,11 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Script from 'next/script'
+import Image from 'next/image'
 import PackageCard from '@/components/ui/PackageCard'
 import TourCard from '@/components/ui/TourCard'
 import { buildMetadata, jsonLd, BASE_URL } from '@/lib/seo'
+import { getTravelImage } from '@/lib/travel-images'
 import {
   FiMapPin, FiSun, FiMessageSquare, FiDollarSign,
   FiChevronRight, FiPhone, FiCalendar, FiStar,
@@ -34,11 +36,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const COST_COLOR: Record<string, string> = {
-  Budget:  'bg-green-100 text-green-700',
-  Economy: 'bg-lime-100 text-lime-700',
-  Comfort: 'bg-blue-100 text-blue-700',
-  Premium: 'bg-violet-100 text-violet-700',
-  Luxury:  'bg-amber-100 text-amber-700',
+  Budget:  'bg-[#edf8f6] text-[#3f8f64] border-[#d8eee9]',
+  Economy: 'bg-[#edf8f6] text-[#007f89] border-[#d8eee9]',
+  Comfort: 'bg-[#eef4f5] text-[#2f6f9f] border-[#d9e7ea]',
+  Premium: 'bg-[#f0eef7] text-[#5f4b8b] border-[#e2ddf0]',
+  Luxury:  'bg-[#f9f1df] text-[#b85c38] border-[#eeddbb]',
 }
 
 export default async function DestinationDetailPage({ params }: Props) {
@@ -46,7 +48,7 @@ export default async function DestinationDetailPage({ params }: Props) {
   const dest = await getDestination(slug)
   if (!dest) notFound()
 
-  const heroImage = dest.images?.[0] ?? dest.imageUrl
+  const heroImage = dest.images?.[0] ?? dest.imageUrl ?? getTravelImage(dest.name)
   const hasPackages = dest.packages?.length > 0
   const hasTours    = dest.tours?.length > 0
 
@@ -72,22 +74,17 @@ export default async function DestinationDetailPage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#fbfaf7]">
       <Script id="schema-destination"  type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
       <Script id="schema-breadcrumb"   type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbSchema) }} />
 
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <div className="relative h-[60vh] min-h-[420px] overflow-hidden">
-        {heroImage ? (
-          <img src={heroImage} alt={dest.name} className="absolute inset-0 w-full h-full object-cover" />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-teal-900" />
-        )}
-        {/* layered overlays */}
+      <div className="relative h-[60vh] min-h-[460px] overflow-hidden">
+        <Image src={heroImage} alt={dest.name} fill priority className="object-cover" sizes="100vw" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
 
-        <div className="relative z-10 h-full flex flex-col justify-end pb-12 px-4">
+        <div className="relative z-10 h-full flex flex-col justify-end pb-12 px-4 pt-28">
           <div className="max-w-7xl mx-auto w-full">
             {/* Breadcrumb */}
             <nav className="flex items-center gap-1.5 text-white/60 text-xs mb-4 flex-wrap">
@@ -143,7 +140,7 @@ export default async function DestinationDetailPage({ params }: Props) {
       </div>
 
       {/* ── QUICK INFO BAR ────────────────────────────────────────────────── */}
-      <div className="bg-white border-b border-gray-200 shadow-sm">
+      <div className="bg-white border-b border-[#e5e8e4] shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center gap-0 overflow-x-auto scrollbar-hide divide-x divide-gray-100">
             {[
@@ -155,8 +152,8 @@ export default async function DestinationDetailPage({ params }: Props) {
               <div key={i} className="flex items-center gap-2.5 px-6 py-4 shrink-0">
                 <span className="text-gray-400">{item.icon}</span>
                 <div>
-                  <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide leading-none">{item.label}</p>
-                  <p className="text-sm font-bold text-gray-800 mt-0.5">{item.val}</p>
+                  <p className="text-[10px] text-[#8a9691] font-semibold uppercase tracking-wide leading-none">{item.label}</p>
+                  <p className="text-sm font-bold text-[#101817] mt-0.5">{item.val}</p>
                 </div>
               </div>
             ))}
@@ -165,7 +162,7 @@ export default async function DestinationDetailPage({ params }: Props) {
             <div className="ml-auto px-6 py-3 shrink-0">
               <Link
                 href="/consultation"
-                className="flex items-center gap-2 brand-gradient text-white text-sm font-bold px-5 py-2.5 rounded-xl hover:opacity-90 transition-opacity whitespace-nowrap shadow-sm"
+                className="flex items-center gap-2 bg-[#007f89] text-white text-sm font-black px-5 py-2.5 rounded-lg hover:bg-[#063c43] transition-colors whitespace-nowrap shadow-sm"
               >
                 <FiPhone size={13} /> Book Free Consultation
               </Link>
@@ -174,7 +171,7 @@ export default async function DestinationDetailPage({ params }: Props) {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-12 space-y-16">
+      <div className="max-w-7xl mx-auto px-4 py-12 space-y-16 sm:px-6">
 
         {/* ── ABOUT ─────────────────────────────────────────────────────────── */}
         {dest.description && (
@@ -182,8 +179,8 @@ export default async function DestinationDetailPage({ params }: Props) {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2">
                 <SectionHeading>About {dest.name}</SectionHeading>
-                <div className="bg-white rounded-2xl p-7 border border-gray-100 shadow-sm">
-                  <p className="text-gray-600 leading-relaxed text-[15px]">{dest.description}</p>
+                <div className="bg-white rounded-lg p-7 border border-[#e5e8e4] shadow-sm">
+                  <p className="text-[#52615d] leading-relaxed text-[15px]">{dest.description}</p>
 
                   <div className="mt-6 pt-6 border-t border-gray-100 flex flex-wrap gap-3">
                     {dest.region && (
@@ -204,31 +201,30 @@ export default async function DestinationDetailPage({ params }: Props) {
 
               {/* Sticky CTA sidebar card */}
               <div className="space-y-4">
-                <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+                <div className="bg-white rounded-lg border border-[#e5e8e4] shadow-sm overflow-hidden">
                   {heroImage && (
-                    <div className="h-36 overflow-hidden">
-                      <img src={heroImage} alt={dest.name} className="w-full h-full object-cover" />
+                    <div className="relative h-36 overflow-hidden">
+                      <Image src={heroImage} alt={dest.name} fill className="object-cover" sizes="(max-width: 1024px) 100vw, 360px" />
                     </div>
                   )}
                   <div className="p-5">
-                    <p className="font-bold text-gray-900 text-base mb-1">Plan a trip to {dest.name}</p>
-                    <p className="text-sm text-gray-500 mb-4 leading-relaxed">Get a personalised package from our travel experts — tailored to your budget and dates.</p>
-                    <Link href="/consultation" className="block text-center brand-gradient text-white text-sm font-bold py-3 rounded-xl hover:opacity-90 transition-opacity shadow-sm">
+                    <p className="font-bold text-[#101817] text-base mb-1">Plan a trip to {dest.name}</p>
+                    <p className="text-sm text-[#52615d] mb-4 leading-relaxed">Get a personalised package from our travel experts, tailored to your budget and dates.</p>
+                    <Link href="/consultation" className="block text-center bg-[#007f89] text-white text-sm font-black py-3 rounded-lg hover:bg-[#063c43] transition-colors shadow-sm">
                       Book Free Consultation
                     </Link>
-                    <a href="tel:+94704545455" className="mt-2 flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-gray-800 transition-colors py-2">
+                    <a href="tel:+94704545455" className="mt-2 flex items-center justify-center gap-2 text-sm text-[#52615d] hover:text-[#101817] transition-colors py-2">
                       <FiPhone size={13} /> +94 70 454 5455
                     </a>
                   </div>
                 </div>
 
-                {/* Why book with us */}
-                <div className="bg-amber-50 border border-amber-100 rounded-2xl p-5">
-                  <p className="text-xs font-bold text-amber-700 uppercase tracking-wide mb-3">Why Book With Us</p>
+                <div className="bg-[#f4f1ea] border border-[#e5ded1] rounded-lg p-5">
+                  <p className="text-xs font-bold text-[#b85c38] uppercase tracking-wide mb-3">Why Book With Us</p>
                   <ul className="space-y-2">
                     {['Best price guarantee', 'Free itinerary planning', 'Expert local knowledge', '24/7 travel support'].map(item => (
-                      <li key={item} className="flex items-center gap-2 text-sm text-gray-700">
-                        <FiCheckCircle size={13} className="text-amber-500 shrink-0" /> {item}
+                      <li key={item} className="flex items-center gap-2 text-sm text-[#52615d]">
+                        <FiCheckCircle size={13} className="text-[#c99a45] shrink-0" /> {item}
                       </li>
                     ))}
                   </ul>
@@ -246,7 +242,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                 <SectionHeading>Packages to {dest.name}</SectionHeading>
                 <p className="text-sm text-gray-500 mt-1">{dest.packages.length} handpicked packages to choose from</p>
               </div>
-              <Link href={`/packages?destination=${slug}`} className="hidden sm:flex items-center gap-1.5 text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+              <Link href={`/packages?destination=${slug}`} className="hidden sm:flex items-center gap-1.5 text-sm font-bold text-[#007f89] hover:text-[#063c43] transition-colors">
                 View all <FiArrowRight size={14} />
               </Link>
             </div>
@@ -277,9 +273,9 @@ export default async function DestinationDetailPage({ params }: Props) {
 
         {/* ── BOTTOM CTA BANNER ─────────────────────────────────────────────── */}
         <section>
-          <div className="relative rounded-3xl overflow-hidden">
+          <div className="relative rounded-lg overflow-hidden">
             {heroImage && (
-              <img src={heroImage} alt={dest.name} className="absolute inset-0 w-full h-full object-cover" />
+              <Image src={heroImage} alt={dest.name} fill className="object-cover" sizes="100vw" />
             )}
             <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/30" />
             <div className="relative z-10 px-8 py-14 sm:py-16 max-w-2xl">
@@ -291,11 +287,11 @@ export default async function DestinationDetailPage({ params }: Props) {
                 Let our experts craft the perfect itinerary for you. Free consultation, best prices, and unforgettable memories.
               </p>
               <div className="flex flex-wrap gap-3">
-                <Link href="/consultation" className="flex items-center gap-2 brand-gradient text-white font-bold px-7 py-3.5 rounded-xl hover:opacity-90 transition-opacity shadow-lg">
+                <Link href="/consultation" className="flex items-center gap-2 bg-[#007f89] text-white font-black px-7 py-3.5 rounded-lg hover:bg-[#063c43] transition-colors shadow-lg">
                   <FiPhone size={15} /> Book Free Consultation
                 </Link>
                 {hasPackages && (
-                  <Link href={`/packages?destination=${slug}`} className="flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white font-bold px-7 py-3.5 rounded-xl border border-white/30 hover:bg-white/25 transition-colors">
+                  <Link href={`/packages?destination=${slug}`} className="flex items-center gap-2 bg-white/15 backdrop-blur-sm text-white font-bold px-7 py-3.5 rounded-lg border border-white/30 hover:bg-white/25 transition-colors">
                     Browse Packages <FiArrowRight size={15} />
                   </Link>
                 )}
@@ -313,14 +309,14 @@ export default async function DestinationDetailPage({ params }: Props) {
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-2xl font-black text-gray-900 mb-1">{children}</h2>
+    <h2 className="text-3xl font-black text-[#101817] mb-1">{children}</h2>
   )
 }
 
 function InfoPill({ icon, label, color }: { icon: React.ReactNode; label: string; color?: string }) {
   return (
     <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border ${
-      color ?? 'bg-gray-100 text-gray-600 border-gray-200'
+      color ?? 'bg-[#f4f1ea] text-[#52615d] border-[#e5ded1]'
     }`}>
       {icon} {label}
     </span>

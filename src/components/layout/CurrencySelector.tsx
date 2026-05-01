@@ -22,7 +22,7 @@ export default function CurrencySelector({ dark = false }: { dark?: boolean }) {
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 mt-1 bg-white rounded-xl shadow-xl border border-gray-100 py-1 z-50 min-w-44"
+        <div className="absolute top-full right-0 mt-1 bg-white rounded-lg shadow-xl border border-gray-100 py-1 z-50 min-w-44"
           style={{ boxShadow: '0 10px 40px rgba(0,0,0,0.12)' }}>
           {CURRENCIES.map(c => (
             <button

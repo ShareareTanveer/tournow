@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { FiMapPin, FiMoon, FiCalendar, FiStar, FiGlobe } from 'react-icons/fi'
+import { FiMapPin, FiCalendar, FiStar, FiArrowRight } from 'react-icons/fi'
 import { useCurrency } from '@/lib/useCurrency'
+import { getTravelImage } from '@/lib/travel-images'
 
 interface TourCardProps {
   title: string
@@ -30,103 +31,88 @@ export default function TourCard({
 }: TourCardProps) {
   const { format } = useCurrency()
   const stars = STAR_MAP[starRating] ?? 4
-  const img = images[0]
+  const img = images[0] || getTravelImage(primaryDestination?.name ?? region)
   const countries = multiDestinations && multiDestinations.length > 0 ? multiDestinations : null
 
   return (
     <Link href={`/tours/${slug}`}
-      className="group block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
-      {/* Image */}
-      <div className="relative h-52 overflow-hidden bg-gray-100">
-        {img ? (
-          <Image
-            src={img}
-            alt={title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center"
-            style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)' }}>
-            <FiGlobe size={40} className="text-white opacity-30" />
-          </div>
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+      className="group block overflow-hidden rounded-lg border border-[#e5e8e4] bg-white shadow-[0_8px_30px_rgba(16,24,23,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-[#cdd7d1] hover:shadow-[0_24px_54px_rgba(16,24,23,0.14)]">
+      <div className="relative h-56 overflow-hidden bg-[#edf0ed]">
+        <Image
+          src={img}
+          alt={title}
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,24,23,0.78),rgba(16,24,23,0.10),rgba(16,24,23,0.02))]" />
 
-        {/* Duration badge top-left */}
-        <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
+        <div className="absolute top-3 left-3 bg-black/[0.48] backdrop-blur-sm text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
           <FiCalendar size={10} /> {duration}D / {nights}N
         </div>
 
-        {/* Star rating top-right */}
-        <div className="absolute top-3 right-3 flex gap-0.5">
+        <div className="absolute top-3 right-3 flex gap-0.5 rounded-full border border-white/15 bg-black/[0.38] px-2.5 py-1.5 backdrop-blur-md">
           {Array.from({ length: stars }).map((_, i) => (
             <FiStar key={i} size={11} className="text-yellow-400 fill-yellow-400" />
           ))}
         </div>
 
-        {/* Region badge bottom-left */}
         {region && (
-          <span className="absolute bottom-3 left-3 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full"
-            style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)' }}>
+          <span className="absolute bottom-3 left-3 text-white text-[10px] font-black uppercase tracking-[0.14em] px-2.5 py-1 rounded-full bg-[#007f89]">
             {region}
           </span>
         )}
       </div>
 
-      {/* Content */}
       <div className="p-4">
-        {/* Multi-country pills */}
         {countries ? (
           <div className="flex flex-wrap gap-1 mb-2">
             {countries.slice(0, 4).map((c) => (
-              <span key={c} className="text-[10px] font-medium text-sky-700 bg-sky-50 border border-sky-100 px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+              <span key={c} className="text-[10px] font-bold text-[#007f89] bg-[#edf8f6] border border-[#d8eee9] px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
                 <FiMapPin size={8} /> {c}
               </span>
             ))}
             {countries.length > 4 && (
-              <span className="text-[10px] font-medium text-gray-400 bg-gray-50 border border-gray-100 px-1.5 py-0.5 rounded-full">
+              <span className="text-[10px] font-medium text-[#8a9691] bg-[#f4f1ea] border border-[#ece6da] px-1.5 py-0.5 rounded-full">
                 +{countries.length - 4} more
               </span>
             )}
           </div>
         ) : primaryDestination && (
-          <p className="text-xs text-gray-400 mb-1.5 flex items-center gap-1">
-            <FiMapPin size={10} className="text-sky-500" />
+          <p className="text-xs text-[#52615d] mb-1.5 flex items-center gap-1">
+            <FiMapPin size={10} className="text-[#007f89]" />
             {primaryDestination.name}, {primaryDestination.region}
           </p>
         )}
 
-        <h3 className="font-semibold text-gray-800 text-sm leading-snug mb-2 line-clamp-2">
+        <h3 className="font-black text-[#101817] text-base leading-snug mb-2 line-clamp-2">
           {title}
         </h3>
 
-        {/* Highlights */}
         {highlights && highlights.length > 0 && (
           <ul className="space-y-0.5 mb-3">
             {highlights.slice(0, 2).map((h, i) => (
-              <li key={i} className="text-[11px] text-gray-500 flex items-start gap-1">
-                <span className="mt-0.5 shrink-0 text-sky-400">✓</span>
+              <li key={i} className="text-[11px] text-[#52615d] flex items-start gap-1">
+                <span className="mt-0.5 shrink-0 text-[#3f8f64]">✓</span>
                 <span className="line-clamp-1">{h}</span>
               </li>
             ))}
           </ul>
         )}
 
-        <div className="flex items-center justify-between pt-2 border-t border-gray-50">
+        <div className="flex items-center justify-between pt-3 border-t border-[#edf0ed]">
           <div>
-            <span className="text-[10px] text-gray-400">From</span>
-            <p className="font-black text-base leading-tight text-sky-600">
+            <span className="text-[10px] text-[#8a9691] font-bold uppercase tracking-[0.14em]">From</span>
+            <p className="font-black text-base leading-tight text-[#007f89]">
               {format(price)}
             </p>
             {oldPrice && (
-              <p className="text-[10px] text-gray-400 line-through">{format(oldPrice)}</p>
+              <p className="text-[10px] text-[#9ca7a2] line-through">{format(oldPrice)}</p>
             )}
-            {paxType && <span className="text-[10px] text-gray-400">{paxType}</span>}
+            {paxType && <span className="text-[10px] text-[#8a9691]">{paxType}</span>}
           </div>
-          <span className="text-xs font-semibold px-3 py-1.5 rounded-full border-2 border-sky-400 text-sky-600 group-hover:bg-sky-400 group-hover:text-white transition-colors">
-            Explore
+          <span className="flex items-center gap-1 rounded-lg border border-[#007f89] px-3 py-2 text-xs font-black text-[#007f89] transition-colors group-hover:bg-[#007f89] group-hover:text-white">
+            Explore <FiArrowRight size={11} />
           </span>
         </div>
       </div>

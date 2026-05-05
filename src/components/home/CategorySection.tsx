@@ -1,11 +1,11 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { prisma } from '@/lib/prisma'
 import {
   FiUsers, FiHeart, FiUser, FiSmile,
   FiBriefcase, FiStar, FiSun, FiGlobe, FiArrowRight,
 } from 'react-icons/fi'
 import { TRAVEL_IMAGES } from '@/lib/travel-images'
+import SectionTag from '@/components/ui/SectionTag'
 
 const DEFAULTS = [
   {
@@ -94,6 +94,21 @@ async function getCategories() {
   }
 }
 
+function placeholderStyle(accent: string) {
+  return {
+    background: `linear-gradient(135deg, ${accent} 0%, #101817 100%)`,
+  }
+}
+
+function imageLayerStyle(imageUrl: string) {
+  return {
+    backgroundImage: `url("${imageUrl}")`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+  } as const
+}
+
 export default async function CategorySection() {
   const categories = await getCategories()
 
@@ -103,7 +118,7 @@ export default async function CategorySection() {
 
         <div className="flex items-end justify-between mb-12 gap-6">
           <div>
-            <div className="section-tag mb-3">Browse by Type</div>
+            <SectionTag className="mb-3">Browse by Type</SectionTag>
             <h2 className="max-w-2xl text-3xl font-black leading-tight text-[#101817] sm:text-5xl">
               Find Your Perfect{' '}
               <span className="gradient-text">Travel Style</span>
@@ -130,16 +145,17 @@ export default async function CategorySection() {
                 className={`group bento-card ${cat.span} ${cat.height} block border border-white/70 bg-[#101817]`}
                 style={{ minHeight: isFeatured ? undefined : '208px' }}
               >
-                <Image
-                  src={cat.imageUrl}
-                  alt={cat.label}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  sizes={isFeatured ? '(max-width: 1024px) 100vw, 42vw' : '(max-width: 640px) 100vw, 34vw'}
+                <div className="absolute inset-0" style={placeholderStyle(cat.accent)} />
+                <div
+                  className="absolute inset-0 transition-transform duration-700 group-hover:scale-105"
+                  style={imageLayerStyle(cat.imageUrl)}
                 />
+                <div className="absolute right-4 bottom-4 text-white/8 text-6xl font-black uppercase tracking-[0.08em] select-none">
+                  {cat.label}
+                </div>
 
-                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,24,23,0.90),rgba(16,24,23,0.24),rgba(16,24,23,0.08))]" />
-                <div className="absolute inset-0 opacity-45 transition-opacity group-hover:opacity-30"
+                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,24,23,0.56),rgba(16,24,23,0.10),rgba(16,24,23,0.04))]" />
+                <div className="absolute inset-0 opacity-20 transition-opacity group-hover:opacity-10"
                   style={{ background: `linear-gradient(135deg, ${cat.accent}cc, transparent 48%)` }} />
 
                 <div className="relative z-10 h-full flex flex-col justify-between p-5">

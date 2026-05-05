@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FiMail, FiPhone, FiSend, FiCheckCircle } from "react-icons/fi";
 import { MdFlightTakeoff } from "react-icons/md";
+import SectionTag from "@/components/ui/SectionTag";
 
 export default function NewsletterSection() {
   const [form, setForm] = useState({ email: "", whatsapp: "" });
@@ -36,9 +37,9 @@ export default function NewsletterSection() {
               <MdFlightTakeoff size={28} />
             </div>
 
-            <div className="section-tag mx-auto inline-flex mb-4">
+            <SectionTag className="mx-auto mb-4">
               Stay in the loop
-            </div>
+            </SectionTag>
 
             <h2 className="text-3xl md:text-5xl font-black text-[#101817] leading-tight mb-3">
               Get{" "}

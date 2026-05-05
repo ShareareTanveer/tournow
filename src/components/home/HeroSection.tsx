@@ -86,10 +86,8 @@ export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string })
               SLTDA Licensed Travel Agency
             </div>
 
-            <h1 className="max-w-3xl text-4xl font-black leading-[1.02] text-white sm:text-6xl lg:text-7xl">
-              <span className="block">Premium</span>
-              <span className="block">Holidays</span>
-              <span className="block">From Sri Lanka</span>
+            <h1 className="max-w-4xl text-4xl font-black leading-[1.04] text-white sm:text-5xl lg:text-6xl">
+              Premium Holidays From Sri Lanka
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-8 text-white/[0.72] sm:text-lg">

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { FiAward, FiGift, FiTrendingUp, FiStar, FiArrowRight, FiCheck } from 'react-icons/fi'
+import SectionTag from '@/components/ui/SectionTag'
 
 const TIERS = [
   {
@@ -33,9 +34,9 @@ export default function LoyaltySection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
 
         <div className="text-center mb-16">
-          <div className="section-tag mx-auto inline-flex mb-5">
+          <SectionTag className="mx-auto mb-5">
             <FiAward size={11} /> Privilege Card
-          </div>
+          </SectionTag>
           <h2 className="text-3xl sm:text-5xl font-black text-[#101817] leading-tight mb-4">
             Travel More.
             <span className="gradient-text block sm:inline sm:ml-3">Earn More.</span>

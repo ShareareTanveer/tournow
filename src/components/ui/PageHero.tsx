@@ -39,7 +39,6 @@ export default function PageHero({ title, subtitle, imageUrl, breadcrumbs, gradi
         sizes="100vw"
       />
       <div className="absolute inset-0 bg-[linear-gradient(100deg,rgba(16,24,23,0.92)_0%,rgba(16,24,23,0.76)_42%,rgba(16,24,23,0.26)_100%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(251,250,247,1)_0%,rgba(251,250,247,0.0)_34%)]" />
 
       <div className="relative z-10 flex min-h-[360px] flex-col justify-end px-4 pb-14 pt-32">
         <div className="max-w-7xl mx-auto w-full">

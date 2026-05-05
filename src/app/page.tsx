@@ -7,6 +7,7 @@ import LoyaltySection from '@/components/home/LoyaltySection'
 import NewsletterSection from '@/components/home/NewsletterSection'
 import PackageCard from '@/components/ui/PackageCard'
 import DestinationCard from '@/components/ui/DestinationCard'
+import SectionTag from '@/components/ui/SectionTag'
 import { FiArrowRight, FiStar, FiClock, FiBookOpen } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa'
 
@@ -44,7 +45,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <div className="section-tag mb-3">Trending Now</div>
+              <SectionTag className="mb-3">Trending Now</SectionTag>
               <h2 className="text-3xl sm:text-5xl font-black text-[#101817] mb-3">
                 Featured <span className="gradient-text">Holiday Packages</span>
               </h2>
@@ -76,7 +77,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-end justify-between mb-12">
             <div>
-              <div className="section-tag mb-3">Where To Go</div>
+              <SectionTag className="mb-3">Where To Go</SectionTag>
               <h2 className="text-3xl sm:text-5xl font-black text-[#101817] mb-3">
                 Popular <span className="gradient-text">Destinations</span>
               </h2>
@@ -105,7 +106,7 @@ export default async function HomePage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex items-end justify-between mb-10 gap-4">
               <div>
-                <div className="section-tag mb-3">Travel Stories</div>
+                <SectionTag className="mb-3">Travel Stories</SectionTag>
                 <h2 className="text-3xl sm:text-5xl font-black text-[#101817] mb-3">
                   From Our <span style={{ color: 'var(--brand)' }}>Travel Blog</span>
                 </h2>
@@ -218,7 +219,7 @@ export default async function HomePage() {
       <section className="py-20 sm:py-24 bg-[#fbfaf7]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-14">
-            <div className="section-tag mx-auto inline-flex mb-4">Traveller Stories</div>
+            <SectionTag className="mx-auto mb-4">Traveller Stories</SectionTag>
             <h2 className="text-3xl sm:text-5xl font-black text-[#101817] mb-3">
               What Our <span className="gradient-text">Travellers Say</span>
             </h2>

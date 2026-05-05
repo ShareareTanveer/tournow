@@ -68,8 +68,29 @@ const websiteSchema = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="h-full antialiased">
-      <body className={`${inter.className} min-h-full flex flex-col bg-white`}>
+    <html lang="en" className="h-full antialiased" suppressHydrationWarning>
+      <body className={`${inter.className} min-h-full flex flex-col bg-white`} suppressHydrationWarning>
+        <Script id="strip-extension-attrs" strategy="beforeInteractive">
+          {`(() => {
+            const shouldRemove = (name) =>
+              name === 'bis_skin_checked' ||
+              name === 'bis_register' ||
+              name.startsWith('bis_') ||
+              (name.startsWith('__processed_') && name.endsWith('__'));
+
+            const clean = () => {
+              const nodes = document.querySelectorAll('*');
+              for (const node of nodes) {
+                for (const attr of Array.from(node.attributes ?? [])) {
+                  if (shouldRemove(attr.name)) node.removeAttribute(attr.name);
+                }
+              }
+            };
+
+            clean();
+            document.addEventListener('DOMContentLoaded', clean, { once: true });
+          })();`}
+        </Script>
         <Script id="schema-organization" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
         <Script id="schema-website" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
         <CustomerAuthProvider>

@@ -62,7 +62,7 @@ export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string })
     const [min, max] = budget.value.split('-')
     params.set('minPrice', min)
     params.set('maxPrice', max)
-    router.push(`/packages-from-sri-lanka/family?${params.toString()}`)
+    router.push(`/packages-from-sri-lanka?${params.toString()}`)
   }
 
   return (
@@ -81,7 +81,7 @@ export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string })
       <div className="relative z-10 mx-auto flex min-h-[92svh] w-full max-w-7xl flex-col justify-end px-4 pb-10 pt-32 sm:px-6 lg:pb-12">
         <div className="grid w-full min-w-0 max-w-full items-end gap-8 lg:grid-cols-[1.04fr_0.78fr]">
           <div className="max-w-3xl min-w-0">
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/[0.78] backdrop-blur-md">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3.5 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/78 backdrop-blur-md">
               <FiAward size={13} />
               SLTDA Licensed Travel Agency
             </div>
@@ -90,7 +90,7 @@ export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string })
               Premium Holidays From Sri Lanka
             </h1>
 
-            <p className="mt-6 max-w-2xl text-base leading-8 text-white/[0.72] sm:text-lg">
+            <p className="mt-6 max-w-2xl text-base leading-8 text-white/72 sm:text-lg">
               Metro Voyage crafts private, family, honeymoon, squad, and corporate travel across 50+ destinations with expert planning from inquiry to touchdown.
             </p>
 
@@ -106,14 +106,14 @@ export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string })
                 href="https://wa.me/94704545455"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/[0.16]"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:-translate-y-0.5 hover:bg-white/16"
               >
                 <FaWhatsapp size={17} /> Chat on WhatsApp
               </a>
             </div>
           </div>
 
-          <div className="min-w-0 w-full max-w-full rounded-lg border border-white/15 bg-white/[0.94] p-4 text-[#17211f] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-xl sm:p-5">
+          <div className="min-w-0 w-full max-w-full rounded-lg border border-white/15 bg-white/94 p-4 text-[#17211f] shadow-[0_28px_90px_rgba(0,0,0,0.34)] backdrop-blur-xl sm:p-5">
             <div className="mb-4 flex items-center justify-between gap-4">
               <div>
                 <p className="text-[11px] font-black uppercase tracking-[0.18em] text-[#007f89]">Trip Finder</p>
@@ -185,7 +185,7 @@ export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string })
           </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/[0.12] bg-white/[0.12] backdrop-blur-md md:grid-cols-4">
+        <div className="mt-8 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/12 bg-white/12 backdrop-blur-md md:grid-cols-4">
           {STATS.map(({ icon: Icon, value, label }) => (
             <div key={label} className="flex items-center gap-3 bg-[#101817]/[0.56] px-4 py-4">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/10 text-[#f0d492]">
@@ -193,7 +193,7 @@ export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string })
               </div>
               <div>
                 <p className="text-base font-black leading-none text-white">{value}</p>
-                <p className="mt-1 text-[11px] font-medium text-white/[0.52]">{label}</p>
+                <p className="mt-1 text-[11px] font-medium text-white/52">{label}</p>
               </div>
             </div>
           ))}

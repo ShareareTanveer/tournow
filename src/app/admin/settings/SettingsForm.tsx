@@ -90,9 +90,9 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
   ] as const
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="admin-editor-form admin-form-narrow space-y-5">
       {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 rounded-xl p-1 flex-wrap">
+      <div className="admin-form-tabs flex gap-1 bg-gray-100 rounded-xl p-1 flex-wrap">
         {TABS.map((t) => (
           <button key={t.id} type="button" onClick={() => setTab(t.id as any)}
             className={`flex-1 text-xs font-semibold px-4 py-2.5 rounded-lg transition-all min-w-24 ${tab === t.id ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
@@ -101,7 +101,7 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
         ))}
       </div>
 
-      <div className="bg-white rounded-2xl p-6 border border-gray-200 space-y-4">
+      <div className="admin-form-panel bg-white rounded-2xl p-6 border border-gray-200 space-y-4">
         {tab === 'general' && (
           <>
             <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide">Homepage Hero</p>
@@ -203,7 +203,7 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
         )}
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="admin-form-actions flex items-center gap-4">
         <button type="submit" disabled={loading} className="bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors shadow-sm shadow-indigo-200">
           {loading ? 'Saving…' : 'Save Settings'}
         </button>

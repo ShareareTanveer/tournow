@@ -711,17 +711,13 @@ export default function Navbar() {
         >
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <div className="flex items-center gap-2.5">
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center text-white font-black text-sm"
-                style={{
-                  background: "linear-gradient(135deg, #007f89, #3f8f64)",
-                }}
-              >
-                M
-              </div>
-              <span className="font-black text-gray-900">
-                Metro <span style={{ color: amber }}>Voyage</span>
-              </span>
+              <Image
+                src="/logo.png"
+                alt="Metro Voyage"
+                width={110}
+                height={68}
+                className="h-9 w-auto"
+              />
             </div>
             <button
               onClick={() => setMobileOpen(false)}

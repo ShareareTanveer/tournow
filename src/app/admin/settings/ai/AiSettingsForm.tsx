@@ -76,6 +76,10 @@ interface Props {
   initial: ProviderRow[]
 }
 
+function isMaskedApiKey(value: string) {
+  return value.includes('•')
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function AiSettingsForm({ initial }: Props) {
@@ -117,7 +121,8 @@ export default function AiSettingsForm({ initial }: Props) {
   async function save(provider: ProviderValue) {
     const row = rows.find(r => r.provider === provider)
     if (!row) return
-    if (!row.apiKey.trim() || row.apiKey.startsWith('•')) {
+    const usesSavedKey = row.configured && isMaskedApiKey(row.apiKey)
+    if (!usesSavedKey && !row.apiKey.trim()) {
       setGlobalError(`Enter a valid API key for ${provider}`)
       return
     }
@@ -129,7 +134,10 @@ export default function AiSettingsForm({ initial }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(row),
+        body: JSON.stringify({
+          ...row,
+          apiKey: usesSavedKey ? undefined : row.apiKey,
+        }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Save failed')
@@ -170,8 +178,9 @@ export default function AiSettingsForm({ initial }: Props) {
   async function test(provider: ProviderValue) {
     const row = rows.find(r => r.provider === provider)
     if (!row) return
-    if (!row.apiKey.trim() || row.apiKey.startsWith('•')) {
-      setGlobalError('Enter (or re-enter) the API key before testing')
+    const usesSavedKey = row.configured && isMaskedApiKey(row.apiKey)
+    if (!usesSavedKey && !row.apiKey.trim()) {
+      setGlobalError('Enter the API key before testing')
       return
     }
     setTestState(s => ({ ...s, [provider]: 'testing' }))
@@ -181,7 +190,11 @@ export default function AiSettingsForm({ initial }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ provider, apiKey: row.apiKey, model: row.model }),
+        body: JSON.stringify({
+          provider,
+          apiKey: usesSavedKey ? undefined : row.apiKey,
+          model: row.model,
+        }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Connection failed')
@@ -194,7 +207,7 @@ export default function AiSettingsForm({ initial }: Props) {
   }
 
   return (
-    <div className="space-y-5">
+    <div className="admin-editor-form admin-form-narrow space-y-5">
       {globalError && (
         <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-700">
           <FiAlertCircle size={15} className="shrink-0" /> {globalError}
@@ -212,7 +225,7 @@ export default function AiSettingsForm({ initial }: Props) {
         const modelsOpen = showModels[p.value] ?? false
 
         return (
-          <div key={p.value} className={`border rounded-2xl p-5 transition-colors ${
+          <div key={p.value} className={`admin-form-panel border rounded-2xl p-5 transition-colors ${
             row.isActive
               ? 'border-violet-200 bg-violet-50/30'
               : row.configured

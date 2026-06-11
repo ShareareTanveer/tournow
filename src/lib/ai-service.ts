@@ -294,22 +294,48 @@ export async function listProviders() {
 
 export async function upsertProvider(data: {
   provider: string
-  apiKey: string
+  apiKey?: string
   model: string
   isActive?: boolean
   isPrimary?: boolean
 }) {
-  // If setting this as primary, unset others first
-  if (data.isPrimary) {
-    await prisma.aiProviderConfig.updateMany({
-      where: { isPrimary: true },
-      data:  { isPrimary: false },
-    })
+  const existing = await prisma.aiProviderConfig.findUnique({
+    where: { provider: data.provider },
+    select: { id: true },
+  })
+
+  if (!existing && !data.apiKey) {
+    throw new Error('API key is required for a new provider')
   }
-  return prisma.aiProviderConfig.upsert({
-    where:  { provider: data.provider },
-    create: { ...data, isActive: data.isActive ?? true, isPrimary: data.isPrimary ?? false },
-    update: { ...data },
+
+  return prisma.$transaction(async tx => {
+    if (data.isPrimary) {
+      await tx.aiProviderConfig.updateMany({
+        where: { isPrimary: true },
+        data: { isPrimary: false },
+      })
+    }
+
+    if (existing) {
+      const { apiKey, ...settings } = data
+      return tx.aiProviderConfig.update({
+        where: { provider: data.provider },
+        data: {
+          ...settings,
+          ...(apiKey ? { apiKey } : {}),
+        },
+      })
+    }
+
+    return tx.aiProviderConfig.create({
+      data: {
+        provider: data.provider,
+        apiKey: data.apiKey!,
+        model: data.model,
+        isActive: data.isActive ?? true,
+        isPrimary: data.isPrimary ?? false,
+      },
+    })
   })
 }
 

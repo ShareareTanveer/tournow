@@ -2,7 +2,10 @@
 
 import { useState, useMemo, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { FiExternalLink, FiFileText, FiEdit2, FiAlertCircle, FiCalendar, FiX } from 'react-icons/fi'
+import {
+  FiExternalLink, FiFileText, FiEdit2, FiAlertCircle, FiCalendar, FiX,
+  FiUser, FiUsers, FiMapPin, FiDollarSign, FiFilter, FiPhone,
+} from 'react-icons/fi'
 import AdminTable, { Column } from '@/components/admin/AdminTable'
 import { useRouter } from 'next/navigation'
 
@@ -27,7 +30,7 @@ const PAY_STATUS = [
   { value: 'REFUNDED', label: 'Refunded', color: 'text-gray-500',   bg: 'bg-gray-50' },
 ]
 
-interface Booking {
+export interface Booking {
   id: string
   bookingRef: string
   _type: 'package' | 'tour'
@@ -136,52 +139,52 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
 
   // Date filter bar
   const dateFilterBar = (
-    <div className="w-full border-t border-gray-100 pt-3 mt-1 space-y-2">
+    <div className="booking-filter-panel w-full space-y-3">
       {/* Preset pills */}
-      <div className="flex items-center gap-2 flex-wrap">
-        <span className="flex items-center gap-1.5 text-[11px] font-bold text-gray-500 uppercase tracking-wider shrink-0">
-          <FiCalendar size={11} className="text-indigo-400" /> Date
+      <div className="booking-filter-row">
+        <span className="booking-filter-heading">
+          <FiFilter size={13} /> Booking period
         </span>
         {PRESETS.map(p => (
           <button key={p.label} onClick={() => applyPreset(p)}
-            className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg transition-colors whitespace-nowrap ${
+            className={`booking-preset ${
               activePreset === p.label && !( (p.from===''&&dateFrom!=='') || (p.to===''&&dateTo!=='') )
-                ? 'bg-indigo-500 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                ? 'is-active'
+                : ''
             }`}>
             {p.label}
           </button>
         ))}
         {/* Custom inputs */}
-        <div className="flex items-center gap-1.5 ml-auto">
+        <div className="booking-date-range">
           <input type="date" value={resolveDate(dateFrom)}
             onChange={e => { setDateFrom(e.target.value); setActivePreset('Custom') }}
-            className="text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-300 bg-white w-32" />
+            className="booking-date-input" />
           <span className="text-gray-400 text-xs">→</span>
           <input type="date" value={resolveDate(dateTo)}
             onChange={e => { setDateTo(e.target.value); setActivePreset('Custom') }}
-            className="text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-300 bg-white w-32" />
+            className="booking-date-input" />
           {hasFilter && (
             <button onClick={() => applyPreset(PRESETS[0])}
-              className="p-1.5 rounded-lg bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-500 transition-colors" title="Clear">
-              <FiX size={12} />
+              className="booking-filter-clear" title="Clear">
+              <FiX size={14} />
             </button>
           )}
         </div>
       </div>
       {/* Pipeline strip */}
-      <div className="flex gap-1.5 flex-wrap text-[11px]">
+      <div className="booking-pipeline-strip">
         {PIPELINE.slice(0, 9).map(p => {
           const n = filteredBookings.filter(b => b.status === p.status).length
           if (n === 0) return null
           return (
-            <span key={p.status} className={`px-2.5 py-1 rounded-full font-semibold ${p.bg} ${p.color}`}>
-              {p.label} <strong>{n}</strong>
+            <span key={p.status} className={`booking-pipeline-chip ${p.bg} ${p.color}`}>
+              <i /> {p.label} <strong>{n}</strong>
             </span>
           )
         })}
         {hasFilter && (
-          <span className="px-2.5 py-1 rounded-full font-semibold bg-indigo-50 text-indigo-600 ml-auto">
+          <span className="booking-filter-result">
             {filteredBookings.length} of {bookings.length} shown
           </span>
         )}
@@ -193,12 +196,17 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
     {
       key: 'title', label: 'Booking', sortable: true,
       render: b => (
-        <div className="flex items-center gap-2.5">
-          {b.image && <img src={b.image} className="w-10 h-8 rounded-lg object-cover shrink-0" alt="" />}
-          <div>
-            <p className="font-semibold text-xs text-gray-800 line-clamp-1 max-w-38">{b.title}</p>
-            <p className="text-[10px] font-mono text-gray-400">{b.bookingRef.slice(-8).toUpperCase()}</p>
-            <span className={`text-[9px] font-bold uppercase px-1 py-0.5 rounded ${b._type === 'tour' ? 'bg-sky-100 text-sky-600' : 'bg-indigo-100 text-indigo-600'}`}>{b._type}</span>
+        <div className="booking-item-cell">
+          <div className="booking-item-image">
+            {b.image ? <img src={b.image} alt="" /> : <FiMapPin size={17} />}
+          </div>
+          <div className="min-w-0">
+            <div className="booking-item-meta">
+              <span className={`booking-type-badge is-${b._type}`}>{b._type}</span>
+              <span>#{b.bookingRef.slice(-8).toUpperCase()}</span>
+            </div>
+            <p className="booking-item-title">{b.title}</p>
+            <p className="booking-created">Booked {new Date(b.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</p>
           </div>
         </div>
       ),
@@ -206,12 +214,15 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
     {
       key: 'customerName', label: 'Customer', sortable: true,
       render: b => (
-        <div>
-          <p className="font-medium text-gray-800 text-xs">{b.customerName}</p>
-          <p className="text-[10px] text-gray-400">{b.customerPhone}</p>
+        <div className="booking-customer-cell">
+          <div className="booking-customer-avatar">{b.customerName?.charAt(0).toUpperCase() || <FiUser />}</div>
+          <div className="min-w-0">
+            <p>{b.customerName}</p>
+            <span><FiPhone size={10} /> {b.customerPhone}</span>
+          </div>
           {b.customerNote && (
-            <span className="inline-flex items-center gap-0.5 text-[9px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-semibold mt-0.5">
-              <FiAlertCircle size={8} /> Note
+            <span className="booking-note-badge" title={b.customerNote}>
+              <FiAlertCircle size={11} /> Note
             </span>
           )}
         </div>
@@ -220,15 +231,15 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
     {
       key: 'travelDate', label: 'Travel', sortable: true,
       render: b => (
-        <div className="text-xs text-gray-600 whitespace-nowrap">
-          <p>{new Date(b.travelDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' })}</p>
-          <p className="text-gray-400">{b.paxAdult}A{b.paxChild > 0 ? ` ${b.paxChild}C` : ''}</p>
+        <div className="booking-travel-cell">
+          <p><FiCalendar size={12} /> {new Date(b.travelDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+          <span><FiUsers size={11} /> {b.paxAdult} adult{b.paxAdult !== 1 ? 's' : ''}{b.paxChild > 0 ? `, ${b.paxChild} child` : ''}</span>
         </div>
       ),
     },
     {
       key: 'totalPrice', label: 'Original', sortable: true, align: 'right',
-      render: b => <p className="text-xs font-semibold text-gray-500">LKR {b.totalPrice.toLocaleString()}</p>,
+      render: b => <p className="booking-price"><FiDollarSign size={11} /> LKR {b.totalPrice.toLocaleString()}</p>,
     },
     {
       key: 'staffQuote', label: 'Quote', sortable: false, align: 'right',
@@ -236,8 +247,8 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
         const hasQuote = !!b.staffQuote?.totalPrice
         const quotedTotal = b.staffQuote?.totalPrice
         return hasQuote && quotedTotal != null ? (
-          <div>
-            <p className="text-xs font-bold text-indigo-600">LKR {quotedTotal.toLocaleString()}</p>
+          <div className="booking-quote">
+            <p>LKR {quotedTotal.toLocaleString()}</p>
             {quotedTotal !== b.totalPrice && (
               <p className={`text-[10px] font-semibold ${quotedTotal < b.totalPrice ? 'text-green-600' : 'text-red-500'}`}>
                 {quotedTotal < b.totalPrice ? '↓' : '↑'} {Math.abs(quotedTotal - b.totalPrice).toLocaleString()}
@@ -245,7 +256,7 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
             )}
           </div>
         ) : (
-          <span className="text-[10px] text-gray-300 italic">no quote</span>
+          <span className="booking-no-quote">Not prepared</span>
         )
       },
     },
@@ -258,7 +269,7 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
             value={b.status}
             disabled={updating === b.id}
             onChange={e => update(b.id, b._type, { status: e.target.value })}
-            className={`text-xs font-semibold px-2 py-1 rounded-lg border-0 cursor-pointer ${s.bg} ${s.color} disabled:opacity-50`}
+            className={`booking-status-select ${s.bg} ${s.color} disabled:opacity-50`}
           >
             {PIPELINE.map(pp => <option key={pp.status} value={pp.status}>{pp.label}</option>)}
           </select>
@@ -274,7 +285,7 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
             value={b.paymentStatus}
             disabled={updating === b.id}
             onChange={e => update(b.id, b._type, { paymentStatus: e.target.value })}
-            className={`text-xs font-semibold px-2 py-1 rounded-lg border-0 cursor-pointer ${p.bg} ${p.color} disabled:opacity-50`}
+            className={`booking-status-select booking-payment-select ${p.bg} ${p.color} disabled:opacity-50`}
           >
             {PAY_STATUS.map(pp => <option key={pp.value} value={pp.value}>{pp.label}</option>)}
           </select>
@@ -286,20 +297,20 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
       render: b => {
         const hasQuote = !!b.staffQuote?.totalPrice
         return (
-          <div className="flex items-center gap-1.5">
+          <div className="booking-row-actions">
             <Link href={`/admin/bookings/${b.id}`}
-              className="p-1.5 rounded-lg bg-gray-100 text-gray-600 hover:bg-indigo-100 hover:text-indigo-600 transition-colors" title="View Detail">
-              <FiExternalLink size={13} />
+              className="is-view" title="View booking">
+              <FiExternalLink size={14} /><span>View</span>
             </Link>
             <Link href={`/admin/bookings/${b.id}/edit`}
-              className={`p-1.5 rounded-lg transition-colors ${hasQuote ? 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200' : 'bg-gray-100 text-gray-500 hover:bg-indigo-50 hover:text-indigo-500'}`}
+              className="is-quote"
               title={hasQuote ? 'Edit Quote' : 'Build Quote'}>
-              <FiEdit2 size={13} />
+              <FiEdit2 size={14} /><span>{hasQuote ? 'Edit' : 'Quote'}</span>
             </Link>
             {b.receiptUrl && (
               <a href={b.receiptUrl} target="_blank" rel="noopener noreferrer"
-                className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors" title="Receipt">
-                <FiFileText size={13} />
+                className="is-receipt" title="Receipt">
+                <FiFileText size={14} /><span>Receipt</span>
               </a>
             )}
           </div>
@@ -309,16 +320,18 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
   ]
 
   return (
-    <AdminTable
-      data={filteredBookings}
-      columns={columns}
-      filterKey="status"
-      filterOptions={['ALL', ...PIPELINE.map(p => p.status)]}
-      filterLabels={Object.fromEntries([['ALL', 'All'], ...PIPELINE.map(p => [p.status, p.label])])}
-      searchKeys={['customerName', 'customerEmail', 'customerPhone', 'bookingRef', 'title']}
-      defaultSort={{ key: 'createdAt', dir: 'desc' }}
-      emptyMessage="No bookings yet"
-      toolbarRight={dateFilterBar}
-    />
+    <div className="booking-table-shell">
+      <AdminTable
+        data={filteredBookings}
+        columns={columns}
+        filterKey="status"
+        filterOptions={['ALL', ...PIPELINE.map(p => p.status)]}
+        filterLabels={Object.fromEntries([['ALL', 'All'], ...PIPELINE.map(p => [p.status, p.label])])}
+        searchKeys={['customerName', 'customerEmail', 'customerPhone', 'bookingRef', 'title']}
+        defaultSort={{ key: 'createdAt', dir: 'desc' }}
+        emptyMessage="No bookings found"
+        toolbarRight={dateFilterBar}
+      />
+    </div>
   )
 }

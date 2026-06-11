@@ -236,23 +236,23 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
   const stepOrder: Step[] = ['dates', 'rooms', 'options', 'summary']
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+    <div className="admin-modal-layer fixed inset-0 flex items-center justify-center p-4 z-50">
+      <button type="button" aria-label="Close booking modal" className="admin-modal-backdrop absolute inset-0" onClick={onClose} />
 
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[92vh] mt-4">
+      <div className="admin-modal-card admin-booking-modal relative z-10 bg-white w-full max-w-3xl overflow-hidden flex flex-col max-h-[92vh]">
         {/* Header */}
-        <div className="flex items-start justify-between px-6 pt-5 pb-4 border-b border-gray-100 shrink-0">
-          <div>
+        <div className="admin-booking-modal-header flex items-start justify-between px-7 py-5 border-b shrink-0">
+          <div className="min-w-0">
             <p className="text-xs text-indigo-500 mb-0.5 uppercase tracking-wide font-bold">Admin — Convert to Booking</p>
-            <h2 className="text-base font-bold text-gray-900 leading-snug line-clamp-2 max-w-[340px]">{target.title}</h2>
+            <h2 className="text-xl font-extrabold text-gray-900 leading-snug line-clamp-2">{target.title}</h2>
           </div>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 shrink-0 ml-2">
-            <FiX size={18} className="text-gray-500" />
+          <button type="button" onClick={onClose} className="admin-modal-close shrink-0 ml-4" aria-label="Close">
+            <FiX size={19} />
           </button>
         </div>
 
         {/* Step indicator */}
-        <div className="flex px-6 pt-3 pb-1 gap-1 shrink-0">
+        <div className="admin-booking-steps flex px-7 py-3.5 gap-2 shrink-0">
           {stepOrder.map((s, i) => (
             <div key={s} className="flex items-center gap-1 flex-1">
               <div className={`h-1 flex-1 rounded-full transition-colors ${
@@ -263,7 +263,7 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto flex-1 px-6 py-5 space-y-5">
+        <div className="admin-booking-modal-content overflow-y-auto flex-1 px-7 py-6 space-y-4">
 
           {/* ── STEP 1: Dates & Pax ── */}
           {step === 'dates' && (
@@ -271,7 +271,7 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
               {/* Customer info — editable */}
               <Section title="Customer">
                 <div className="space-y-2">
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                       <label className="text-xs font-semibold text-gray-500 block mb-1">Name</label>
                       <input type="text" value={cName} onChange={e => setCName(e.target.value)}
@@ -293,7 +293,7 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
               </Section>
 
               <Section title="Travel Dates">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="text-xs font-semibold text-gray-500 block mb-1">Departure Date *</label>
                     <input type="date" required
@@ -313,7 +313,7 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
               </Section>
 
               <Section title="Travellers">
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <Counter label="Adults" min={1} value={form.paxAdult}
                     onChange={v => setForm(f => ({ ...f, paxAdult: v }))} />
                   <Counter label="Children" sub="2–11 yrs" min={0} value={form.paxChild}
@@ -330,7 +330,7 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
               </Section>
 
               <Section title="Extra Nights">
-                <div className="flex items-center justify-between">
+                <div className="admin-extra-night-row flex items-center justify-between gap-4">
                   <div>
                     <p className="text-sm text-gray-700">Additional nights</p>
                     <div className="flex items-center gap-2 mt-1">
@@ -554,7 +554,7 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
               <div className="p-4 bg-blue-50 border border-blue-100 rounded-xl flex gap-2">
                 <FiInfo size={14} className="text-blue-500 shrink-0 mt-0.5" />
                 <p className="text-xs text-blue-700">
-                  A customer account will be created if one doesn't exist. An email with the quote and login credentials will be sent to <strong>{cEmail}</strong>. Status will be set to <strong>Awaiting Confirmation</strong>.
+                  A customer account will be created if one does not exist. An email with the quote and login credentials will be sent to <strong>{cEmail}</strong>. Status will be set to <strong>Awaiting Confirmation</strong>.
                 </p>
               </div>
             </>
@@ -566,7 +566,7 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between shrink-0 bg-white">
+        <div className="admin-modal-footer px-7 py-4 border-t flex items-center justify-between shrink-0">
           {step !== 'dates' ? (
             <button
               onClick={() => {
@@ -618,10 +618,10 @@ export default function AdminBookingModal({ open, onClose, target, customer, inq
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div>
-      <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">{title}</h3>
+    <section className="admin-booking-section">
+      <h3>{title}</h3>
       {children}
-    </div>
+    </section>
   )
 }
 
@@ -638,15 +638,15 @@ function Counter({ label, sub, min = 0, max = 20, value, onChange }: {
   label: string; sub?: string; min?: number; max?: number; value: number; onChange: (v: number) => void
 }) {
   return (
-    <div className="text-center">
-      {label && <p className="text-xs font-semibold text-gray-600 mb-0.5">{label}</p>}
-      {sub && <p className="text-[10px] text-gray-400 mb-1">{sub}</p>}
-      <div className="flex items-center justify-center gap-2">
+    <div className={`admin-booking-counter ${label ? '' : 'is-compact'}`}>
+      {label && <p className="admin-booking-counter-label">{label}</p>}
+      {sub && <p className="admin-booking-counter-sub">{sub}</p>}
+      <div className="admin-booking-counter-control">
         <button type="button" onClick={() => onChange(Math.max(min, value - 1))}
           className="w-7 h-7 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold text-base flex items-center justify-center transition-colors">
           −
         </button>
-        <span className="w-6 text-center font-bold text-gray-800">{value}</span>
+        <span>{value}</span>
         <button type="button" onClick={() => onChange(Math.min(max, value + 1))}
           className="w-7 h-7 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold text-base flex items-center justify-center transition-colors">
           +

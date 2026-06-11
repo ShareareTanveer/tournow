@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAuthUser } from '@/lib/auth'
 import { testProviderConnection } from '@/lib/ai-service'
+import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 
 const TestSchema = z.object({
   provider: z.enum(['openai', 'groq', 'gemini', 'openrouter']),
-  apiKey:   z.string().min(1),
+  apiKey:   z.string().min(1).optional(),
   model:    z.string().min(1),
 })
 
@@ -20,7 +21,20 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const result = await testProviderConnection(parsed.data.provider, parsed.data.apiKey, parsed.data.model)
+    let apiKey = parsed.data.apiKey
+    if (!apiKey) {
+      const saved = await prisma.aiProviderConfig.findUnique({
+        where: { provider: parsed.data.provider },
+        select: { apiKey: true },
+      })
+      apiKey = saved?.apiKey
+    }
+
+    if (!apiKey) {
+      return NextResponse.json({ error: 'No saved API key found for this provider' }, { status: 400 })
+    }
+
+    const result = await testProviderConnection(parsed.data.provider, apiKey, parsed.data.model)
     return NextResponse.json(result)
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Connection failed'

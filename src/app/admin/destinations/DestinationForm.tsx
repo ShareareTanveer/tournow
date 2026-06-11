@@ -29,7 +29,7 @@ function FieldLabel({ icon, children, required }: { icon: React.ReactNode; child
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+    <div className="admin-form-panel bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
       <div className="px-5 py-3.5 border-b border-gray-100 bg-gray-50/60">
         <p className="text-xs font-bold text-gray-600 uppercase tracking-wide">{title}</p>
       </div>
@@ -92,10 +92,10 @@ export default function DestinationForm({ destination }: { destination?: any }) 
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="admin-editor-form admin-form-narrow space-y-5">
 
       {/* ── Cover Image ── */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+      <div className="admin-form-panel bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
         <div className="px-5 py-3.5 border-b border-gray-100 bg-gray-50/60">
           <p className="text-xs font-bold text-gray-600 uppercase tracking-wide">Cover Image</p>
         </div>
@@ -260,7 +260,7 @@ export default function DestinationForm({ destination }: { destination?: any }) 
       </Section>
 
       {/* ── Actions ── */}
-      <div className="flex items-center gap-3 pb-6">
+      <div className="admin-form-actions flex items-center gap-3 pb-6">
         <button
           type="submit"
           disabled={loading || saved}

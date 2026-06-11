@@ -80,9 +80,9 @@ export default function LoyaltyProgramSettings({ settings }: { settings: Record<
   ] as const
 
   return (
-    <form onSubmit={handleSave} className="space-y-5">
+    <form onSubmit={handleSave} className="admin-editor-form space-y-5">
       {/* Sub-tabs */}
-      <div className="flex gap-1 bg-gray-100 rounded-xl p-1 w-fit">
+      <div className="admin-form-tabs flex gap-1 bg-gray-100 rounded-xl p-1 w-fit">
         {TABS.map(t => (
           <button key={t.id} type="button" onClick={() => setTab(t.id)}
             className={`text-xs font-semibold px-4 py-2 rounded-lg transition-colors whitespace-nowrap ${tab === t.id ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
@@ -91,7 +91,7 @@ export default function LoyaltyProgramSettings({ settings }: { settings: Record<
         ))}
       </div>
 
-      <div className="bg-white rounded-2xl p-6 border border-gray-200 space-y-5">
+      <div className="admin-form-panel bg-white rounded-2xl p-6 border border-gray-200 space-y-5">
 
         {tab === 'hero' && <>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wide">Public Page — Hero Section</p>
@@ -155,7 +155,7 @@ export default function LoyaltyProgramSettings({ settings }: { settings: Record<
         </>}
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="admin-form-actions flex items-center gap-4">
         <button type="submit" disabled={loading}
           className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors text-sm">
           <FiSave size={14} /> {loading ? 'Saving…' : 'Save Program Settings'}

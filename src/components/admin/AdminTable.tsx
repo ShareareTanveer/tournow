@@ -158,7 +158,7 @@ export default function AdminTable<T = any>({
   const useSelectFilter = Boolean(filterOptions && filterOptions.length > 10)
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    <div className="admin-data-table bg-white rounded-2xl border border-gray-200 overflow-hidden">
 
       {/* ── Toolbar ── */}
       <div className="px-5 py-3.5 border-b border-gray-100 space-y-3">
@@ -217,7 +217,7 @@ export default function AdminTable<T = any>({
             </select>
           </div>
 
-          {toolbarRight && <div className="flex items-center gap-2">{toolbarRight}</div>}
+          {toolbarRight && <div className="admin-table-toolbar-extra flex items-center gap-2">{toolbarRight}</div>}
         </div>
 
         {/* Tab filters */}
@@ -306,11 +306,12 @@ export default function AdminTable<T = any>({
                   <p className="text-gray-400 text-sm">{search ? `No results for "${search}"` : emptyMessage}</p>
                 </td>
               </tr>
-            ) : pageRows.map((row: any) => (
-              <tr key={row[rowKey] ?? Math.random()} className="border-b border-gray-50 hover:bg-gray-50/60 transition-colors">
+            ) : pageRows.map((row: any, rowIndex) => (
+              <tr key={row[rowKey] ?? `${safePage}-${rowIndex}`} className="border-b border-gray-50 hover:bg-gray-50/60 transition-colors">
                 {columns.map(col => (
                   <td
                     key={col.key}
+                    data-label={col.label}
                     className={`px-5 py-3.5 ${col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : ''}`}
                   >
                     {col.render ? col.render(row) : (

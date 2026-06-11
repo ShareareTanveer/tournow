@@ -143,12 +143,12 @@ export default async function DashboardPage() {
       subtitle="Welcome back — here's what's happening with your business"
     >
       {/* Primary Metrics - Featured Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
+      <div className="admin-dashboard-metrics grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
         {PRIMARY_METRICS.map((metric) => (
           <Link
             key={metric.label}
             href={metric.link}
-            className="group relative bg-white rounded-xl border border-gray-100 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
+            className="admin-dashboard-metric group relative bg-white rounded-xl border border-gray-100 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
           >
             <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-gray-50 to-transparent rounded-bl-2xl opacity-50" />
             <div className="flex items-start justify-between mb-3">
@@ -165,12 +165,12 @@ export default async function DashboardPage() {
       </div>
 
       {/* Secondary Metrics - Compact Row */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      <div className="admin-dashboard-secondary grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         {SECONDARY_METRICS.map((metric) => (
           <Link
             key={metric.label}
             href={metric.link}
-            className="bg-white rounded-lg border border-gray-100 p-4 hover:shadow-md hover:border-gray-200 transition-all duration-200"
+            className="admin-dashboard-mini bg-white rounded-lg border border-gray-100 p-4 hover:shadow-md hover:border-gray-200 transition-all duration-200"
           >
             <div className="flex items-center gap-3 mb-2">
               <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center">
@@ -185,7 +185,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Quick Actions Section */}
-      <div className="bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100 p-4 mb-8">
+      <div className="admin-dashboard-actions bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100 p-4 mb-8">
         <div className="flex items-center gap-2 mb-4">
           <div className="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center">
             <FiTrendingUp size={14} className="text-white" />
@@ -207,7 +207,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Recent Activity Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="admin-dashboard-activity grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Inquiries */}
         <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
           <div className="px-5 py-4 border-b border-gray-100 bg-white">

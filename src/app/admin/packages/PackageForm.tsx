@@ -3,7 +3,12 @@
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { FiPlus, FiX, FiInfo } from 'react-icons/fi'
+import type { Package } from '@prisma/client'
+import {
+  FiPlus, FiX, FiInfo, FiMapPin, FiDollarSign, FiFileText,
+  FiCompass, FiImage, FiEye, FiSearch, FiArrowLeft,
+  FiPackage, FiClock, FiUsers,
+} from 'react-icons/fi'
 import MultiImageUploader, { GalleryLayout } from '@/components/admin/MultiImageUploader'
 import SeoScorePanel from '@/components/admin/SeoScorePanel'
 import AiFieldAssist from '@/components/admin/AiFieldAssist'
@@ -15,7 +20,17 @@ import { SeoInput } from '@/lib/seo-score'
 const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor'), { ssr: false })
 
 interface Destination { id: string; name: string; region: string }
-interface Props { destinations: Destination[]; pkg?: any }
+type PackageFormRecord = Omit<
+  Package,
+  'category' | 'starRating' | 'difficulty' | 'options' | 'cancellationTiers'
+> & {
+  category: string
+  starRating: string
+  difficulty: string
+  options: unknown
+  cancellationTiers: unknown
+}
+interface Props { destinations: Destination[]; pkg?: PackageFormRecord }
 
 interface OptionItem { label: string; price: number; isDefault?: boolean }
 interface CancellationTier { daysBeforeDep: number; refundPercent: number; label: string }
@@ -38,6 +53,16 @@ const EXCLUSION_PRESETS = [
 
 function toArr(s: string) { return s?.split('\n').map((l) => l.trim()).filter(Boolean) }
 function fromArr(a: string[] | undefined | null) { return (a ?? []).join('\n') }
+function parseEditorItems<T>(value: unknown): T[] {
+  if (Array.isArray(value)) return value as T[]
+  if (typeof value !== 'string' || !value.trim()) return []
+  try {
+    const parsed: unknown = JSON.parse(value)
+    return Array.isArray(parsed) ? parsed as T[] : []
+  } catch {
+    return []
+  }
+}
 
 function ChipList({ label, items, presets, onChange }: {
   label: string; items: string[]; presets: string[]; onChange: (v: string[]) => void
@@ -261,14 +286,10 @@ export default function PackageForm({ destinations, pkg }: Props) {
     schemaMarkup:       pkg?.schemaMarkup       ?? '',
   })
 
-  const [options, setOptions] = useState<OptionItem[]>(() => {
-    try { return Array.isArray(pkg?.options) ? pkg.options : (pkg?.options ? JSON.parse(pkg.options) : []) }
-    catch { return [] }
-  })
-  const [cancellationTiers, setCancellationTiers] = useState<CancellationTier[]>(() => {
-    try { return Array.isArray(pkg?.cancellationTiers) ? pkg.cancellationTiers : (pkg?.cancellationTiers ? JSON.parse(pkg.cancellationTiers) : []) }
-    catch { return [] }
-  })
+  const [options, setOptions] = useState<OptionItem[]>(() => parseEditorItems<OptionItem>(pkg?.options))
+  const [cancellationTiers, setCancellationTiers] = useState<CancellationTier[]>(
+    () => parseEditorItems<CancellationTier>(pkg?.cancellationTiers)
+  )
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -316,14 +337,15 @@ export default function PackageForm({ destinations, pkg }: Props) {
       }
       router.push('/admin/packages')
       router.refresh()
-    } catch (err: any) {
-      setError(err.message)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Unable to save package')
     } finally {
       setLoading(false)
     }
   }
 
   const handleDelete = async () => {
+    if (!pkg) return
     if (!confirm('Deactivate this package?')) return
     await fetch(`/api/packages/${pkg.slug}`, { method: 'DELETE' })
     router.push('/admin/packages')
@@ -361,14 +383,29 @@ export default function PackageForm({ destinations, pkg }: Props) {
   )
 
   const TABS = [
-    { id: 'basic',    label: 'Basic Info' },
-    { id: 'pricing',  label: 'Pricing' },
-    { id: 'content',  label: 'Description' },
-    { id: 'details',  label: 'Tour Details' },
-    { id: 'media',    label: 'Media' },
-    { id: 'flags',    label: 'Visibility' },
-    { id: 'seo',      label: 'SEO' },
+    { id: 'basic', label: 'Basic Info', hint: 'Identity and trip setup', icon: <FiPackage /> },
+    { id: 'pricing', label: 'Pricing', hint: 'Rates and policies', icon: <FiDollarSign /> },
+    { id: 'content', label: 'Description', hint: 'Story and inclusions', icon: <FiFileText /> },
+    { id: 'details', label: 'Tour Details', hint: 'Guest information', icon: <FiCompass /> },
+    { id: 'media', label: 'Media', hint: 'Photos and gallery', icon: <FiImage /> },
+    { id: 'flags', label: 'Visibility', hint: 'Publishing status', icon: <FiEye /> },
+    { id: 'seo', label: 'SEO', hint: 'Search appearance', icon: <FiSearch /> },
   ] as const
+
+  const requiredChecks = [
+    Boolean(form.title.trim()),
+    Boolean(form.slug.trim()),
+    Boolean(form.destinationId),
+    Number(form.duration) > 0,
+    Number(form.nights) >= 0 && form.nights !== '',
+    Number(form.price) > 0,
+    Boolean(form.description.trim()),
+    form.images.length > 0,
+  ]
+  const completedEssentials = requiredChecks.filter(Boolean).length
+  const completion = Math.round((completedEssentials / requiredChecks.length) * 100)
+  const activeTab = TABS.find(item => item.id === tab) ?? TABS[0]
+  const destinationName = destinations.find(item => item.id === form.destinationId)?.name ?? 'Choose destination'
 
   // Build SeoInput from current form state (memoised for perf)
   const seoInput = useMemo<SeoInput>(() => ({
@@ -423,18 +460,57 @@ export default function PackageForm({ destinations, pkg }: Props) {
       title={form.title}
       onRemove={(url) => setForm(f => ({ ...f, images: f.images.filter((i: string) => i !== url) }))}
     />
-    <form onSubmit={handleSubmit} className="admin-editor-form space-y-5">
+    <form onSubmit={handleSubmit} className="admin-editor-form package-editor-form space-y-5">
+      <section className="package-editor-hero">
+        <div className="package-editor-hero-main">
+          <div className="package-editor-kicker">
+            <FiPackage size={14} />
+            Packages / {isEdit ? 'Edit' : 'New'}
+          </div>
+          <h2>{form.title.trim() || 'Untitled package'}</h2>
+          <div className="package-editor-facts">
+            <span><FiMapPin /> {destinationName}</span>
+            <span><FiClock /> {form.duration || 0} days / {form.nights || 0} nights</span>
+            <span><FiUsers /> {form.paxType}</span>
+          </div>
+        </div>
+
+        <div className="package-editor-progress">
+          <div className="package-editor-status-row">
+            <span className={form.isActive ? 'is-active' : 'is-draft'}>
+              {form.isActive ? 'Active' : 'Hidden'}
+            </span>
+            <strong>{completion}% complete</strong>
+          </div>
+          <div className="package-editor-progress-track">
+            <span style={{ width: `${completion}%` }} />
+          </div>
+          <small>{completedEssentials} of {requiredChecks.length} required details added</small>
+        </div>
+      </section>
+
       {/* Tab nav */}
-      <div className="admin-form-tabs flex gap-1 bg-gray-100 rounded-xl p-1 flex-wrap">
+      <div className="admin-form-tabs package-editor-tabs flex gap-1 bg-gray-100 rounded-xl p-1 flex-wrap">
         {TABS.map((t) => (
-          <button key={t.id} type="button" onClick={() => setTab(t.id as any)}
-            className={`flex-1 text-xs font-semibold px-3 py-2 rounded-lg transition-colors min-w-20 ${tab === t.id ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-            {t.label}
+          <button key={t.id} type="button" onClick={() => setTab(t.id)}
+            className={`package-editor-tab flex-1 text-xs font-semibold px-3 py-2 rounded-lg transition-colors min-w-20 ${tab === t.id ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+            <span className="package-editor-tab-icon">{t.icon}</span>
+            <span>
+              <strong>{t.label}</strong>
+            </span>
           </button>
         ))}
       </div>
 
-      <div className="admin-form-panel bg-white rounded-2xl p-6 border border-gray-200">
+      <div className="package-editor-section-heading">
+        <div className="package-editor-section-icon">{activeTab.icon}</div>
+        <div>
+          <h3>{activeTab.label}</h3>
+          <p>{activeTab.hint}</p>
+        </div>
+      </div>
+
+      <div className="admin-form-panel package-editor-panel bg-white rounded-2xl p-6 border border-gray-200">
         {/* ── BASIC INFO ── */}
         {tab === 'basic' && (
           <div className="space-y-4">
@@ -837,7 +913,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 bg-white">
                   <option value="index, follow">index, follow (default — recommended)</option>
                   <option value="noindex, follow">noindex, follow — hide from Google</option>
-                  <option value="index, nofollow">index, nofollow — don't follow links</option>
+                  <option value="index, nofollow">index, nofollow — do not follow links</option>
                   <option value="noindex, nofollow">noindex, nofollow — full block</option>
                 </select>
               </div>
@@ -877,8 +953,12 @@ export default function PackageForm({ destinations, pkg }: Props) {
         </button>
         <button type="button" onClick={() => router.back()}
           className="border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium px-6 py-3 rounded-xl transition-colors">
-          Cancel
+          <FiArrowLeft size={15} /> Cancel
         </button>
+        <div className="package-editor-save-note">
+          <strong>{completion}% ready</strong>
+          <span>{form.isActive ? 'Will be visible after publishing' : 'Currently set as hidden'}</span>
+        </div>
         {isEdit && (
           <button type="button" onClick={handleDelete}
             className="ml-auto text-red-500 hover:bg-red-50 border border-red-200 font-medium px-5 py-3 rounded-xl transition-colors text-sm">

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { FiEdit2, FiX, FiCalendar, FiUsers, FiDollarSign } from 'react-icons/fi'
+import { FiEdit2, FiX } from 'react-icons/fi'
 
 interface Props {
   packageId: string
@@ -36,19 +36,18 @@ export default function CustomizeTourButton({ packageId, packageTitle }: Props) 
     <>
       <button
         onClick={() => setOpen(true)}
-        className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-xl font-semibold text-sm transition-all border-2 hover:shadow-md"
-        style={{ borderColor: 'var(--brand)', color: 'var(--brand-dark)', background: 'var(--brand-light)' }}
+        className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-lg font-black text-sm transition-all border hover:shadow-md border-[#007f89] text-[#063c43] bg-[#edf8f6]"
       >
         <FiEdit2 size={14} /> Customize This Tour
       </button>
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+          <div className="bg-white rounded-lg shadow-2xl w-full max-w-md overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
               <div>
-                <h2 className="font-bold text-gray-900">Customize This Tour</h2>
-                <p className="text-xs text-gray-400 mt-0.5">{packageTitle}</p>
+                <h2 className="font-bold text-[#101817]">Customize This Tour</h2>
+                <p className="text-xs text-[#8a9691] mt-0.5">{packageTitle}</p>
               </div>
               <button onClick={() => setOpen(false)} className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors">
                 <FiX size={14} />
@@ -57,15 +56,14 @@ export default function CustomizeTourButton({ packageId, packageTitle }: Props) 
 
             {status === 'success' ? (
               <div className="p-8 text-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                <div className="w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-4"
                   style={{ background: 'var(--brand-muted)' }}>
                   <FiEdit2 size={28} style={{ color: 'var(--brand)' }} />
                 </div>
-                <h3 className="font-bold text-gray-800 mb-2">Request Submitted!</h3>
-                <p className="text-sm text-gray-500 mb-5">Our team will review your customization request and get back to you within 24 hours.</p>
+                <h3 className="font-bold text-[#101817] mb-2">Request Submitted!</h3>
+                <p className="text-sm text-[#52615d] mb-5">Our team will review your customization request and get back to you within 24 hours.</p>
                 <button onClick={() => { setOpen(false); setStatus('idle') }}
-                  className="text-sm font-semibold px-6 py-2.5 rounded-xl text-white transition-all"
-                  style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
+                  className="text-sm font-black px-6 py-2.5 rounded-lg bg-[#007f89] text-white transition-all hover:bg-[#063c43]">
                   Done
                 </button>
               </div>
@@ -113,7 +111,7 @@ export default function CustomizeTourButton({ packageId, packageTitle }: Props) 
                   <textarea required rows={3} value={form.requests}
                     onChange={e => setForm(f => ({ ...f, requests: e.target.value }))}
                     className="input-base resize-none"
-                    placeholder="Describe what you'd like to change — dates, hotels, activities, special requirements…" />
+                    placeholder="Describe what you'd like to change - dates, hotels, activities, special requirements..." />
                 </Field>
 
                 {status === 'error' && (
@@ -121,9 +119,8 @@ export default function CustomizeTourButton({ packageId, packageTitle }: Props) 
                 )}
 
                 <button type="submit" disabled={status === 'loading'}
-                  className="w-full py-3 rounded-xl text-white font-semibold text-sm transition-all disabled:opacity-60"
-                  style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
-                  {status === 'loading' ? 'Sending…' : 'Submit Request'}
+                  className="w-full py-3 rounded-lg bg-[#007f89] text-white font-black text-sm transition-all hover:bg-[#063c43] disabled:opacity-60">
+                  {status === 'loading' ? 'Sending...' : 'Submit Request'}
                 </button>
               </form>
             )}
@@ -131,7 +128,7 @@ export default function CustomizeTourButton({ packageId, packageTitle }: Props) 
         </div>
       )}
 
-      <style>{`.input-base { width: 100%; border: 1px solid #e2e8f0; border-radius: 10px; padding: 8px 12px; font-size: 0.875rem; outline: none; transition: border-color 0.15s; } .input-base:focus { border-color: var(--brand); }`}</style>
+      <style>{`.input-base { width: 100%; border: 1px solid #d8ded9; border-radius: 8px; padding: 8px 12px; font-size: 0.875rem; outline: none; transition: border-color 0.15s; background: #fbfaf7; color: #101817; } .input-base:focus { border-color: #007f89; }`}</style>
     </>
   )
 }
@@ -139,7 +136,7 @@ export default function CustomizeTourButton({ packageId, packageTitle }: Props) 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs font-medium text-gray-600 mb-1">
+      <label className="block text-xs font-bold text-[#52615d] mb-1">
         {label}{required && <span className="text-red-400 ml-0.5">*</span>}
       </label>
       {children}

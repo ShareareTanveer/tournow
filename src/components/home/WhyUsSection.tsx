@@ -48,14 +48,10 @@ const PERKS = [
 
 export default function WhyUsSection() {
   return (
-    <section className="py-24 bg-[#0f172a] relative overflow-hidden">
-      {/* Background decorations */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full bg-[#0a83f5]/5 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-[#0d9488]/5 blur-3xl pointer-events-none" />
-
+    <section className="py-24 bg-[#101817] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 relative">
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 bg-white/5 text-[#0a83f5] text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full border border-white/10 mb-4">
+          <div className="inline-flex items-center gap-2 bg-white/10 text-[#f0d492] text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full border border-white/10 mb-4">
             Why Metro Voyage
           </div>
           <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
@@ -70,13 +66,13 @@ export default function WhyUsSection() {
           {PERKS.map(({ icon: Icon, title, desc, color }) => (
             <div
               key={title}
-              className="group flex gap-4 p-6 rounded-2xl bg-white/5 hover:bg-white/8 border border-white/8 hover:border-[#0a83f5]/30 transition-all duration-300 hover:-translate-y-1"
+              className="group flex gap-4 p-6 rounded-lg bg-white/5 hover:bg-white/[0.08] border border-white/[0.08] hover:border-[#f0d492]/30 transition-all duration-300 hover:-translate-y-1"
             >
-              <div className={`w-12 h-12 rounded-xl bg-linear-to-br ${color} flex items-center justify-center shrink-0 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+              <div className={`w-12 h-12 rounded-lg bg-linear-to-br ${color} flex items-center justify-center shrink-0 shadow-lg group-hover:scale-105 transition-transform duration-300`}>
                 <Icon className="text-white text-lg" />
               </div>
               <div>
-                <h3 className="font-bold text-white mb-1.5 group-hover:text-[#0a83f5] transition-colors">{title}</h3>
+                <h3 className="font-bold text-white mb-1.5 group-hover:text-[#f0d492] transition-colors">{title}</h3>
                 <p className="text-sm text-gray-400 leading-relaxed">{desc}</p>
               </div>
             </div>
@@ -90,7 +86,7 @@ export default function WhyUsSection() {
             {['Standard Chartered', 'NTB', 'HSBC', 'Seylan Bank', 'NDB'].map((bank) => (
               <span
                 key={bank}
-                className="text-xs font-semibold text-gray-500 bg-white/5 border border-white/8 px-4 py-2 rounded-xl"
+                className="text-xs font-semibold text-gray-500 bg-white/5 border border-white/[0.08] px-4 py-2 rounded-lg"
               >
                 {bank}
               </span>

@@ -68,7 +68,7 @@ export default async function PackageListingPage({ params, searchParams }: Props
   const heroImage = categoryConfig?.imageUrl ?? getPageHeroImage('packages')
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#fbfaf7]">
       <PageHero
         title={categoryConfig?.label ?? meta.label}
         subtitle={categoryConfig?.description ?? meta.desc}
@@ -82,7 +82,7 @@ export default async function PackageListingPage({ params, searchParams }: Props
         )}
       </PageHero>
 
-      <div className="max-w-7xl mx-auto px-4 py-10">
+      <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6">
         <FilterBar />
 
         {packages.length > 0 ? (
@@ -93,11 +93,11 @@ export default async function PackageListingPage({ params, searchParams }: Props
           </div>
         ) : (
           <div className="text-center py-20">
-            <div className="w-16 h-16 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-4">
-              <FiMapPin size={24} className="text-gray-400" />
+            <div className="w-16 h-16 rounded-lg bg-white border border-[#e5e8e4] flex items-center justify-center mx-auto mb-4">
+              <FiMapPin size={24} className="text-[#8a9691]" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-700 mb-2">No packages found</h3>
-            <p className="text-gray-500">Try adjusting your filters or <a href="/contact" className="underline" style={{ color: 'var(--brand)' }}>contact us</a> for a custom package.</p>
+            <h3 className="text-xl font-black text-[#101817] mb-2">No packages found</h3>
+            <p className="text-[#52615d]">Try adjusting your filters or <a href="/contact" className="underline" style={{ color: 'var(--brand)' }}>contact us</a> for a custom package.</p>
           </div>
         )}
       </div>

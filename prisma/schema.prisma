@@ -583,30 +583,8 @@ model Destination {
 
   packages Package[]
   tours    Tour[]
-  sections DestinationSection[]
 
   @@map("destinations")
-}
-
-model DestinationSection {
-  id            String   @id @default(cuid())
-  destinationId String
-  sectionType   String
-  title         String
-  presetKey     String?
-  order         Int      @default(0)
-  isVisible     Boolean  @default(true)
-  mode          String   @default("template")
-  style         Json?
-  content       Json?
-  canvas        Json?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
-  destination Destination @relation(fields: [destinationId], references: [id], onDelete: Cascade)
-
-  @@index([destinationId, order])
-  @@map("destination_sections")
 }
 
 // ─── VISA SERVICES ────────────────────────────────────────────────────────────

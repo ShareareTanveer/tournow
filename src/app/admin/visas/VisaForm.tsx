@@ -33,8 +33,8 @@ export default function VisaForm({ visa }: { visa?: any }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      <div className="bg-white rounded-2xl p-6 border border-gray-200 space-y-4">
+    <form onSubmit={handleSubmit} className="admin-editor-form admin-form-narrow space-y-5">
+      <div className="admin-form-panel bg-white rounded-2xl p-6 border border-gray-200 space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1.5">Country *</label>
@@ -85,7 +85,7 @@ export default function VisaForm({ visa }: { visa?: any }) {
           <span className="text-sm text-gray-700">Active</span>
         </label>
       </div>
-      <div className="flex gap-3">
+      <div className="admin-form-actions flex gap-3">
         <button type="submit" disabled={loading} className="bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
           {loading ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Visa Service'}
         </button>

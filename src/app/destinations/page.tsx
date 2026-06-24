@@ -24,7 +24,7 @@ export default async function DestinationsPage() {
   const destinations = await getDestinations()
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#fbfaf7]">
       <PageHero
         title="Explore Destinations"
         subtitle="Discover amazing destinations across Asia, Europe, Middle East, Africa & beyond"
@@ -32,11 +32,11 @@ export default async function DestinationsPage() {
         breadcrumbs={[{ label: 'Destinations' }]}
       />
 
-      <div className="max-w-7xl mx-auto px-4 py-10">
+      <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6">
         {/* Featured */}
         {destinations.filter((d: any) => d.isFeatured).length > 0 && (
           <div className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Featured Destinations</h2>
+            <h2 className="text-3xl font-black text-[#101817] mb-6">Featured Destinations</h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
               {destinations.filter((d: any) => d.isFeatured).map((dest: any) => (
                 <DestinationCard key={dest.id} {...dest} packageCount={dest._count?.packages} />
@@ -46,7 +46,7 @@ export default async function DestinationsPage() {
         )}
 
         {/* All */}
-        <h2 className="text-2xl font-bold text-gray-800 mb-6">All Destinations</h2>
+        <h2 className="text-3xl font-black text-[#101817] mb-6">All Destinations</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
           {destinations.map((dest: any) => (
             <DestinationCard key={dest.id} {...dest} packageCount={dest._count?.packages} />
@@ -55,8 +55,8 @@ export default async function DestinationsPage() {
 
         {destinations.length === 0 && (
           <div className="text-center py-20">
-            <div className="text-6xl mb-4">🌍</div>
-            <p className="text-gray-500">Destinations coming soon. Connect your database to see all destinations.</p>
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-lg border border-[#e5e8e4] bg-white text-3xl">MV</div>
+            <p className="text-[#52615d]">Destinations coming soon. Connect your database to see all destinations.</p>
           </div>
         )}
       </div>

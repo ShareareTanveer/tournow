@@ -36,27 +36,27 @@ export default function ContactForm() {
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">Name *</label>
           <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)]" placeholder="Your name" />
+            className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)]" placeholder="Your name" />
         </div>
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1">Email *</label>
           <input required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)]" placeholder="your@email.com" />
+            className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)]" placeholder="your@email.com" />
         </div>
       </div>
       <div>
         <label className="block text-xs font-medium text-gray-700 mb-1">Phone</label>
         <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)]" placeholder="+94 70 xxx xxxx" />
+          className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)]" placeholder="+94 70 xxx xxxx" />
       </div>
       <div>
         <label className="block text-xs font-medium text-gray-700 mb-1">Message *</label>
         <textarea required rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
-          className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] resize-none"
+          className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[var(--brand)] resize-none"
           placeholder="How can we help you?" />
       </div>
       <button type="submit" disabled={loading}
-        className="w-full brand-gradient text-white font-semibold py-3.5 rounded-xl hover:opacity-90 disabled:opacity-60">
+        className="w-full brand-gradient text-white font-semibold py-3.5 rounded-lg hover:opacity-90 disabled:opacity-60">
         {loading ? 'Sending...' : 'Send Message'}
       </button>
     </form>

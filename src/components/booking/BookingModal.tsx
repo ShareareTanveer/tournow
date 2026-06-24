@@ -190,30 +190,33 @@ export default function BookingModal({ open, onClose, target }: Props) {
   const canGoToOptions = totalRooms > 0
 
   const stepOrder: Step[] = ['dates', 'rooms', 'options', 'summary']
+  const brandBtn = 'linear-gradient(135deg, #007f89, #063c43)'
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center p-4 z-50">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-[#101817]/70 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[92vh] mt-12">
+      <div className="relative mt-12 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-xl border border-[#d8ded9] bg-[#fbfaf7] shadow-[0_28px_90px_rgba(0,0,0,0.30)]">
         {/* Header */}
-        <div className="flex items-start justify-between px-6 pt-5 pb-4 border-b border-gray-100 shrink-0">
+        <div className="shrink-0 border-b border-[#e3e7e3] bg-white/90 px-6 pb-4 pt-5">
+          <div className="flex items-start justify-between">
           <div>
-            <p className="text-xs text-gray-400 mb-0.5 uppercase tracking-wide font-semibold">Book Now</p>
-            <h2 className="text-base font-bold text-gray-900 leading-snug line-clamp-2 max-w-[340px]">{target.title}</h2>
+            <p className="mb-0.5 text-[11px] font-bold uppercase tracking-[0.16em] text-[#007f89]">Book Now</p>
+            <h2 className="line-clamp-2 max-w-[340px] text-base font-black leading-snug text-[#17211f]">{target.title}</h2>
           </div>
-          <button onClick={onClose} className="p-2 rounded-xl hover:bg-gray-100 shrink-0 ml-2">
-            <FiX size={18} className="text-gray-500" />
+          <button onClick={onClose} className="ml-2 shrink-0 rounded-lg border border-[#d8ded9] bg-white p-2 hover:bg-[#f4efe6]">
+            <FiX size={18} className="text-[#52615d]" />
           </button>
+          </div>
         </div>
 
         {/* Step indicator */}
         {step !== 'done' && (
-          <div className="flex px-6 pt-3 pb-1 gap-1 shrink-0">
+          <div className="flex shrink-0 gap-1 px-6 pb-1 pt-3">
             {stepOrder.map((s, i) => (
               <div key={s} className="flex items-center gap-1 flex-1">
                 <div className={`h-1 flex-1 rounded-full transition-colors ${
-                  stepOrder.indexOf(step) >= i ? 'bg-indigo-400' : 'bg-gray-200'
+                  stepOrder.indexOf(step) >= i ? 'bg-[#007f89]' : 'bg-[#dce3df]'
                 }`} />
               </div>
             ))}
@@ -221,7 +224,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
         )}
 
         {/* Content */}
-        <div className="overflow-y-auto flex-1 px-6 py-5 space-y-5">
+        <div className="flex-1 space-y-5 overflow-y-auto px-6 py-5">
 
           {/* ── STEP 1: Dates & Pax ── */}
           {step === 'dates' && (
@@ -234,7 +237,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                       min={new Date().toISOString().split('T')[0]}
                       value={form.travelDate}
                       onChange={e => setForm(f => ({ ...f, travelDate: e.target.value }))}
-                      className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400" />
+                      className="w-full rounded-lg border border-[#d8ded9] bg-white px-3 py-2.5 text-sm text-[#17211f] outline-none focus:border-[#007f89] focus:ring-2 focus:ring-[#007f89]/10" />
                   </div>
                   <div>
                     <label className="text-xs font-semibold text-gray-500 block mb-1">Return Date</label>
@@ -242,7 +245,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                       min={form.travelDate || new Date().toISOString().split('T')[0]}
                       value={form.returnDate}
                       onChange={e => setForm(f => ({ ...f, returnDate: e.target.value }))}
-                      className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400" />
+                      className="w-full rounded-lg border border-[#d8ded9] bg-white px-3 py-2.5 text-sm text-[#17211f] outline-none focus:border-[#007f89] focus:ring-2 focus:ring-[#007f89]/10" />
                   </div>
                 </div>
               </Section>
@@ -270,8 +273,8 @@ export default function BookingModal({ open, onClose, target }: Props) {
                       checked={form.isAirfareIncluded}
                       onChange={e => setForm(f => ({ ...f, isAirfareIncluded: e.target.checked }))}
                     />
-                    <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${
-                      form.isAirfareIncluded ? 'border-indigo-500 bg-indigo-500' : 'border-gray-300 bg-white'
+                    <div className={`flex h-5 w-5 items-center justify-center rounded-md border-2 transition-colors ${
+                      form.isAirfareIncluded ? 'border-[#007f89] bg-[#007f89]' : 'border-[#cfd8d3] bg-white'
                     }`}>
                       {form.isAirfareIncluded && (
                         <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -281,8 +284,8 @@ export default function BookingModal({ open, onClose, target }: Props) {
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-800 leading-tight">Include airfare in booking</p>
-                    <p className="text-xs text-gray-400 mt-0.5">Request flight tickets as part of your package. Our team will add the airfare cost to your quote.</p>
+                    <p className="text-sm font-semibold leading-tight text-[#17211f]">Include airfare in booking</p>
+                    <p className="mt-0.5 text-xs text-[#6f7d79]">Request flight tickets as part of your package. Our team will add the airfare cost to your quote.</p>
                   </div>
                 </label>
               </Section>
@@ -313,18 +316,18 @@ export default function BookingModal({ open, onClose, target }: Props) {
                   const isSelected = qty > 0
                   return (
                     <div key={rc.type}
-                      className={`flex items-center justify-between p-4 rounded-xl border-2 transition-colors ${
-                        isSelected ? 'border-indigo-400 bg-indigo-50' : 'border-gray-100'
+                      className={`flex items-center justify-between rounded-lg border-2 p-4 transition-colors ${
+                        isSelected ? 'border-[#007f89] bg-[#edf8f6]' : 'border-[#e6ebe8] bg-white'
                       }`}>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-sm font-semibold ${isSelected ? 'text-indigo-700' : 'text-gray-800'}`}>
+                        <p className={`text-sm font-semibold ${isSelected ? 'text-[#063c43]' : 'text-[#17211f]'}`}>
                           {rc.label}
                         </p>
-                        <p className="text-xs text-gray-400">{rc.description}</p>
-                        <p className="text-xs font-bold text-indigo-600 mt-0.5">
+                        <p className="text-xs text-[#6f7d79]">{rc.description}</p>
+                        <p className="mt-0.5 text-xs font-bold text-[#007f89]">
                           LKR {unitPrice.toLocaleString()} / person
                           {rc.discounted && target.priceTwin && target.priceTwin < target.price && (
-                            <span className="ml-1 text-green-600">(best value)</span>
+                            <span className="ml-1 text-[#3f8f64]">(best value)</span>
                           )}
                         </p>
                       </div>
@@ -332,13 +335,13 @@ export default function BookingModal({ open, onClose, target }: Props) {
                         <button type="button"
                           onClick={() => setRoomQty(rc.type, rc.label, Math.max(0, qty - 1))}
                           disabled={qty === 0}
-                          className="w-8 h-8 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold flex items-center justify-center disabled:opacity-30 transition-colors">
+                          className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#d8ded9] font-bold text-[#52615d] transition-colors hover:border-[#007f89] hover:text-[#007f89] disabled:opacity-30">
                           <FiMinus size={14} />
                         </button>
-                        <span className="w-6 text-center font-bold text-gray-800 text-sm">{qty}</span>
+                        <span className="w-6 text-center text-sm font-bold text-[#17211f]">{qty}</span>
                         <button type="button"
                           onClick={() => setRoomQty(rc.type, rc.label, qty + 1)}
-                          className="w-8 h-8 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold flex items-center justify-center transition-colors">
+                          className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-[#d8ded9] font-bold text-[#52615d] transition-colors hover:border-[#007f89] hover:text-[#007f89]">
                           <FiPlus size={14} />
                         </button>
                       </div>
@@ -347,7 +350,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                 })}
               </div>
               {totalRooms === 0 && (
-                <p className="text-xs text-indigo-500 mt-3 flex items-center gap-1">
+                <p className="mt-3 flex items-center gap-1 text-xs text-[#007f89]">
                   <FiInfo size={12} /> Please select at least one room to continue.
                 </p>
               )}
@@ -365,21 +368,21 @@ export default function BookingModal({ open, onClose, target }: Props) {
                       const selected = form.selectedOptions.some(o => o.label === opt.label)
                       return (
                         <button key={opt.label} type="button" onClick={() => toggleOption(opt)}
-                          className={`w-full flex items-center justify-between p-3 rounded-xl border-2 transition-colors ${
-                            selected ? 'border-indigo-400 bg-indigo-50' : 'border-gray-100 hover:border-gray-200'
+                          className={`flex w-full items-center justify-between rounded-lg border-2 p-3 transition-colors ${
+                            selected ? 'border-[#007f89] bg-[#edf8f6]' : 'border-[#e6ebe8] bg-white hover:border-[#d8ded9]'
                           }`}>
                           <div className="flex items-center gap-3">
-                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                              selected ? 'border-indigo-400 bg-indigo-400' : 'border-gray-300'
+                            <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
+                              selected ? 'border-[#007f89] bg-[#007f89]' : 'border-[#cfd8d3]'
                             }`}>
                               {selected && <FiCheckCircle size={12} className="text-white" />}
                             </div>
                             <span className="text-sm font-medium text-gray-800">{opt.label}</span>
                             {opt.isDefault && (
-                              <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-semibold">Included</span>
+                              <span className="rounded-full bg-[#ecf7f0] px-1.5 py-0.5 text-[10px] font-semibold text-[#3f8f64]">Included</span>
                             )}
                           </div>
-                          <span className="text-sm font-bold text-indigo-600">
+                          <span className="text-sm font-bold text-[#007f89]">
                             {opt.price > 0 ? `+ LKR ${opt.price.toLocaleString()}` : 'Free'}
                           </span>
                         </button>
@@ -395,10 +398,10 @@ export default function BookingModal({ open, onClose, target }: Props) {
               )}
 
               <Section title="Special Requests">
-                <textarea rows={3} placeholder="Any dietary requirements, special occasions, accessibility needs…"
+                <textarea rows={3} placeholder="Any dietary requirements, special occasions, accessibility needs..."
                   value={form.notes}
                   onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                  className="w-full text-sm border border-gray-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-indigo-400 resize-none" />
+                  className="w-full resize-none rounded-lg border border-[#d8ded9] bg-white px-3 py-2.5 text-sm text-[#17211f] outline-none focus:border-[#007f89] focus:ring-2 focus:ring-[#007f89]/10" />
               </Section>
             </>
           )}
@@ -440,7 +443,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                   ))}
                   <div className="border-t border-gray-100 pt-2 mt-2 flex justify-between font-bold text-gray-900">
                     <span>Estimated Total</span>
-                    <span className="text-lg text-indigo-500">LKR {grandTotal.toLocaleString()}</span>
+                    <span className="text-lg text-[#007f89]">LKR {grandTotal.toLocaleString()}</span>
                   </div>
                 </div>
               </Section>
@@ -452,7 +455,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                       {target.cancellationTiers.map((t, i) => (
                         <div key={i} className="flex justify-between text-xs text-gray-600 py-1 border-b border-gray-50 last:border-0">
                           <span>{t.label}</span>
-                          <span className={`font-semibold ${t.refundPercent === 100 ? 'text-green-600' : t.refundPercent === 0 ? 'text-red-500' : 'text-indigo-500'}`}>
+                          <span className={`font-semibold ${t.refundPercent === 100 ? 'text-[#3f8f64]' : t.refundPercent === 0 ? 'text-red-500' : 'text-[#007f89]'}`}>
                             {t.refundPercent}% refund
                           </span>
                         </div>
@@ -464,9 +467,9 @@ export default function BookingModal({ open, onClose, target }: Props) {
                 </Section>
               )}
 
-              <div className="p-4 bg-amber-50 border border-amber-100 rounded-xl flex gap-2">
-                <FiInfo size={14} className="text-amber-500 shrink-0 mt-0.5" />
-                <p className="text-xs text-amber-700">
+              <div className="flex gap-2 rounded-lg border border-[#f0e2c4] bg-[#fff9ee] p-4">
+                <FiInfo size={14} className="mt-0.5 shrink-0 text-[#c99a45]" />
+                <p className="text-xs text-[#8a6730]">
                   This is an estimate. Our team will review your request and send you a personalised quote with the final price.
                 </p>
               </div>
@@ -476,24 +479,24 @@ export default function BookingModal({ open, onClose, target }: Props) {
           {/* ── DONE ── */}
           {step === 'done' && (
             <div className="text-center py-6">
-              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                <FiCheckCircle size={32} className="text-green-500" />
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#ecf7f0]">
+                <FiCheckCircle size={32} className="text-[#3f8f64]" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-1">Booking Requested!</h3>
-              <p className="text-sm text-gray-500 mb-4">
-                Reference: <span className="font-mono font-bold text-gray-800">{bookingRef.slice(-8).toUpperCase()}</span>
+              <h3 className="mb-1 text-xl font-bold text-[#17211f]">Booking Requested!</h3>
+              <p className="mb-4 text-sm text-[#6f7d79]">
+                Reference: <span className="font-mono font-bold text-[#17211f]">{bookingRef.slice(-8).toUpperCase()}</span>
               </p>
-              <p className="text-sm text-gray-600 mb-6 max-w-xs mx-auto">
+              <p className="mx-auto mb-6 max-w-xs text-sm text-[#52615d]">
                 Our team will prepare a personalised quote for your trip and notify you at <strong>{customer?.email}</strong>.
               </p>
               <div className="space-y-2">
                 <a href="/my/bookings"
-                  className="block w-full py-2.5 rounded-xl text-white font-semibold text-sm"
-                  style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
+                  className="block w-full rounded-lg py-2.5 text-sm font-semibold text-white"
+                  style={{ background: brandBtn }}>
                   View My Bookings
                 </a>
                 <button onClick={onClose}
-                  className="block w-full py-2.5 rounded-xl border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50">
+                  className="block w-full rounded-lg border border-[#d8ded9] py-2.5 text-sm font-semibold text-[#52615d] hover:bg-white">
                   Close
                 </button>
               </div>
@@ -501,7 +504,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
           )}
 
           {error && (
-            <div className="px-4 py-3 bg-red-50 border border-red-100 rounded-xl text-sm text-red-600">
+            <div className="rounded-lg border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-600">
               {error}
             </div>
           )}
@@ -509,14 +512,15 @@ export default function BookingModal({ open, onClose, target }: Props) {
 
         {/* Footer navigation */}
         {step !== 'done' && (
-          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between shrink-0 bg-white">
+          <div className="shrink-0 border-t border-[#e3e7e3] bg-white px-6 py-4">
+            <div className="flex items-center justify-between">
             {step !== 'dates' ? (
               <button
                 onClick={() => {
                   const prev: Record<Step, Step> = { dates: 'dates', rooms: 'dates', options: 'rooms', summary: 'options', done: 'summary' }
                   setStep(prev[step])
                 }}
-                className="text-sm font-semibold text-gray-500 hover:text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-50">
+                className="rounded-lg px-4 py-2 text-sm font-semibold text-[#52615d] hover:bg-[#f4efe6] hover:text-[#17211f]">
                 ← Back
               </button>
             ) : <div />}
@@ -524,38 +528,39 @@ export default function BookingModal({ open, onClose, target }: Props) {
             <div className="flex items-center gap-3">
               {step !== 'summary' && grandTotal > 0 && (
                 <div className="text-right">
-                  <p className="text-xs text-gray-400">Est. Total</p>
-                  <p className="font-black text-base text-indigo-500">LKR {grandTotal.toLocaleString()}</p>
+                  <p className="text-xs text-[#8a9691]">Est. Total</p>
+                  <p className="text-base font-black text-[#007f89]">LKR {grandTotal.toLocaleString()}</p>
                 </div>
               )}
               {step === 'dates' && (
                 <button onClick={() => setStep('rooms')} disabled={!canGoToRooms}
-                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-white font-semibold text-sm disabled:opacity-40 transition-all"
-                  style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
+                  className="flex items-center gap-1.5 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-all disabled:opacity-40"
+                  style={{ background: brandBtn }}>
                   Choose Rooms <FiChevronRight size={14} />
                 </button>
               )}
               {step === 'rooms' && (
                 <button onClick={() => setStep('options')} disabled={!canGoToOptions}
-                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-white font-semibold text-sm disabled:opacity-40 transition-all"
-                  style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
+                  className="flex items-center gap-1.5 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-all disabled:opacity-40"
+                  style={{ background: brandBtn }}>
                   Continue <FiChevronRight size={14} />
                 </button>
               )}
               {step === 'options' && (
                 <button onClick={() => setStep('summary')}
-                  className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-white font-semibold text-sm"
-                  style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
+                  className="flex items-center gap-1.5 rounded-lg px-5 py-2.5 text-sm font-semibold text-white"
+                  style={{ background: brandBtn }}>
                   Review Booking <FiChevronRight size={14} />
                 </button>
               )}
               {step === 'summary' && (
                 <button onClick={submitBooking} disabled={loading}
-                  className="flex items-center gap-1.5 px-6 py-2.5 rounded-xl text-white font-semibold text-sm disabled:opacity-60 transition-all"
-                  style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
-                  {loading ? 'Submitting…' : 'Send Booking Request'}
+                  className="flex items-center gap-1.5 rounded-lg px-6 py-2.5 text-sm font-semibold text-white transition-all disabled:opacity-60"
+                  style={{ background: brandBtn }}>
+                  {loading ? 'Submitting...' : 'Send Booking Request'}
                 </button>
               )}
+            </div>
             </div>
           </div>
         )}
@@ -566,8 +571,8 @@ export default function BookingModal({ open, onClose, target }: Props) {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div>
-      <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">{title}</h3>
+    <div className="rounded-lg border border-[#e6ebe8] bg-white p-4">
+      <h3 className="mb-3 text-xs font-bold uppercase tracking-[0.14em] text-[#52615d]">{title}</h3>
       {children}
     </div>
   )
@@ -576,8 +581,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between gap-2">
-      <span className="text-gray-500">{label}</span>
-      <span className="font-medium text-gray-800 text-right">{value}</span>
+      <span className="text-[#52615d]">{label}</span>
+      <span className="text-right font-medium text-[#17211f]">{value}</span>
     </div>
   )
 }
@@ -587,17 +592,17 @@ function Counter({ label, sub, priceHint, min = 0, max = 20, value, onChange }: 
 }) {
   return (
     <div className="text-center">
-      {label && <p className="text-xs font-semibold text-gray-600 mb-0.5">{label}</p>}
-      {sub && <p className="text-[10px] text-gray-400 mb-0.5">{sub}</p>}
-      {priceHint && <p className="text-[10px] text-indigo-500 font-semibold mb-1">{priceHint}</p>}
+      {label && <p className="mb-0.5 text-xs font-semibold text-[#52615d]">{label}</p>}
+      {sub && <p className="mb-0.5 text-[10px] text-[#8a9691]">{sub}</p>}
+      {priceHint && <p className="mb-1 text-[10px] font-semibold text-[#007f89]">{priceHint}</p>}
       <div className="flex items-center justify-center gap-2">
         <button type="button" onClick={() => onChange(Math.max(min, value - 1))}
-          className="w-7 h-7 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold text-base flex items-center justify-center transition-colors">
+          className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#d8ded9] text-base font-bold text-[#52615d] transition-colors hover:border-[#007f89] hover:text-[#007f89]">
           −
         </button>
-        <span className="w-6 text-center font-bold text-gray-800">{value}</span>
+        <span className="w-6 text-center font-bold text-[#17211f]">{value}</span>
         <button type="button" onClick={() => onChange(Math.min(max, value + 1))}
-          className="w-7 h-7 rounded-full border-2 border-gray-200 text-gray-600 hover:border-indigo-400 hover:text-indigo-500 font-bold text-base flex items-center justify-center transition-colors">
+          className="flex h-7 w-7 items-center justify-center rounded-full border-2 border-[#d8ded9] text-base font-bold text-[#52615d] transition-colors hover:border-[#007f89] hover:text-[#007f89]">
           +
         </button>
       </div>

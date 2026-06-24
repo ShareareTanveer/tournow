@@ -105,10 +105,10 @@ export default function PerkForm({ perk }: Props) {
         <FiArrowLeft size={14} /> Back to Perks
       </Link>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="admin-editor-form admin-form-narrow space-y-6">
 
         {/* ── Basic Info ── */}
-        <section className="bg-white rounded-2xl border border-gray-200 p-6 space-y-5">
+        <section className="admin-form-panel bg-white rounded-2xl border border-gray-200 p-6 space-y-5">
           <h2 className="font-bold text-gray-700 text-sm uppercase tracking-wide flex items-center gap-2">
             <FiTag size={14} /> Basic Info
           </h2>
@@ -165,7 +165,7 @@ export default function PerkForm({ perk }: Props) {
         </section>
 
         {/* ── Appearance ── */}
-        <section className="bg-white rounded-2xl border border-gray-200 p-6 space-y-5">
+        <section className="admin-form-panel bg-white rounded-2xl border border-gray-200 p-6 space-y-5">
           <h2 className="font-bold text-gray-700 text-sm uppercase tracking-wide flex items-center gap-2">
             <FiImage size={14} /> Appearance
           </h2>
@@ -238,7 +238,7 @@ export default function PerkForm({ perk }: Props) {
         </section>
 
         {/* ── Link ── */}
-        <section className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+        <section className="admin-form-panel bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
           <h2 className="font-bold text-gray-700 text-sm uppercase tracking-wide flex items-center gap-2">
             <FiLink size={14} /> CTA Link
           </h2>

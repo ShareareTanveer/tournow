@@ -5,7 +5,7 @@ import { z } from 'zod'
 
 const UpsertSchema = z.object({
   provider:  z.enum(['openai', 'groq', 'gemini', 'openrouter']),
-  apiKey:    z.string().min(1),
+  apiKey:    z.string().min(1).optional(),
   model:     z.string().min(1),
   isActive:  z.boolean().optional(),
   isPrimary: z.boolean().optional(),
@@ -40,13 +40,18 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid request', issues: parsed.error.issues }, { status: 400 })
   }
 
-  const result = await upsertProvider(parsed.data)
-  return NextResponse.json({
-    ...result,
-    apiKey: result.apiKey.length > 6
-      ? '•'.repeat(result.apiKey.length - 6) + result.apiKey.slice(-6)
-      : '••••••',
-  })
+  try {
+    const result = await upsertProvider(parsed.data)
+    return NextResponse.json({
+      ...result,
+      apiKey: result.apiKey.length > 6
+        ? '•'.repeat(result.apiKey.length - 6) + result.apiKey.slice(-6)
+        : '••••••',
+    })
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to save provider'
+    return NextResponse.json({ error: message }, { status: 400 })
+  }
 }
 
 export async function DELETE(req: NextRequest) {

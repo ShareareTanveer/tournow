@@ -19,14 +19,10 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ slu
           orderBy: [{ isFeatured: 'desc' }, { price: 'asc' }],
           take: 12,
         },
-        sections: {
-          where: { isVisible: true },
-          orderBy: { order: 'asc' },
-        },
       },
     })
     if (!dest) return NextResponse.json({ error: 'Destination not found' }, { status: 404 })
-    return NextResponse.json({ ...dest, sections: dest.sections })
+    return NextResponse.json(dest)
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -39,7 +35,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
   try {
     const { slug } = await params
     const body = await req.json()
-    const parsed = DestinationSchema.partial().safeParse(body)
+    const parsed: any = DestinationSchema.partial().safeParse(body)
     if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
 
     const dest = await prisma.destination.update({ where: { slug }, data: parsed.data })

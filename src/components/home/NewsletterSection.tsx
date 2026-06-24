@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FiMail, FiPhone, FiSend, FiCheckCircle } from "react-icons/fi";
 import { MdFlightTakeoff } from "react-icons/md";
+import SectionTag from "@/components/ui/SectionTag";
 
 export default function NewsletterSection() {
   const [form, setForm] = useState({ email: "", whatsapp: "" });
@@ -25,151 +26,102 @@ export default function NewsletterSection() {
   };
 
   return (
-    <section
-      className="relative py-24 overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(135deg, var(--background), var(--brandLight))",
-      }}
-    >
-      {/* Glow */}
-      <div
-        className="absolute top-0 left-0 w-72 h-72 rounded-full blur-3xl opacity-30"
-        style={{ background: "var(--brand)" }}
-      />
-      <div
-        className="absolute bottom-0 right-0 w-72 h-72 rounded-full blur-3xl opacity-30"
-        style={{ background: "var(--teal)" }}
-      />
+    <section className="relative overflow-hidden bg-[#fbfaf7] py-20 sm:py-24">
+      <div className="max-w-5xl mx-auto px-4">
+        <div className="overflow-hidden rounded-lg border border-[#e5e8e4] bg-white shadow-[0_22px_70px_rgba(16,24,23,0.08)]">
+          <div className="h-1.5 w-full" style={{ background: 'linear-gradient(90deg, #007f89, #c99a45, #3f8f64)' }} />
 
-      <div className="relative max-w-5xl mx-auto px-4">
-        <div
-          className="rounded-[28px] p-8 md:p-12 text-center "
-          style={{
-            background: "rgba(255,255,255,0.8)",
-            borderColor: "var(--brandMuted)",
-          }}
-        >
-          {/* Icon */}
-          <div
-            className="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-2xl text-white text-2xl shadow-md"
-            style={{
-              background: "linear-gradient(135deg, var(--brand), var(--teal))",
-            }}
-          >
-            <MdFlightTakeoff size={28} />
-          </div>
-
-          {/* Heading */}
-          <h2
-            className="text-3xl md:text-4xl font-bold mb-4 leading-tight"
-            style={{ color: "var(--foreground)" }}
-          >
-            Get{" "}
-            <span
-              style={{
-                background:
-                  "linear-gradient(135deg, var(--brand), var(--teal))",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Exclusive Travel Deals
-            </span>
-          </h2>
-
-          <p
-            className="max-w-xl mx-auto mb-10"
-            style={{ color: "var(--darkMuted)" }}
-          >
-            Discover hidden destinations, flash offers, and curated travel
-            experiences — straight to your inbox.
-          </p>
-
-          {success ? (
-            <div
-              className="rounded-2xl p-6 border flex items-center justify-center gap-3"
-              style={{
-                background: "var(--brandLight)",
-                borderColor: "var(--brand)",
-                color: "var(--brandDark)",
-              }}
-            >
-              <FiCheckCircle size={22} />
-              <span className="text-lg font-medium">
-                You’re subscribed! Check your inbox for deals.
-              </span>
+          <div className="p-8 text-center md:p-14">
+            <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-lg text-white"
+              style={{ background: 'linear-gradient(135deg, #007f89, #3f8f64)' }}>
+              <MdFlightTakeoff size={28} />
             </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Inputs */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Email */}
-                <div className="relative">
-                  <FiMail
-                    className="absolute left-4 top-1/2 -translate-y-1/2"
-                    style={{ color: "var(--darkMuted)" }}
-                  />
-                  <input
-                    type="email"
-                    required
-                    value={form.email}
-                    onChange={(e) =>
-                      setForm({ ...form, email: e.target.value })
-                    }
-                    placeholder="Enter your email"
-                    className="w-full pl-12 pr-4 py-4 rounded-2xl outline-none transition"
-                    style={{
-                      background: "#fff",
-                      color: "var(--foreground)",
-                      border: "1px solid var(--brandMuted)",
-                    }}
-                  />
-                </div>
 
-                {/* WhatsApp */}
-                <div className="relative">
-                  <FiPhone
-                    className="absolute left-4 top-1/2 -translate-y-1/2"
-                    style={{ color: "var(--darkMuted)" }}
-                  />
-                  <input
-                    type="tel"
-                    value={form.whatsapp}
-                    onChange={(e) =>
-                      setForm({ ...form, whatsapp: e.target.value })
-                    }
-                    placeholder="WhatsApp (optional)"
-                    className="w-full pl-12 pr-4 py-4 rounded-2xl outline-none transition"
-                    style={{
-                      background: "#fff",
-                      color: "var(--foreground)",
-                      border: "1px solid var(--brandMuted)",
-                    }}
-                  />
+            <SectionTag className="mx-auto mb-4">
+              Stay in the loop
+            </SectionTag>
+
+            <h2 className="text-3xl md:text-5xl font-black text-[#101817] leading-tight mb-3">
+              Get{" "}
+              <span className="gradient-text">Exclusive Travel Deals</span>
+            </h2>
+            <p className="text-[#52615d] max-w-md mx-auto mb-10 text-sm leading-relaxed">
+              Hidden destinations, flash offers, and curated travel experiences straight to your inbox. No spam.
+            </p>
+
+            {success ? (
+              <div className="max-w-md mx-auto py-6 px-8 rounded-lg border border-[#d8eee9] flex items-center justify-center gap-3 bg-[#edf8f6]">
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center"
+                  style={{ background: 'rgba(0,127,137,0.15)' }}>
+                  <FiCheckCircle size={20} style={{ color: '#007f89' }} />
+                </div>
+                <div className="text-left">
+                  <p className="text-[#101817] font-bold text-sm">You&apos;re in!</p>
+                  <p className="text-[#52615d] text-xs mt-0.5">Check your inbox for the best deals.</p>
                 </div>
               </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="max-w-xl mx-auto space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="relative">
+                    <FiMail size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8a9691]" />
+                    <input
+                      type="email"
+                      required
+                      value={form.email}
+                      onChange={e => setForm({ ...form, email: e.target.value })}
+                      placeholder="your@email.com"
+                      className="w-full pl-10 pr-4 py-3.5 rounded-lg text-sm text-[#101817] placeholder-[#9ca7a2] outline-none transition-all bg-[#fbfaf7] border border-[#d8ded9]"
+                      onFocus={e => { e.currentTarget.style.borderColor = 'rgba(0,127,137,0.6)'; e.currentTarget.style.background = '#fff' }}
+                      onBlur={e => { e.currentTarget.style.borderColor = '#d8ded9'; e.currentTarget.style.background = '#fbfaf7' }}
+                    />
+                  </div>
 
-              {/* Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                  className="mx-auto flex items-center justify-center gap-2 text-white text-sm font-bold px-5 py-3.5 rounded-xl transition-all"
-              style={{
-                background:
-                  "linear-gradient(135deg, var(--brand), var(--brand-dark))",
-                boxShadow: "0 4px 20px",
-              }}
-              >
-                {loading ? "Subscribing..." : "Get Deals Now"}
-                <FiSend className="transition-transform group-hover:translate-x-1" />
-              </button>
+                  <div className="relative">
+                    <FiPhone size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#8a9691]" />
+                    <input
+                      type="tel"
+                      value={form.whatsapp}
+                      onChange={e => setForm({ ...form, whatsapp: e.target.value })}
+                      placeholder="WhatsApp (optional)"
+                      className="w-full pl-10 pr-4 py-3.5 rounded-lg text-sm text-[#101817] placeholder-[#9ca7a2] outline-none transition-all bg-[#fbfaf7] border border-[#d8ded9]"
+                      onFocus={e => { e.currentTarget.style.borderColor = 'rgba(0,127,137,0.6)'; e.currentTarget.style.background = '#fff' }}
+                      onBlur={e => { e.currentTarget.style.borderColor = '#d8ded9'; e.currentTarget.style.background = '#fbfaf7' }}
+                    />
+                  </div>
+                </div>
 
-              <p className="text-xs" style={{ color: "var(--darkMuted)" }}>
-                No spam. Only premium travel deals
-              </p>
-            </form>
-          )}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full sm:w-auto mx-auto flex items-center justify-center gap-2.5 text-white font-black px-8 py-3.5 rounded-lg transition-all hover:-translate-y-0.5 disabled:opacity-60 text-sm"
+                  style={{
+                    background: 'linear-gradient(135deg, #007f89, #3f8f64)',
+                    boxShadow: '0 12px 30px rgba(0,127,137,0.24)',
+                  }}
+                >
+                  {loading ? "Subscribing..." : (<>Get Deals Now <FiSend size={14} /></>)}
+                </button>
+
+                <p className="text-[#8a9691] text-xs">
+                  No spam · Unsubscribe anytime · 100% free
+                </p>
+              </form>
+            )}
+
+            <div className="flex items-center justify-center gap-6 mt-8 pt-8 border-t border-[#edf0ed]">
+              {[
+                { n: '5,000+', l: 'Subscribers' },
+                { n: 'Weekly', l: 'Deal Alerts' },
+                { n: '100%', l: 'Free Forever' },
+              ].map(({ n, l }) => (
+                <div key={l} className="text-center">
+                  <p className="text-[#101817] font-black text-base">{n}</p>
+                  <p className="text-[#8a9691] text-[10px] font-medium mt-0.5">{l}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

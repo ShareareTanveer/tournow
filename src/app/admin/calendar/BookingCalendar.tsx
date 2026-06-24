@@ -710,11 +710,11 @@ export default function BookingCalendar({ bookings }: { bookings: CalendarBookin
   ]
 
   return (
-    <div className="flex gap-4 h-[calc(100vh-140px)] min-h-150">
+    <div className="admin-calendar-layout flex flex-col lg:flex-row gap-4 h-auto lg:h-[calc(100vh-140px)] min-h-0 lg:min-h-150">
 
       {/* ── Left Sidebar ── */}
       {sidebarOpen && (
-        <aside className="w-56 shrink-0 flex flex-col gap-4 overflow-y-auto">
+        <aside className="admin-calendar-sidebar w-full lg:w-56 shrink-0 flex flex-col gap-4 overflow-y-auto">
           <MiniCalendar cursor={cursor} setCursor={d => { setCursor(d); setView('day') }} bookings={filteredBookings} />
           <StatsSidebar bookings={bookings} cursor={cursor} />
           <div className="bg-white rounded-2xl border border-gray-100 p-3">
@@ -724,7 +724,7 @@ export default function BookingCalendar({ bookings }: { bookings: CalendarBookin
       )}
 
       {/* ── Main Calendar ── */}
-      <div className="flex-1 flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden min-w-0">
+      <div className="admin-calendar-main flex-1 flex flex-col bg-white rounded-2xl border border-gray-200 overflow-hidden min-w-0 min-h-[68vh] lg:min-h-0">
 
         {/* Toolbar */}
         <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-3 flex-wrap shrink-0">
@@ -756,13 +756,13 @@ export default function BookingCalendar({ bookings }: { bookings: CalendarBookin
           <h2 className="font-black text-gray-800 text-base flex-1 min-w-0 truncate">{titleLabel}</h2>
 
           {/* Search */}
-          <div className="relative">
+          <div className="relative w-full sm:w-auto">
             <FiSearch size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search…"
-              className="pl-7 pr-3 py-1.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:border-indigo-300 bg-gray-50 w-36"
+              className="pl-7 pr-3 py-1.5 text-xs border border-gray-200 rounded-xl focus:outline-none focus:border-indigo-300 bg-gray-50 w-full sm:w-36"
             />
           </div>
 
@@ -810,7 +810,7 @@ export default function BookingCalendar({ bookings }: { bookings: CalendarBookin
 
           {/* Detail panel */}
           {selected && (
-            <div className="w-80 shrink-0 border-l border-gray-100 bg-gray-50/40 flex flex-col">
+            <div className="admin-calendar-detail w-full lg:w-80 shrink-0 border-t lg:border-t-0 lg:border-l border-gray-100 bg-gray-50/40 flex flex-col">
               <DetailPanel booking={selected} onClose={() => setSelected(null)} />
             </div>
           )}

@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import AdminTable, { Column } from '@/components/admin/AdminTable'
 import DeleteBtn from '@/components/admin/DeleteBtn'
-import { FiEdit2, FiStar, FiEye, FiEyeOff, FiLayout } from 'react-icons/fi'
+import { FiEdit2, FiStar, FiEye, FiEyeOff } from 'react-icons/fi'
 
 interface Destination {
   id: string; slug: string; name: string; region: string; country: string
@@ -75,10 +75,6 @@ export default function DestinationsClient({ destinations }: { destinations: Des
           <Link href={`/admin/destinations/${d.slug}`}
             className="flex items-center gap-1.5 text-xs font-semibold text-white bg-indigo-500 hover:bg-indigo-600 px-3 py-1.5 rounded-lg transition-colors">
             <FiEdit2 size={12} /> Edit
-          </Link>
-          <Link href={`/admin/destinations/${d.slug}/builder`}
-            className="flex items-center gap-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-colors">
-            <FiLayout size={12} /> Builder
           </Link>
           <DeleteBtn url={`/api/destinations/${d.slug}`} label="Delete" />
         </div>

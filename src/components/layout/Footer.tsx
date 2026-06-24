@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { FiPhone, FiMail, FiMapPin, FiClock } from "react-icons/fi";
 import {
   FaWhatsapp,
@@ -25,20 +26,29 @@ const SOCIAL = [
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0f172a] text-gray-400">
-      {/* Main footer */}
-      <div className="max-w-7xl mx-auto px-4 py-16">
+    <footer className="relative overflow-hidden bg-[#101817] text-white/[0.56]">
+      <div className="border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 py-5 text-xs text-white/[0.52] sm:px-6">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <span className="font-semibold text-[#f0d492]">Metro Voyage travel desk is open daily, 9 AM - 10 PM.</span>
+            <span>SLTDA Licensed · CAA Certified · Reg: PV 00250114</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Brand column */}
           <div>
              <Link href="/" className="flex items-center gap-3 shrink-0">
-            <img
+            <Image
               src="/logo.png"
               alt="Metro Voyage Logo"
-              className="w-40 h-24 rounded-xl mb-4"
+              width={210}
+              height={130}
+              className="mb-5 h-16 w-auto"
             />
           </Link>
-            <p className="text-sm leading-relaxed text-gray-400 mb-6">
+            <p className="text-sm leading-relaxed text-white/[0.58] mb-6">
               Crafting personalized, unforgettable holidays from Sri Lanka since
               2018. SLTDA Licensed &amp; fully bonded.
             </p>
@@ -50,7 +60,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="w-9 h-9 rounded-xl bg-white/5 hover:bg-white/15 flex items-center justify-center transition-all duration-200 hover:scale-110"
+                  className="w-9 h-9 rounded-lg bg-white/[0.06] hover:bg-white/[0.14] flex items-center justify-center transition-all duration-200 hover:-translate-y-0.5"
                   style={{ color }}
                 >
                   <Icon size={15} />
@@ -59,9 +69,8 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Packages */}
           <div>
-            <h3 className="font-bold text-white mb-5 text-xs uppercase tracking-widest">
+            <h3 className="font-bold text-white mb-5 text-xs uppercase tracking-[0.18em]">
               Packages
             </h3>
             <ul className="space-y-2.5 text-sm">
@@ -77,7 +86,7 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="hover:text-[#0a83f5] transition-colors"
+                    className="hover:text-[#f0d492] transition-colors"
                   >
                     {label}
                   </Link>
@@ -86,9 +95,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Company */}
           <div>
-            <h3 className="font-bold text-white mb-5 text-xs uppercase tracking-widest">
+            <h3 className="font-bold text-white mb-5 text-xs uppercase tracking-[0.18em]">
               Company
             </h3>
             <ul className="space-y-2.5 text-sm">
@@ -105,7 +113,7 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="hover:text-[#0a83f5] transition-colors"
+                    className="hover:text-[#f0d492] transition-colors"
                   >
                     {label}
                   </Link>
@@ -114,19 +122,18 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
           <div>
-            <h3 className="font-bold text-white mb-5 text-xs uppercase tracking-widest">
+            <h3 className="font-bold text-white mb-5 text-xs uppercase tracking-[0.18em]">
               Contact Us
             </h3>
             <ul className="space-y-4 text-sm">
               <li>
                 <a
                   href="tel:+94704545455"
-                  className="flex items-start gap-3 hover:text-[#0a83f5] transition-colors group"
+                  className="flex items-start gap-3 hover:text-[#f0d492] transition-colors group"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-[#0a83f5]/10 flex items-center justify-center shrink-0 group-hover:bg-[#0a83f5]/20 transition-colors">
-                    <FiPhone className="text-[#0a83f5] text-sm" />
+                  <div className="w-8 h-8 rounded-lg bg-white/[0.08] flex items-center justify-center shrink-0 group-hover:bg-white/[0.14] transition-colors">
+                    <FiPhone className="text-[#f0d492] text-sm" />
                   </div>
                   <span className="leading-relaxed pt-1">+94 70 454 5455</span>
                 </a>
@@ -134,10 +141,10 @@ export default function Footer() {
               <li>
                 <a
                   href="mailto:contact@metrovoyage.com"
-                  className="flex items-start gap-3 hover:text-[#0a83f5] transition-colors group"
+                  className="flex items-start gap-3 hover:text-[#f0d492] transition-colors group"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-[#0a83f5]/10 flex items-center justify-center shrink-0 group-hover:bg-[#0a83f5]/20 transition-colors">
-                    <FiMail className="text-[#0a83f5] text-sm" />
+                  <div className="w-8 h-8 rounded-lg bg-white/[0.08] flex items-center justify-center shrink-0 group-hover:bg-white/[0.14] transition-colors">
+                    <FiMail className="text-[#f0d492] text-sm" />
                   </div>
                   <span className="leading-relaxed pt-1">
                     contact@metrovoyage.com
@@ -145,28 +152,28 @@ export default function Footer() {
                 </a>
               </li>
               <li className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#0a83f5]/10 flex items-center justify-center shrink-0">
-                  <FiMapPin className="text-[#0a83f5] text-sm" />
+                <div className="w-8 h-8 rounded-lg bg-white/[0.08] flex items-center justify-center shrink-0">
+                  <FiMapPin className="text-[#f0d492] text-sm" />
                 </div>
-                <span className="text-gray-400 leading-relaxed pt-1">
+                <span className="text-white/[0.56] leading-relaxed pt-1">
                   Level 2, 9/1, Deal Place A,
                   <br />
                   Kollupitiya, Colombo 03
                 </span>
               </li>
               <li className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-[#0a83f5]/10 flex items-center justify-center shrink-0">
-                  <FiClock className="text-[#0a83f5] text-sm" />
+                <div className="w-8 h-8 rounded-lg bg-white/[0.08] flex items-center justify-center shrink-0">
+                  <FiClock className="text-[#f0d492] text-sm" />
                 </div>
-                <span className="text-gray-400 leading-relaxed pt-1">
-                  9 AM – 10 PM, Daily
+                <span className="text-white/[0.56] leading-relaxed pt-1">
+                  9 AM - 10 PM, Daily
                 </span>
               </li>
             </ul>
             <div className="mt-6">
               <Link
                 href="/consultation"
-                className="inline-block teal-gradient text-white text-sm font-bold px-5 py-3 rounded-xl hover:opacity-90 transition-opacity shadow-lg"
+                className="inline-block bg-white text-[#101817] text-sm font-black px-5 py-3 rounded-lg hover:bg-[#f4efe6] transition-colors"
               >
                 Book Free Consultation
               </Link>
@@ -175,15 +182,14 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className="border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-gray-600">
+      <div className="border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-white/[0.38] sm:px-6">
           <div className="flex items-center gap-4">
             <span>
               © {new Date().getFullYear()} Metro Voyage (Pvt) Ltd. All rights
               reserved.
             </span>
-            <span className="text-gray-700 font-medium">Reg: PV 00250114</span>
+            <span className="font-medium">Reg: PV 00250114</span>
           </div>
           <div className="flex gap-5">
             {[
@@ -195,7 +201,7 @@ export default function Footer() {
               <Link
                 key={href}
                 href={href}
-                className="hover:text-[#0a83f5] transition-colors"
+                className="hover:text-[#f0d492] transition-colors"
               >
                 {label}
               </Link>

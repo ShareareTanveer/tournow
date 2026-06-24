@@ -42,9 +42,9 @@ export default function NewsForm({ news }: { news?: any }) {
       currentSlug={form.slug}
       onAutoLink={(newBody) => setForm(f => ({ ...f, body: newBody }))}
     />
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="admin-editor-form admin-form-narrow space-y-5">
       {/* Basic info */}
-      <div className="bg-white rounded-2xl p-6 border border-gray-200 space-y-4">
+      <div className="admin-form-panel bg-white rounded-2xl p-6 border border-gray-200 space-y-4">
         <h3 className="font-bold text-gray-800 mb-1">Article Details</h3>
         <div>
           <label className="block text-xs font-semibold text-gray-500 mb-1.5">Title *</label>
@@ -72,7 +72,7 @@ export default function NewsForm({ news }: { news?: any }) {
       </div>
 
       {/* Cover Image */}
-      <div className="bg-white rounded-2xl p-6 border border-gray-200">
+      <div className="admin-form-panel bg-white rounded-2xl p-6 border border-gray-200">
         <MediaUploader
           label="Featured Image"
           value={form.imageUrl}
@@ -82,7 +82,7 @@ export default function NewsForm({ news }: { news?: any }) {
       </div>
 
       {/* Body */}
-      <div className="bg-white rounded-2xl p-6 border border-gray-200 space-y-3">
+      <div className="admin-form-panel bg-white rounded-2xl p-6 border border-gray-200 space-y-3">
         <h3 className="font-bold text-gray-800">Article Body *</h3>
         <RichTextEditor
           value={form.body}
@@ -92,14 +92,14 @@ export default function NewsForm({ news }: { news?: any }) {
       </div>
 
       {/* Visibility */}
-      <div className="bg-white rounded-2xl p-6 border border-gray-200">
+      <div className="admin-form-panel bg-white rounded-2xl p-6 border border-gray-200">
         <label className="flex items-center gap-2 cursor-pointer">
           <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="w-4 h-4 accent-indigo-500" />
           <span className="text-sm text-gray-700 font-medium">Published (visible on website)</span>
         </label>
       </div>
 
-      <div className="flex gap-3">
+      <div className="admin-form-actions flex gap-3">
         <button type="submit" disabled={loading} className="bg-indigo-500 hover:bg-indigo-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
           {loading ? 'Saving…' : isEdit ? 'Save Changes' : 'Publish Article'}
         </button>

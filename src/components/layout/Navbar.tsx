@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   FiChevronDown,
@@ -25,13 +26,13 @@ import CurrencySelector from "./CurrencySelector";
 import { useCustomerAuth } from "@/lib/customerAuth";
 
 const PACKAGE_CATEGORIES = [
-  { label: "Family Packages",       slug: "family",    desc: "Perfect for the whole family",   icon: FiUsers,     color: "#3b82f6" },
-  { label: "Honeymoon Packages",    slug: "honeymoon", desc: "Romantic getaways for two",       icon: FiHeart,     color: "#ec4899" },
-  { label: "Solo Packages",         slug: "solo",      desc: "Explore the world your way",      icon: FiUser,      color: "#8b5cf6" },
-  { label: "Squad Packages",        slug: "squad",     desc: "Travel with your crew",           icon: FiSmile,     color: "#10b981" },
+  { label: "Family Packages",       slug: "family",    desc: "Perfect for the whole family",   icon: FiUsers,     color: "#2f6f9f" },
+  { label: "Honeymoon Packages",    slug: "honeymoon", desc: "Romantic getaways for two",       icon: FiHeart,     color: "#b85c38" },
+  { label: "Solo Packages",         slug: "solo",      desc: "Explore the world your way",      icon: FiUser,      color: "#5f4b8b" },
+  { label: "Squad Packages",        slug: "squad",     desc: "Travel with your crew",           icon: FiSmile,     color: "#3f8f64" },
   { label: "Corporate Packages",    slug: "corporate", desc: "MICE & business travel",          icon: FiBriefcase, color: "#64748b" },
-  { label: "Special Packages",      slug: "special",   desc: "VIP & exclusive experiences",     icon: FiStar,      color: "#0a83f5" },
-  { label: "2026 Holiday Packages", slug: "holiday",   desc: "Seasonal specials",               icon: FiSun,       color: "#f97316" },
+  { label: "Special Packages",      slug: "special",   desc: "VIP & exclusive experiences",     icon: FiStar,      color: "#c99a45" },
+  { label: "2026 Holiday Packages", slug: "holiday",   desc: "Seasonal specials",               icon: FiSun,       color: "#007f89" },
 ];
 
 const DESTINATION_REGIONS = [
@@ -76,35 +77,35 @@ const DESTINATION_REGIONS = [
 
 const TOUR_REGIONS = [
   {
-    label: "South East Asia", slug: "south-east-asia", color: "#0ea5e9",
+    label: "South East Asia", slug: "south-east-asia", color: "#007f89",
     countries: ["Singapore", "Thailand", "Malaysia", "Bali", "Vietnam", "Cambodia"],
   },
   {
-    label: "Middle East",     slug: "middle-east",     color: "#0a83f5",
+    label: "Middle East",     slug: "middle-east",     color: "#2f6f9f",
     countries: ["Dubai", "Abu Dhabi", "Qatar", "Oman", "Jordan", "Saudi Arabia"],
   },
   {
-    label: "Europe",          slug: "europe",          color: "#8b5cf6",
+    label: "Europe",          slug: "europe",          color: "#5f4b8b",
     countries: ["France", "Italy", "Switzerland", "Spain", "Greece", "Turkey"],
   },
   {
-    label: "Far East",        slug: "far-east",        color: "#ec4899",
+    label: "Far East",        slug: "far-east",        color: "#b85c38",
     countries: ["Japan", "South Korea", "China", "Hong Kong", "Taiwan"],
   },
   {
-    label: "South Asia",      slug: "south-asia",      color: "#10b981",
+    label: "South Asia",      slug: "south-asia",      color: "#3f8f64",
     countries: ["India", "Nepal", "Bhutan", "Maldives", "Sri Lanka"],
   },
   {
-    label: "Africa",          slug: "africa",          color: "#f97316",
+    label: "Africa",          slug: "africa",          color: "#c99a45",
     countries: ["Egypt", "Kenya", "Tanzania", "South Africa", "Morocco"],
   },
   {
-    label: "Americas",        slug: "americas",        color: "#6366f1",
+    label: "Americas",        slug: "americas",        color: "#5f4b8b",
     countries: ["USA", "Canada", "Brazil", "Peru", "Argentina"],
   },
   {
-    label: "Pacific",         slug: "pacific",         color: "#14b8a6",
+    label: "Pacific",         slug: "pacific",         color: "#007f89",
     countries: ["Australia", "New Zealand", "Fiji", "Hawaii"],
   },
 ];
@@ -160,11 +161,14 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    setMobileOpen(false);
-    setPackagesOpen(false);
-    setToursOpen(false);
-    setDestinationsOpen(false);
-    setMoreOpen(false);
+    const id = window.setTimeout(() => {
+      setMobileOpen(false);
+      setPackagesOpen(false);
+      setToursOpen(false);
+      setDestinationsOpen(false);
+      setMoreOpen(false);
+    }, 0);
+    return () => window.clearTimeout(id);
   }, [pathname]);
 
   useEffect(() => {
@@ -178,38 +182,43 @@ export default function Navbar() {
     (r) => r.region === activeRegion,
   );
 
-  const amber = "#0a83f5";
-  const teal = "#0d9488";
+  const amber = "#007f89";
+  const teal = "#3f8f64";
 
-  const textColor = "#1e293b";
-  const subTextColor = "#94a3b8";
-  const dividerColor = "#e2e8f0";
-  const hoverBg = "rgba(0,0,0,0.04)";
+  const isDarkNav = !scrolled
+  const textColor = isDarkNav ? "#ffffff" : "#17211f";
+  const dividerColor = isDarkNav ? "rgba(255,255,255,0.16)" : "#e2e8e4";
+  const hoverBg = isDarkNav ? "rgba(255,255,255,0.10)" : "rgba(16,24,23,0.06)";
 
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+        className="fixed left-0 right-0 top-0 z-50 px-3 pt-3 transition-all duration-500"
         style={{
-          background: "rgba(255,255,255,0.97)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          borderBottom: "1px solid rgba(0,0,0,0.06)",
-          boxShadow: scrolled ? "0 4px 30px rgba(0,0,0,0.06)" : "none",
-          padding: "10px 0",
+          pointerEvents: "none",
         }}
       >
-        <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-          {/* ── Logo ── */}
+        <div
+          className="mx-auto flex w-full max-w-full items-center justify-between rounded-lg border px-4 py-2.5 shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-all duration-500 sm:px-5 xl:max-w-7xl"
+          style={{
+            pointerEvents: "auto",
+            background: isDarkNav ? "rgba(16,24,23,0.66)" : "rgba(255,255,255,0.96)",
+            backdropFilter: "blur(24px)",
+            WebkitBackdropFilter: "blur(24px)",
+            borderColor: isDarkNav ? "rgba(255,255,255,0.16)" : "rgba(16,24,23,0.08)",
+          }}
+        >
           <Link href="/" className="flex items-center gap-3 shrink-0">
-            <img
+            <Image
               src="/logo.png"
               alt="Metro Voyage Logo"
-              className="w-20 h-12 rounded-xl"
+              width={120}
+              height={74}
+              className="h-10 w-auto"
+              priority
             />
           </Link>
 
-          {/* ── Desktop Nav ── */}
           <nav className="hidden lg:flex items-center">
             <div
               className="w-px h-6 mx-4 rounded-full"
@@ -233,7 +242,7 @@ export default function Navbar() {
               onMouseLeave={() => closeDrop(setPackagesOpen, pkgTimer)}
             >
               <button
-                className="relative flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 group"
+                className="relative flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 group"
                 style={{
                   color: textColor,
                   background: packagesOpen ? hoverBg : "transparent",
@@ -269,7 +278,7 @@ export default function Navbar() {
               {packagesOpen && (
                 <div className="absolute top-full left-0 pt-3 z-50">
                   <div
-                    className="bg-white rounded-2xl border border-gray-100 overflow-hidden w-72"
+                    className="bg-white rounded-lg border border-gray-100 overflow-hidden w-72"
                     style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.12)" }}
                   >
                     <div className="px-5 py-3 border-b border-gray-50 flex items-center justify-between">
@@ -291,7 +300,7 @@ export default function Navbar() {
                           <Link
                             key={cat.slug}
                             href={`/packages-from-sri-lanka/${cat.slug}`}
-                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors group/item"
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-gray-50 transition-colors group/item"
                           >
                             <div
                               className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
@@ -300,14 +309,14 @@ export default function Navbar() {
                               <Icon size={14} style={{ color: cat.color }} />
                             </div>
                             <div>
-                              <p className="text-sm font-semibold text-gray-800 group-hover/item:text-indigo-500 transition-colors leading-none mb-0.5">
+                              <p className="text-sm font-semibold text-gray-800 group-hover/item:text-[#007f89] transition-colors leading-none mb-0.5">
                                 {cat.label}
                               </p>
                               <p className="text-xs text-gray-400">{cat.desc}</p>
                             </div>
                             <FiChevronRight
                               size={12}
-                              className="ml-auto text-gray-300 group-hover/item:text-indigo-400 transition-colors"
+                              className="ml-auto text-gray-300 group-hover/item:text-[#007f89] transition-colors"
                             />
                           </Link>
                         )
@@ -325,7 +334,7 @@ export default function Navbar() {
               onMouseLeave={() => closeDrop(setToursOpen, tourTimer)}
             >
               <button
-                className="relative flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 group"
+                className="relative flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 group"
                 style={{
                   color: textColor,
                   background: toursOpen ? hoverBg : "transparent",
@@ -333,7 +342,7 @@ export default function Navbar() {
                 onMouseEnter={(e) => (e.currentTarget.style.background = hoverBg)}
                 onMouseLeave={(e) => (e.currentTarget.style.background = toursOpen ? hoverBg : "transparent")}
               >
-                <FiGlobe size={14} style={{ color: "#0ea5e9" }} />
+                <FiGlobe size={14} style={{ color: amber }} />
                 Tours
                 <FiChevronDown
                   size={13}
@@ -345,14 +354,14 @@ export default function Navbar() {
                 />
                 <span
                   className="absolute bottom-1 left-1/2 -translate-x-1/2 h-0.5 rounded-full transition-all duration-200"
-                  style={{ background: "#0ea5e9", width: toursOpen ? "16px" : "0px" }}
+                  style={{ background: amber, width: toursOpen ? "16px" : "0px" }}
                 />
               </button>
 
               {toursOpen && (
                 <div className="absolute top-full left-0 pt-3 z-50">
                   <div
-                    className="flex rounded-2xl overflow-hidden border border-gray-100"
+                    className="flex rounded-lg overflow-hidden border border-gray-100"
                     style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.12)" }}
                   >
                     {/* Left: regions */}
@@ -361,7 +370,7 @@ export default function Navbar() {
                         <Link
                           href="/tours-from-sri-lanka/south-east-asia"
                           className="text-xs font-bold hover:underline"
-                          style={{ color: "#0ea5e9" }}
+                          style={{ color: amber }}
                         >
                           All Tours
                         </Link>
@@ -373,7 +382,7 @@ export default function Navbar() {
                           className="w-full text-left px-4 py-2.5 text-sm flex items-center justify-between transition-colors"
                           style={
                             activeTourRegion === r.label
-                              ? { background: "#f0f9ff", color: "#0ea5e9", fontWeight: 600 }
+                              ? { background: "#edf8f6", color: amber, fontWeight: 600 }
                               : { color: "#374151" }
                           }
                           onClick={() => { window.location.href = `/tours-from-sri-lanka/${r.slug}` }}
@@ -398,20 +407,20 @@ export default function Navbar() {
                           </p>
                           <Link
                             href={`/tours-from-sri-lanka/${active.slug}`}
-                            className="block px-3 py-1.5 text-xs font-bold rounded-xl mb-1 transition-colors"
+                            className="block px-3 py-1.5 text-xs font-bold rounded-lg mb-1 transition-colors"
                             style={{ color: active.color }}
                             onMouseEnter={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "#fff" }}
                             onMouseLeave={(e) => { (e.currentTarget as HTMLAnchorElement).style.background = "transparent" }}
                           >
-                            View all {active.label} →
+                            View all {active.label}
                           </Link>
                           {active.countries.map((c) => (
                             <Link
                               key={c}
                               href={`/tours-from-sri-lanka/${active.slug}?country=${encodeURIComponent(c)}`}
-                              className="block px-3 py-2 text-sm text-gray-600 rounded-xl transition-colors font-medium"
+                              className="block px-3 py-2 text-sm text-gray-600 rounded-lg transition-colors font-medium"
                               onMouseEnter={(e) => {
-                                (e.currentTarget as HTMLAnchorElement).style.color = "#0ea5e9"
+                                (e.currentTarget as HTMLAnchorElement).style.color = amber
                                 ;(e.currentTarget as HTMLAnchorElement).style.background = "#fff"
                               }}
                               onMouseLeave={(e) => {
@@ -437,7 +446,7 @@ export default function Navbar() {
               onMouseLeave={() => closeDrop(setDestinationsOpen, destTimer)}
             >
               <button
-                className="relative flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200"
+                className="relative flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200"
                 style={{
                   color: textColor,
                   background: destinationsOpen ? hoverBg : "transparent",
@@ -475,7 +484,7 @@ export default function Navbar() {
               {destinationsOpen && (
                 <div className="absolute top-full left-0 pt-3 z-50">
                   <div
-                    className="flex rounded-2xl overflow-hidden border border-gray-100"
+                    className="flex rounded-lg overflow-hidden border border-gray-100"
                     style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.12)" }}
                   >
                     <div className="bg-white w-44 py-2">
@@ -496,7 +505,7 @@ export default function Navbar() {
                           style={
                             activeRegion === r.region
                               ? {
-                                  background: "#f0fdf9",
+                                  background: "#edf8f6",
                                   color: teal,
                                   fontWeight: 600,
                                 }
@@ -523,7 +532,7 @@ export default function Navbar() {
                           <Link
                             key={dest.slug}
                             href={`/destinations/${dest.slug}`}
-                            className="block px-3 py-2 text-sm text-gray-600 rounded-xl transition-colors font-medium"
+                            className="block px-3 py-2 text-sm text-gray-600 rounded-lg transition-colors font-medium"
                             style={{}}
                             onMouseEnter={(e) => {
                               (
@@ -577,7 +586,7 @@ export default function Navbar() {
               onMouseLeave={() => closeDrop(setMoreOpen, moreTimer)}
             >
               <button
-                className="relative flex items-center gap-1 px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200"
+                className="relative flex items-center gap-1 px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200"
                 style={{
                   color: textColor,
                   background: moreOpen ? hoverBg : "transparent",
@@ -605,19 +614,19 @@ export default function Navbar() {
               {moreOpen && (
                 <div className="absolute top-full right-0 pt-3 z-50">
                   <div
-                    className="w-44 bg-white rounded-2xl py-2 border border-gray-100"
+                    className="w-44 bg-white rounded-lg py-2 border border-gray-100"
                     style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.12)" }}
                   >
                     {MORE_LINKS.map((link) => (
                       <Link
                         key={link.href}
                         href={link.href}
-                        className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition-colors group/m font-medium"
+                        className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-[#edf8f6] hover:text-[#007f89] transition-colors group/m font-medium"
                       >
                         {link.label}
                         <FiChevronRight
                           size={12}
-                          className="text-gray-300 group-hover/m:text-amber-400 transition-colors"
+                          className="text-gray-300 group-hover/m:text-[#007f89] transition-colors"
                         />
                       </Link>
                     ))}
@@ -634,13 +643,20 @@ export default function Navbar() {
 
           {/* ── CTA ── */}
           <div className="hidden lg:flex items-center gap-3">
-            <CurrencySelector dark={false} />
+            <CurrencySelector dark={isDarkNav} />
+            <Link
+              href="/consultation"
+              className="hidden xl:inline-flex items-center gap-2 rounded-lg bg-[#007f89] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[#063c43]"
+            >
+              <FiPhone size={14} /> Plan Trip
+            </Link>
             {authUser ? (
               <Link
                 href={['SUPER_ADMIN','ADMIN','EDITOR','STAFF'].includes(authUser.role) ? '/admin/dashboard' : '/my/bookings'}
-                className="flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition-all text-gray-700"
+                className="flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg border transition-all"
+                style={{ borderColor: isDarkNav ? "rgba(255,255,255,0.18)" : "#e2e8e4", color: textColor }}
               >
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0"
+                <div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-[10px] font-bold shrink-0"
                   style={{ background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' }}>
                   {authUser.name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                 </div>
@@ -649,10 +665,11 @@ export default function Navbar() {
             ) : customerUser ? (
               <Link
                 href="/my/bookings"
-                className="flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition-all text-gray-700"
+                className="flex items-center gap-2 text-sm font-semibold px-3 py-2 rounded-lg border transition-all"
+                style={{ borderColor: isDarkNav ? "rgba(255,255,255,0.18)" : "#e2e8e4", color: textColor }}
               >
-                <div className="w-6 h-6 rounded-full flex items-center justify-center text-white text-[10px] font-bold shrink-0"
-                  style={{ background: 'linear-gradient(135deg, #0ea5e9, #0284c7)' }}>
+                <div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-[10px] font-bold shrink-0"
+                  style={{ background: 'linear-gradient(135deg, #007f89, #3f8f64)' }}>
                   {customerUser.name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                 </div>
                 <span className="hidden xl:inline">{customerUser.name?.split(' ')[0]}</span>
@@ -660,7 +677,8 @@ export default function Navbar() {
             ) : (
               <Link
                 href="/login"
-                className="flex items-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 transition-all text-gray-700"
+                className="flex items-center gap-2 text-sm font-semibold px-4 py-2.5 rounded-lg border transition-all"
+                style={{ borderColor: isDarkNav ? "rgba(255,255,255,0.18)" : "#e2e8e4", color: textColor }}
               >
                 <FiUser size={14} /> Log In
               </Link>
@@ -670,8 +688,8 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <button
-            className="lg:hidden w-10 h-10 rounded-xl flex items-center justify-center transition-all"
-            style={{ background: "#f8fafc", color: "#1e293b" }}
+            className="lg:hidden w-10 h-10 rounded-lg flex items-center justify-center transition-all"
+            style={{ background: isDarkNav ? "rgba(255,255,255,0.12)" : "#f8fafc", color: textColor }}
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
           >
@@ -693,21 +711,17 @@ export default function Navbar() {
         >
           <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
             <div className="flex items-center gap-2.5">
-              <div
-                className="w-8 h-8 rounded-xl flex items-center justify-center text-white font-black text-sm"
-                style={{
-                  background: "linear-gradient(135deg, #0a83f5, #d97706)",
-                }}
-              >
-                M
-              </div>
-              <span className="font-black text-gray-900">
-                Metro <span style={{ color: amber }}>Voyage</span>
-              </span>
+              <Image
+                src="/logo.png"
+                alt="Metro Voyage"
+                width={110}
+                height={68}
+                className="h-9 w-auto"
+              />
             </div>
             <button
               onClick={() => setMobileOpen(false)}
-              className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors"
+              className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors"
             >
               <FiX size={16} />
             </button>
@@ -716,7 +730,7 @@ export default function Navbar() {
           <div className="p-4 space-y-1">
             <Link
               href="/"
-              className="flex items-center px-3 py-3 text-sm font-semibold text-gray-700 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-colors"
+              className="flex items-center px-3 py-3 text-sm font-semibold text-gray-700 hover:text-[#007f89] hover:bg-[#edf8f6] rounded-lg transition-colors"
             >
               Home
             </Link>
@@ -724,7 +738,7 @@ export default function Navbar() {
             <div>
               <button
                 onClick={() => setMobilePackages(!mobilePackages)}
-                className="w-full flex items-center justify-between px-3 py-3 text-sm font-semibold text-gray-700 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-colors"
+                className="w-full flex items-center justify-between px-3 py-3 text-sm font-semibold text-gray-700 hover:text-[#007f89] hover:bg-[#edf8f6] rounded-lg transition-colors"
               >
                 <span className="flex items-center gap-2">
                   <FiPackage size={14} style={{ color: amber }} /> Packages
@@ -740,12 +754,12 @@ export default function Navbar() {
                 />
               </button>
               {mobilePackages && (
-                <div className="ml-3 pl-3 border-l-2 border-amber-100 mt-1 space-y-0.5">
+                <div className="ml-3 pl-3 border-l-2 border-teal-100 mt-1 space-y-0.5">
                   {PACKAGE_CATEGORIES.map((cat) => (
                     <Link
                       key={cat.slug}
                       href={`/packages-from-sri-lanka/${cat.slug}`}
-                      className="block px-3 py-2 text-sm text-gray-600 hover:text-amber-600 rounded-lg transition-colors"
+                      className="block px-3 py-2 text-sm text-gray-600 hover:text-[#007f89] rounded-lg transition-colors"
                     >
                       {cat.label}
                     </Link>
@@ -757,10 +771,10 @@ export default function Navbar() {
             <div>
               <button
                 onClick={() => setMobileTours(!mobileTours)}
-                className="w-full flex items-center justify-between px-3 py-3 text-sm font-semibold text-gray-700 hover:text-sky-600 hover:bg-sky-50 rounded-xl transition-colors"
+                className="w-full flex items-center justify-between px-3 py-3 text-sm font-semibold text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
               >
                 <span className="flex items-center gap-2">
-                  <FiGlobe size={14} style={{ color: "#0ea5e9" }} /> Tours
+                  <FiGlobe size={14} style={{ color: amber }} /> Tours
                 </span>
                 <FiChevronDown
                   size={14}
@@ -771,12 +785,12 @@ export default function Navbar() {
                 />
               </button>
               {mobileTours && (
-                <div className="ml-3 pl-3 border-l-2 border-sky-100 mt-1 space-y-0.5">
+                <div className="ml-3 pl-3 border-l-2 border-teal-100 mt-1 space-y-0.5">
                   {TOUR_REGIONS.map((r) => (
                     <Link
                       key={r.slug}
                       href={`/tours-from-sri-lanka/${r.slug}`}
-                      className="block px-3 py-2 text-sm text-gray-600 hover:text-sky-600 rounded-lg transition-colors"
+                      className="block px-3 py-2 text-sm text-gray-600 hover:text-teal-600 rounded-lg transition-colors"
                     >
                       {r.label}
                     </Link>
@@ -788,7 +802,7 @@ export default function Navbar() {
             <div>
               <button
                 onClick={() => setMobileDestinations(!mobileDestinations)}
-                className="w-full flex items-center justify-between px-3 py-3 text-sm font-semibold text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-xl transition-colors"
+                className="w-full flex items-center justify-between px-3 py-3 text-sm font-semibold text-gray-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
               >
                 <span className="flex items-center gap-2">
                   <FiMapPin size={14} style={{ color: teal }} /> Destinations
@@ -846,7 +860,7 @@ export default function Navbar() {
               <Link
                 key={href}
                 href={href}
-                className="flex items-center px-3 py-3 text-sm font-semibold text-gray-700 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-colors"
+              className="flex items-center px-3 py-3 text-sm font-semibold text-gray-700 hover:text-[#007f89] hover:bg-[#edf8f6] rounded-lg transition-colors"
               >
                 {label}
               </Link>
@@ -856,11 +870,11 @@ export default function Navbar() {
           <div className="p-4 border-t border-gray-100 space-y-3 mt-2">
             <a
               href="tel:+94704545455"
-              className="flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg font-semibold text-sm text-gray-700 hover:bg-gray-50 transition-colors"
             >
               <div
-                className="w-9 h-9 rounded-xl flex items-center justify-center"
-                style={{ background: "#fffbeb" }}
+                className="w-9 h-9 rounded-lg flex items-center justify-center"
+                style={{ background: "rgba(0,127,137,0.10)" }}
               >
                 <FiPhone size={15} style={{ color: amber }} />
               </div>
@@ -868,11 +882,11 @@ export default function Navbar() {
             </a>
             <Link
               href="/consultation"
-              className="flex items-center justify-center gap-2 text-white text-sm font-bold px-5 py-3.5 rounded-xl transition-all"
+              className="flex items-center justify-center gap-2 text-white text-sm font-bold px-5 py-3.5 rounded-lg transition-all"
               style={{
                 background:
                   "linear-gradient(135deg, var(--brand), var(--brand-dark))",
-                boxShadow: "0 4px 20px",
+                boxShadow: "0 10px 28px rgba(0,127,137,0.22)",
               }}
             >
               Book Free Consultation
@@ -901,7 +915,7 @@ function NavLink({
   return (
     <Link
       href={href}
-      className="relative px-4 py-2 text-sm font-semibold rounded-xl transition-all duration-200 group block"
+      className="relative px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 group block"
       style={{ color: textColor }}
       onMouseEnter={(e) => (e.currentTarget.style.background = hoverBg)}
       onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}

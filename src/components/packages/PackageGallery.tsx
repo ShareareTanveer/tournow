@@ -29,34 +29,9 @@ export default function PackageGallery({ images, title, layout = 'grid-2x2' }: P
 
   if (!main) {
     return (
-      <div className="w-full h-72 md:h-[460px] flex items-center justify-center rounded-2xl overflow-hidden"
+      <div className="w-full h-72 md:h-[460px] flex items-center justify-center rounded-lg overflow-hidden"
         style={{ background: 'linear-gradient(135deg, var(--brand), var(--teal))' }}>
         <span className="text-white text-6xl font-black opacity-20">{title?.[0] ?? '?'}</span>
-      </div>
-    )
-  }
-
-  function Thumb({ index, className = '' }: { index: number; className?: string }) {
-    const img = images[index]
-    if (!img) return <div className={`bg-gray-800 ${className}`} />
-    return (
-      <div className={`relative overflow-hidden cursor-pointer group ${className}`}
-        onClick={() => setLightbox(index)}>
-        <Image src={img} alt={`${title} ${index + 1}`} fill
-          className="object-cover group-hover:brightness-90 transition-all duration-300" />
-      </div>
-    )
-  }
-
-  function ViewAllOverlay({ triggerIndex }: { triggerIndex: number }) {
-    const remaining = totalPhotos - triggerIndex - 1
-    if (remaining <= 0) return null
-    return (
-      <div className="absolute inset-0 bg-black/55 flex flex-col items-center justify-center gap-1 hover:bg-black/65 transition-colors cursor-pointer"
-        onClick={(e) => { e.stopPropagation(); setLightbox(0) }}>
-        <FiGrid size={20} className="text-white" />
-        <span className="text-white font-bold text-sm">+{remaining}</span>
-        <span className="text-white/80 text-[10px]">View all</span>
       </div>
     )
   }
@@ -65,7 +40,7 @@ export default function PackageGallery({ images, title, layout = 'grid-2x2' }: P
 
   return (
     <>
-      <div className="w-full overflow-hidden rounded-2xl">
+      <div className="w-full overflow-hidden rounded-lg">
         <div>
 
           {/* ── grid-2x2: large left + 2×2 right (GYG classic) ── */}
@@ -82,7 +57,7 @@ export default function PackageGallery({ images, title, layout = 'grid-2x2' }: P
                       {images[i] ? (
                         <>
                           <Image src={images[i]} alt={`${title} ${i + 1}`} fill className="object-cover group-hover:brightness-90 transition-all duration-300" />
-                          {i === 4 && <ViewAllOverlay triggerIndex={4} />}
+                          {i === 4 && <ViewAllOverlay triggerIndex={4} totalPhotos={totalPhotos} onOpen={() => setLightbox(0)} />}
                         </>
                       ) : <div className="w-full h-full bg-gray-800" />}
                     </div>
@@ -105,7 +80,7 @@ export default function PackageGallery({ images, title, layout = 'grid-2x2' }: P
                       {images[i] ? (
                         <>
                           <Image src={images[i]} alt={`${title} ${i + 1}`} fill className="object-cover group-hover:brightness-90 transition-all duration-300" />
-                          {i === 3 && <ViewAllOverlay triggerIndex={3} />}
+                          {i === 3 && <ViewAllOverlay triggerIndex={3} totalPhotos={totalPhotos} onOpen={() => setLightbox(0)} />}
                         </>
                       ) : <div className="w-full h-full bg-gray-800" />}
                     </div>
@@ -131,7 +106,7 @@ export default function PackageGallery({ images, title, layout = 'grid-2x2' }: P
               )}
               <div className="relative flex-[3] overflow-hidden cursor-pointer group" onClick={() => setLightbox(0)}>
                 <Image src={main} alt={title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" priority />
-                {totalPhotos > 4 && <ViewAllOverlay triggerIndex={3} />}
+                {totalPhotos > 4 && <ViewAllOverlay triggerIndex={3} totalPhotos={totalPhotos} onOpen={() => setLightbox(0)} />}
               </div>
             </div>
           )}
@@ -144,7 +119,7 @@ export default function PackageGallery({ images, title, layout = 'grid-2x2' }: P
                   {images[i] ? (
                     <>
                       <Image src={images[i]} alt={`${title} ${i + 1}`} fill className="object-cover group-hover:brightness-90 transition-all duration-300" />
-                      {i === 5 && <ViewAllOverlay triggerIndex={5} />}
+                      {i === 5 && <ViewAllOverlay triggerIndex={5} totalPhotos={totalPhotos} onOpen={() => setLightbox(0)} />}
                     </>
                   ) : <div className="w-full h-full bg-gray-800" />}
                 </div>
@@ -166,7 +141,7 @@ export default function PackageGallery({ images, title, layout = 'grid-2x2' }: P
                       {images[i] ? (
                         <>
                           <Image src={images[i]} alt={`${title} ${i + 1}`} fill className="object-cover group-hover:brightness-90 transition-all duration-300" />
-                          {i === 4 && <ViewAllOverlay triggerIndex={4} />}
+                          {i === 4 && <ViewAllOverlay triggerIndex={4} totalPhotos={totalPhotos} onOpen={() => setLightbox(0)} />}
                         </>
                       ) : <div className="w-full h-full bg-gray-800" />}
                     </div>
@@ -180,7 +155,7 @@ export default function PackageGallery({ images, title, layout = 'grid-2x2' }: P
           {totalPhotos > 1 && (
             <div className="py-2 flex items-center justify-end">
               <button onClick={() => setLightbox(0)}
-                className="flex items-center gap-2 bg-white/95 hover:bg-white text-gray-800 text-xs font-semibold px-4 py-2 rounded-xl shadow-lg transition-all hover:shadow-xl">
+                className="flex items-center gap-2 bg-white/95 hover:bg-white text-gray-800 text-xs font-semibold px-4 py-2 rounded-lg shadow-lg transition-all hover:shadow-xl">
                 <FiGrid size={13} /> View all {totalPhotos} photos
               </button>
             </div>
@@ -206,7 +181,7 @@ export default function PackageGallery({ images, title, layout = 'grid-2x2' }: P
           </button>
           <div className="relative w-full max-w-5xl max-h-[88vh] mx-12" onClick={(e) => e.stopPropagation()}>
             <Image src={images[lightbox]} alt={`${title} ${lightbox + 1}`}
-              width={1400} height={900} className="object-contain w-full h-full max-h-[88vh] rounded-xl" />
+              width={1400} height={900} className="object-contain w-full h-full max-h-[88vh] rounded-lg" />
             <p className="text-center text-white/40 text-xs mt-3">{lightbox + 1} / {totalPhotos}</p>
           </div>
           {totalPhotos > 1 && (
@@ -224,5 +199,18 @@ export default function PackageGallery({ images, title, layout = 'grid-2x2' }: P
         </div>
       )}
     </>
+  )
+}
+
+function ViewAllOverlay({ triggerIndex, totalPhotos, onOpen }: { triggerIndex: number; totalPhotos: number; onOpen: () => void }) {
+  const remaining = totalPhotos - triggerIndex - 1
+  if (remaining <= 0) return null
+  return (
+    <div className="absolute inset-0 bg-black/55 flex flex-col items-center justify-center gap-1 hover:bg-black/65 transition-colors cursor-pointer"
+      onClick={(e) => { e.stopPropagation(); onOpen() }}>
+      <FiGrid size={20} className="text-white" />
+      <span className="text-white font-bold text-sm">+{remaining}</span>
+      <span className="text-white/80 text-[10px]">View all</span>
+    </div>
   )
 }

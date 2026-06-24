@@ -36,7 +36,7 @@ export default async function VisasPage() {
   const displayVisas = visas.length > 0 ? visas : FALLBACK_VISAS
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#fbfaf7]">
       <PageHero
         title="Visa Services"
         subtitle="Free visa consultation. We handle your application from start to finish."
@@ -44,20 +44,19 @@ export default async function VisasPage() {
         breadcrumbs={[{ label: 'Visas' }]}
       />
 
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        {/* Visa-free */}
+      <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6">
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <FiCheckCircle size={20} className="text-green-500" /> Visa-Free Destinations
+          <h2 className="text-3xl font-black text-[#101817] mb-6 flex items-center gap-2">
+            <FiCheckCircle size={22} className="text-[#3f8f64]" /> Visa-Free Destinations
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {displayVisas.filter((v: any) => v.isVisaFree).map((visa: any) => (
-              <Link key={visa.slug} href={`/visas/${visa.slug}`} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow card-hover">
+              <Link key={visa.slug} href={`/visas/${visa.slug}`} className="bg-white rounded-lg p-5 shadow-sm border border-[#e5e8e4] hover:shadow-md transition-shadow card-hover">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-gray-800">{visa.country}</h3>
-                  <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">Visa Free</span>
+                  <h3 className="font-bold text-[#101817]">{visa.country}</h3>
+                  <span className="text-xs bg-[#edf8f6] text-[#3f8f64] px-2 py-1 rounded-full font-bold">Visa Free</span>
                 </div>
-                <div className="space-y-2 text-sm text-gray-500">
+                <div className="space-y-2 text-sm text-[#52615d]">
                   <p className="flex items-center gap-1.5"><FiClock size={12} /> {visa.processingTime}</p>
                   <p className="flex items-center gap-1.5"><FiDollarSign size={12} /> {visa.fee}</p>
                 </div>
@@ -66,19 +65,18 @@ export default async function VisasPage() {
           </div>
         </div>
 
-        {/* Visa required */}
         <div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <FiFileText size={20} className="text-indigo-500" /> Visa Required — We Assist
+          <h2 className="text-3xl font-black text-[#101817] mb-6 flex items-center gap-2">
+            <FiFileText size={22} className="text-[#5f4b8b]" /> Visa Required - We Assist
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {displayVisas.filter((v: any) => !v.isVisaFree).map((visa: any) => (
-              <Link key={visa.slug} href={`/visas/${visa.slug}`} className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-md transition-shadow card-hover">
+              <Link key={visa.slug} href={`/visas/${visa.slug}`} className="bg-white rounded-lg p-5 shadow-sm border border-[#e5e8e4] hover:shadow-md transition-shadow card-hover">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-gray-800">{visa.country}</h3>
-                  <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full font-medium">We Assist</span>
+                  <h3 className="font-bold text-[#101817]">{visa.country}</h3>
+                  <span className="text-xs bg-[#f0eef7] text-[#5f4b8b] px-2 py-1 rounded-full font-bold">We Assist</span>
                 </div>
-                <div className="space-y-2 text-sm text-gray-500">
+                <div className="space-y-2 text-sm text-[#52615d]">
                   <p className="flex items-center gap-1.5"><FiClock size={12} /> {visa.processingTime}</p>
                   <p className="flex items-center gap-1.5"><FiDollarSign size={12} /> {visa.fee}</p>
                 </div>
@@ -87,13 +85,12 @@ export default async function VisasPage() {
           </div>
         </div>
 
-        {/* CTA */}
-        <div className="mt-12 rounded-2xl p-8 text-center" style={{ background: 'var(--brand-muted)', border: '1px solid color-mix(in srgb, var(--brand) 20%, transparent)' }}>
-          <h3 className="text-xl font-bold text-gray-800 mb-2">Free Visa Consultation</h3>
-          <p className="text-gray-600 mb-6">Not sure about your visa requirements? Our experts will guide you through the entire process.</p>
+        <div className="mt-12 rounded-lg p-8 text-center bg-[#edf8f6] border border-[#d8eee9]">
+          <h3 className="text-2xl font-black text-[#101817] mb-2">Free Visa Consultation</h3>
+          <p className="text-[#52615d] mb-6">Not sure about your visa requirements? Our experts will guide you through the entire process.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/consultation" className="brand-gradient text-white font-semibold px-8 py-3 rounded-full hover:opacity-90">Book Free Consultation</Link>
-            <a href="https://wa.me/94704545455" target="_blank" rel="noopener noreferrer" className="bg-green-500 hover:bg-green-600 text-white font-semibold px-8 py-3 rounded-full transition-colors">WhatsApp Us</a>
+            <Link href="/consultation" className="bg-[#007f89] text-white font-black px-8 py-3 rounded-lg hover:bg-[#063c43] transition-colors">Book Free Consultation</Link>
+            <a href="https://wa.me/94704545455" target="_blank" rel="noopener noreferrer" className="bg-[#25d366] hover:bg-[#1fb85a] text-white font-black px-8 py-3 rounded-lg transition-colors">WhatsApp Us</a>
           </div>
         </div>
       </div>

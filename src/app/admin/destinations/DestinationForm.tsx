@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import type { ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import MediaUploader from '@/components/admin/MediaUploader'
 import {
@@ -20,21 +19,7 @@ const COST_COLOR: Record<string, string> = {
   Luxury:  'bg-amber-100 text-amber-700 border-amber-200',
 }
 
-type DestinationFormState = {
-  name: string
-  slug: string
-  region: string
-  country: string
-  description: string
-  imageUrl: string | null
-  costLevel: string
-  language: string
-  bestSeason: string
-  isFeatured: boolean
-  isActive: boolean
-}
-
-function FieldLabel({ icon, children, required }: { icon: ReactNode; children: ReactNode; required?: boolean }) {
+function FieldLabel({ icon, children, required }: { icon: React.ReactNode; children: React.ReactNode; required?: boolean }) {
   return (
     <label className="flex items-center gap-1.5 text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
       {icon} {children} {required && <span className="text-red-400 ml-0.5">*</span>}
@@ -42,9 +27,9 @@ function FieldLabel({ icon, children, required }: { icon: ReactNode; children: R
   )
 }
 
-function Section({ title, children }: { title: string; children: ReactNode }) {
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+    <div className="admin-form-panel bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
       <div className="px-5 py-3.5 border-b border-gray-100 bg-gray-50/60">
         <p className="text-xs font-bold text-gray-600 uppercase tracking-wide">{title}</p>
       </div>
@@ -70,11 +55,7 @@ function Input({ value, onChange, placeholder, required, readOnly }: {
   )
 }
 
-export default function DestinationForm({
-  destination,
-}: {
-  destination?: (Partial<DestinationFormState> & { slug?: string }) | null
-}) {
+export default function DestinationForm({ destination }: { destination?: any }) {
   const router = useRouter()
   const isEdit = !!destination
 
@@ -94,8 +75,7 @@ export default function DestinationForm({
   const [loading, setLoading] = useState(false)
   const [saved, setSaved]     = useState(false)
 
-  const set = <K extends keyof DestinationFormState>(key: K, val: DestinationFormState[K]) =>
-    setForm((f) => ({ ...f, [key]: val }))
+  const set = (key: string, val: any) => setForm(f => ({ ...f, [key]: val }))
   const autoSlug = (t: string) => t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -112,10 +92,10 @@ export default function DestinationForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="admin-editor-form admin-form-narrow space-y-5">
 
       {/* ── Cover Image ── */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+      <div className="admin-form-panel bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
         <div className="px-5 py-3.5 border-b border-gray-100 bg-gray-50/60">
           <p className="text-xs font-bold text-gray-600 uppercase tracking-wide">Cover Image</p>
         </div>
@@ -280,7 +260,7 @@ export default function DestinationForm({
       </Section>
 
       {/* ── Actions ── */}
-      <div className="flex items-center gap-3 pb-6">
+      <div className="admin-form-actions flex items-center gap-3 pb-6">
         <button
           type="submit"
           disabled={loading || saved}

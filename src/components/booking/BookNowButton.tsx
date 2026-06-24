@@ -45,8 +45,7 @@ export default function BookNowButton({ target, className, label = 'Book Now' }:
     <>
       <button
         onClick={handleClick}
-        className={className ?? 'w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-semibold text-sm transition-all hover:opacity-90'}
-        style={!className ? { background: 'linear-gradient(135deg, var(--brand), var(--brand-dark))' } : undefined}
+        className={className ?? 'w-full flex items-center justify-center gap-2 py-3 rounded-lg bg-[#007f89] text-white font-black text-sm transition-all hover:bg-[#063c43]'}
       >
         <FiCalendar size={15} />
         {label}

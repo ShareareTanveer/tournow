@@ -26,12 +26,19 @@ const FALLBACK_STAFF = [
   { name: 'Naflan Naufer', role: 'Europe Specialist', specialties: ['City Breaks', 'Solo Travel', 'Europe'], yearsExp: 1 },
 ]
 
+type StaffMember = {
+  name: string
+  role: string
+  specialties?: string[]
+  yearsExp?: number
+}
+
 export default async function AboutPage() {
-  const staff = await getStaff()
+  const staff = await getStaff() as StaffMember[]
   const displayStaff = staff.length > 0 ? staff : FALLBACK_STAFF
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#fbfaf7]">
       <PageHero
         title="About Metro Voyage"
         subtitle="Your trusted travel partner from Sri Lanka since 2018"
@@ -39,11 +46,10 @@ export default async function AboutPage() {
         breadcrumbs={[{ label: 'About Us' }]}
       />
 
-      <div className="max-w-5xl mx-auto px-4 py-12 space-y-12">
-        {/* Story */}
-        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-800 mb-5">Our Story</h2>
-          <div className="prose prose-gray max-w-none text-gray-600 space-y-4">
+      <div className="max-w-6xl mx-auto px-4 py-12 space-y-12 sm:px-6">
+        <div className="bg-white rounded-lg p-8 shadow-[0_8px_30px_rgba(16,24,23,0.06)] border border-[#e5e8e4]">
+          <h2 className="text-3xl font-black text-[#101817] mb-5">Our Story</h2>
+          <div className="prose prose-gray max-w-none text-[#52615d] space-y-4">
             <p>Metro Voyage was born in 2018 from a simple belief: every holiday should be extraordinary. What started as crafting trips for friends and family across Southeast Asia has grown into a full-service travel agency serving 50+ countries by 2025.</p>
             <p>We are not a &ldquo;one-size-fits-all&rdquo; agency. We take the time to understand your travel style, budget, and dreams — then craft an itinerary that is uniquely yours. Whether it&apos;s a romantic Maldives honeymoon, a family adventure in Japan, or a corporate retreat in Dubai, we handle every detail.</p>
             <p>Our team regularly visits the destinations we sell, ensuring our recommendations come from first-hand experience — not just brochures.</p>
@@ -58,44 +64,42 @@ export default async function AboutPage() {
             { Icon: FiNavigation,iconBg: '#f0fdf9', iconColor: '#0d9488', title: 'Passion for Travel',  desc: 'We are travellers ourselves. That passion shows in every package we create.' },
             { Icon: FiShield,    iconBg: '#fffbeb', iconColor: '#0a83f5', title: 'Trust & Reliability', desc: 'SLTDA licensed, Civil Aviation certified, and fully bonded & insured.' },
           ] as const).map((v) => (
-            <div key={v.title} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex gap-4 items-start">
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0" style={{ background: v.iconBg }}>
+            <div key={v.title} className="bg-white rounded-lg p-6 shadow-sm border border-[#e5e8e4] flex gap-4 items-start">
+              <div className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0" style={{ background: v.iconBg }}>
                 <v.Icon size={20} style={{ color: v.iconColor }} />
               </div>
               <div>
-                <h3 className="font-bold text-gray-800 mb-1">{v.title}</h3>
-                <p className="text-sm text-gray-500">{v.desc}</p>
+                <h3 className="font-bold text-[#101817] mb-1">{v.title}</h3>
+                <p className="text-sm text-[#52615d]">{v.desc}</p>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Credentials */}
-        <div className="bg-[var(--brand-light)] rounded-2xl p-6 border border-[var(--brand)]/20">
-          <h3 className="font-bold text-gray-800 mb-4">Our Credentials</h3>
+        <div className="bg-[#edf8f6] rounded-lg p-6 border border-[#d8eee9]">
+          <h3 className="font-bold text-[#101817] mb-4">Our Credentials</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm">
-            <div><p className="font-bold text-[var(--brand)] text-lg">SLTDA</p><p className="text-gray-600 text-xs">Licensed</p></div>
-            <div><p className="font-bold text-[var(--brand)] text-lg">CAA</p><p className="text-gray-600 text-xs">Certified</p></div>
-            <div><p className="font-bold text-[var(--brand)] text-lg">2024</p><p className="text-gray-600 text-xs">Travel Excellence Award</p></div>
-            <div><p className="font-bold text-[var(--brand)] text-lg">PV 00250114</p><p className="text-gray-600 text-xs">Registration No.</p></div>
+            <div><p className="font-bold text-[var(--brand)] text-lg">SLTDA</p><p className="text-[#52615d] text-xs">Licensed</p></div>
+            <div><p className="font-bold text-[var(--brand)] text-lg">CAA</p><p className="text-[#52615d] text-xs">Certified</p></div>
+            <div><p className="font-bold text-[var(--brand)] text-lg">2024</p><p className="text-[#52615d] text-xs">Travel Excellence Award</p></div>
+            <div><p className="font-bold text-[var(--brand)] text-lg">PV 00250114</p><p className="text-[#52615d] text-xs">Registration No.</p></div>
           </div>
         </div>
 
-        {/* Team */}
         <div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">Meet Our Travel Experts</h2>
+          <h2 className="text-3xl font-black text-[#101817] mb-6">Meet Our Travel Experts</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {displayStaff.map((member: any) => (
-              <div key={member.name} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 text-center card-hover">
-                <div className="w-16 h-16 rounded-full brand-gradient flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
+            {displayStaff.map((member: StaffMember) => (
+              <div key={member.name} className="bg-white rounded-lg p-6 shadow-sm border border-[#e5e8e4] text-center card-hover">
+                <div className="w-16 h-16 rounded-lg brand-gradient flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">
                   {member.name.charAt(0)}
                 </div>
-                <h3 className="font-bold text-gray-800">{member.name}</h3>
+                <h3 className="font-bold text-[#101817]">{member.name}</h3>
                 <p className="text-sm text-[var(--brand)] mb-2">{member.role}</p>
-                {member.yearsExp && <p className="text-xs text-gray-400 mb-3">{member.yearsExp}+ years experience</p>}
+                {member.yearsExp && <p className="text-xs text-[#8a9691] mb-3">{member.yearsExp}+ years experience</p>}
                 <div className="flex flex-wrap justify-center gap-1">
                   {member.specialties?.slice(0, 3).map((s: string) => (
-                    <span key={s} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{s}</span>
+                    <span key={s} className="text-xs bg-[#f4f1ea] text-[#52615d] px-2 py-0.5 rounded-full">{s}</span>
                   ))}
                 </div>
               </div>
@@ -103,9 +107,8 @@ export default async function AboutPage() {
           </div>
         </div>
 
-        {/* CTA */}
         <div className="text-center">
-          <Link href="/consultation" className="inline-block brand-gradient text-white font-semibold px-8 py-4 rounded-full hover:opacity-90 transition-opacity">
+          <Link href="/consultation" className="inline-block bg-[#007f89] text-white font-black px-8 py-4 rounded-lg hover:bg-[#063c43] transition-colors">
             Book a Free Consultation
           </Link>
         </div>

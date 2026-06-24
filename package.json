@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
@@ -11,9 +11,6 @@
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts",
-    "db:seed:extras": "tsx prisma/seed-extras.ts",
-    "db:seed:ai": "tsx prisma/seed-ai-templates.ts",
-    "db:seed:all": "npm run db:seed && npm run db:seed:ai && npm run db:seed:extras",
     "db:studio": "prisma studio"
   },
   "prisma": {

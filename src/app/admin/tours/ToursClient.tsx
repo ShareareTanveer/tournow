@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import AdminTable, { Column } from '@/components/admin/AdminTable'
-import { FiEdit2, FiExternalLink, FiGlobe, FiMapPin, FiEye, FiEyeOff, FiStar } from 'react-icons/fi'
+import { FiEdit2, FiExternalLink, FiGlobe, FiMapPin, FiEye, FiEyeOff, FiStar, FiPhone } from 'react-icons/fi'
 
 interface Tour {
   id: string; slug: string; title: string; region: string
@@ -10,6 +10,7 @@ interface Tour {
   isFeatured: boolean; isActive: boolean; createdAt: string
   multiDestinations: string[]
   primaryDestination: { name: string }
+  supplier?: { name: string; phone: string; whatsappNumber?: string | null } | null
 }
 
 export default function ToursClient({ tours }: { tours: Tour[] }) {
@@ -48,6 +49,15 @@ export default function ToursClient({ tours }: { tours: Tour[] }) {
           {t.duration}D/{t.nights}N
         </span>
       ),
+    },
+    {
+      key: 'supplier.phone', label: 'Supplier',
+      render: t => t.supplier ? (
+        <div className="text-xs text-gray-600">
+          <p className="font-semibold text-gray-800 line-clamp-1">{t.supplier.name}</p>
+          <p className="inline-flex items-center gap-1 text-gray-400"><FiPhone size={10} /> {t.supplier.whatsappNumber || t.supplier.phone}</p>
+        </div>
+      ) : <span className="text-gray-300 text-xs">-</span>,
     },
     {
       key: 'price', label: 'Price', sortable: true, align: 'right',
@@ -104,7 +114,7 @@ export default function ToursClient({ tours }: { tours: Tour[] }) {
       filterKey="isActive"
       filterOptions={['ALL', 'true', 'false']}
       filterLabels={{ ALL: 'All', true: 'Active', false: 'Hidden' }}
-      searchKeys={['title', 'slug', 'region', 'primaryDestination.name']}
+      searchKeys={['title', 'slug', 'region', 'primaryDestination.name', 'supplier.name', 'supplier.phone']}
       defaultSort={{ key: 'createdAt', dir: 'desc' }}
       emptyMessage="No tours found"
     />

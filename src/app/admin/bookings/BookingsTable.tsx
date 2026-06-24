@@ -5,9 +5,11 @@ import Link from 'next/link'
 import {
   FiExternalLink, FiFileText, FiEdit2, FiAlertCircle, FiCalendar, FiX,
   FiUser, FiUsers, FiMapPin, FiDollarSign, FiFilter, FiPhone,
+  FiMessageCircle,
 } from 'react-icons/fi'
 import AdminTable, { Column } from '@/components/admin/AdminTable'
 import { useRouter } from 'next/navigation'
+import { buildSupplierWhatsAppLink } from '@/lib/supplier-whatsapp'
 
 const PIPELINE = [
   { status: 'REQUESTED',        label: 'Requested',        color: 'text-blue-600',   bg: 'bg-blue-50' },
@@ -15,6 +17,7 @@ const PIPELINE = [
   { status: 'EDIT_RESEND',      label: 'Edit & Resend',    color: 'text-yellow-600', bg: 'bg-yellow-50' },
   { status: 'AWAITING_CONFIRM', label: 'Awaiting Confirm', color: 'text-indigo-600', bg: 'bg-indigo-50' },
   { status: 'CONFIRMED',        label: 'Confirmed',        color: 'text-teal-600',   bg: 'bg-teal-50' },
+  { status: 'SUPPLIER_CONFIRMED', label: 'Supplier Confirmed', color: 'text-emerald-600', bg: 'bg-emerald-50' },
   { status: 'RECEIPT_UPLOADED', label: 'Receipt Uploaded', color: 'text-indigo-600', bg: 'bg-indigo-50' },
   { status: 'ADMIN_CONFIRMING', label: 'Admin Confirming', color: 'text-pink-600',   bg: 'bg-pink-50' },
   { status: 'ALL_CONFIRMED',    label: 'All Confirmed',    color: 'text-green-600',  bg: 'bg-green-50' },
@@ -51,6 +54,9 @@ export interface Booking {
   ticketUrl?: string | null
   staffQuote?: { totalPrice?: number } | null
   customerNote?: string | null
+  notes?: string | null
+  supplierConfirmToken?: string | null
+  supplier?: { name?: string | null; phone?: string | null; whatsappNumber?: string | null } | null
   createdAt: string
 }
 
@@ -136,6 +142,7 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
 
   const si = (s: string) => PIPELINE.find(p => p.status === s) ?? PIPELINE[0]
   const pi = (s: string) => PAY_STATUS.find(p => p.value === s) ?? PAY_STATUS[0]
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
 
   // Date filter bar
   const dateFilterBar = (
@@ -274,6 +281,36 @@ export default function BookingsTable({ bookings: initial }: { bookings: Booking
             {PIPELINE.map(pp => <option key={pp.status} value={pp.status}>{pp.label}</option>)}
           </select>
         )
+      },
+    },
+    {
+      key: 'supplier', label: 'Supplier',
+      render: b => {
+        const confirmUrl = b.supplierConfirmToken && origin ? `${origin}/supplier-confirm/${b.supplierConfirmToken}` : null
+        const whatsappLink = buildSupplierWhatsAppLink(b.supplier, {
+          bookingRef: b.bookingRef,
+          itemTitle: b.title,
+          customerName: b.customerName,
+          customerPhone: b.customerPhone,
+          travelDate: b.travelDate,
+          paxAdult: b.paxAdult,
+          paxChild: b.paxChild,
+          totalPrice: b.totalPrice,
+          notes: b.notes || b.customerNote,
+          confirmUrl,
+        })
+        return b.supplier ? (
+          <div className="space-y-1 text-xs">
+            <p className="font-semibold text-gray-700 line-clamp-1">{b.supplier.name}</p>
+            <p className="text-gray-400">{b.supplier.whatsappNumber || b.supplier.phone}</p>
+            {whatsappLink && (
+              <a href={whatsappLink} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 rounded-lg bg-emerald-50 px-2 py-1 font-semibold text-emerald-700 hover:bg-emerald-100">
+                <FiMessageCircle size={11} /> WhatsApp
+              </a>
+            )}
+          </div>
+        ) : <span className="text-gray-300 text-xs">-</span>
       },
     },
     {

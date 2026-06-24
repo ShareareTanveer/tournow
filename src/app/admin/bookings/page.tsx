@@ -9,17 +9,37 @@ async function getBookings() {
   try {
     const [pkgBookings, tourBookings] = await Promise.all([
       prisma.booking.findMany({
-        include: { package: { select: { title: true, slug: true, images: true } }, payments: true },
+        include: {
+          package: {
+            select: {
+              title: true,
+              slug: true,
+              images: true,
+              supplier: { select: { name: true, phone: true, whatsappNumber: true } },
+            },
+          },
+          payments: true,
+        },
         orderBy: { createdAt: 'desc' },
       }),
       prisma.tourBooking.findMany({
-        include: { tour: { select: { title: true, slug: true, images: true } }, payments: true },
+        include: {
+          tour: {
+            select: {
+              title: true,
+              slug: true,
+              images: true,
+              supplier: { select: { name: true, phone: true, whatsappNumber: true } },
+            },
+          },
+          payments: true,
+        },
         orderBy: { createdAt: 'desc' },
       }),
     ])
     const normalised = [
-      ...pkgBookings.map((b) => ({ ...b, _type: 'package' as const, title: b.package.title, image: b.package.images?.[0] })),
-      ...tourBookings.map((b) => ({ ...b, _type: 'tour' as const, title: b.tour.title, image: b.tour.images?.[0] })),
+      ...pkgBookings.map((b) => ({ ...b, _type: 'package' as const, title: b.package.title, image: b.package.images?.[0], supplier: b.package.supplier })),
+      ...tourBookings.map((b) => ({ ...b, _type: 'tour' as const, title: b.tour.title, image: b.tour.images?.[0], supplier: b.tour.supplier })),
     ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     return normalised
   } catch { return [] }
@@ -29,7 +49,7 @@ export default async function BookingsPage() {
   const bookings     = await getBookings()
   const paid         = bookings.filter((b) => b.paymentStatus === 'PAID')
   const totalRevenue = paid.reduce((sum, b) => sum + b.totalPrice, 0)
-  const confirmed    = bookings.filter((b) => ['CONFIRMED', 'ALL_CONFIRMED', 'MAIL_SENT'].includes(b.status)).length
+  const confirmed    = bookings.filter((b) => ['CONFIRMED', 'SUPPLIER_CONFIRMED', 'ALL_CONFIRMED', 'MAIL_SENT'].includes(b.status)).length
   const requested    = bookings.filter((b) => b.status === 'REQUESTED').length
   const paidRate     = bookings.length ? Math.round((paid.length / bookings.length) * 100) : 0
 

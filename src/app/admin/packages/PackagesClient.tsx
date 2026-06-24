@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import AdminTable, { Column } from '@/components/admin/AdminTable'
-import { FiEdit2, FiExternalLink, FiStar, FiEye, FiEyeOff } from 'react-icons/fi'
+import { FiEdit2, FiExternalLink, FiStar, FiEye, FiEyeOff, FiPhone } from 'react-icons/fi'
 
 const STAR_MAP: Record<string, string> = { THREE: '3★', FOUR: '4★', FIVE: '5★' }
 
@@ -11,6 +11,7 @@ interface Pkg {
   price: number; duration: number; nights: number; starRating: string
   isFeatured: boolean; isActive: boolean; createdAt: string
   destination?: { name: string } | null
+  supplier?: { name: string; phone: string; whatsappNumber?: string | null } | null
 }
 
 export default function PackagesClient({ packages }: { packages: Pkg[] }) {
@@ -39,6 +40,15 @@ export default function PackagesClient({ packages }: { packages: Pkg[] }) {
     {
       key: 'price', label: 'Price', sortable: true, align: 'right',
       render: pkg => <span className="font-semibold text-gray-800 text-sm">LKR {pkg.price.toLocaleString()}</span>,
+    },
+    {
+      key: 'supplier.phone', label: 'Supplier',
+      render: pkg => pkg.supplier ? (
+        <div className="text-xs text-gray-600">
+          <p className="font-semibold text-gray-800 line-clamp-1">{pkg.supplier.name}</p>
+          <p className="inline-flex items-center gap-1 text-gray-400"><FiPhone size={10} /> {pkg.supplier.whatsappNumber || pkg.supplier.phone}</p>
+        </div>
+      ) : <span className="text-gray-300 text-xs">-</span>,
     },
     {
       key: 'duration', label: 'Duration', sortable: true,
@@ -103,7 +113,7 @@ export default function PackagesClient({ packages }: { packages: Pkg[] }) {
       filterKey="isActive"
       filterOptions={['ALL', 'true', 'false']}
       filterLabels={{ ALL: 'All', true: 'Active', false: 'Hidden' }}
-      searchKeys={['title', 'slug', 'category', 'destination.name']}
+      searchKeys={['title', 'slug', 'category', 'destination.name', 'supplier.name', 'supplier.phone']}
       defaultSort={{ key: 'createdAt', dir: 'desc' }}
       emptyMessage="No packages found"
     />

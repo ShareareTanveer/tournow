@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getAuthUser, verifyToken } from '@/lib/auth'
 import { BookingSchema } from '@/lib/validations'
+import { randomUUID } from 'crypto'
 
 export async function POST(req: NextRequest) {
   try {
@@ -58,6 +59,7 @@ export async function POST(req: NextRequest) {
         notes: d.notes,
         originalSnapshot: snapshot as any,
         status: 'REQUESTED',
+        supplierConfirmToken: randomUUID(),
       },
       include: { tour: { select: { title: true } } },
     })

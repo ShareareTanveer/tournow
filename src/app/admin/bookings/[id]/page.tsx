@@ -11,7 +11,20 @@ async function getBooking(id: string) {
   const pkg = await prisma.booking.findUnique({
     where: { id },
     include: {
-      package: { select: { id: true, title: true, slug: true, images: true, price: true, priceTwin: true, priceChild: true, extraNightPrice: true, options: true } },
+      package: {
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          images: true,
+          price: true,
+          priceTwin: true,
+          priceChild: true,
+          extraNightPrice: true,
+          options: true,
+          supplier: { select: { name: true, phone: true, whatsappNumber: true } },
+        },
+      },
       customer: { select: { id: true, name: true, email: true, phone: true } },
       payments: true,
     },
@@ -22,7 +35,20 @@ async function getBooking(id: string) {
   const tour = await prisma.tourBooking.findUnique({
     where: { id },
     include: {
-      tour: { select: { id: true, title: true, slug: true, images: true, price: true, priceTwin: true, priceChild: true, extraNightPrice: true, options: true } },
+      tour: {
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          images: true,
+          price: true,
+          priceTwin: true,
+          priceChild: true,
+          extraNightPrice: true,
+          options: true,
+          supplier: { select: { name: true, phone: true, whatsappNumber: true } },
+        },
+      },
       customer: { select: { id: true, name: true, email: true, phone: true } },
       payments: true,
     },

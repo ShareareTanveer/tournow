@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma'
 import { getAuthUser, verifyToken } from '@/lib/auth'
 import { BookingSchema } from '@/lib/validations'
 import { onNewBooking } from '@/lib/notifications'
+import { randomUUID } from 'crypto'
 
 export async function GET(req: NextRequest) {
   const adminUser = await getAuthUser(req)
@@ -108,6 +109,7 @@ export async function POST(req: NextRequest) {
         notes: d.notes,
         originalSnapshot: snapshot as any,
         status: 'REQUESTED',
+        supplierConfirmToken: randomUUID(),
       },
       include: { package: { select: { title: true } } },
     })

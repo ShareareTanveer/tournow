@@ -7,7 +7,10 @@ import PackagesClient from './PackagesClient'
 async function getPackages() {
   try {
     return await prisma.package.findMany({
-      include: { destination: { select: { name: true } } },
+      include: {
+        destination: { select: { name: true } },
+        supplier: { select: { name: true, phone: true, whatsappNumber: true } },
+      },
       orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
     })
   } catch { return [] }

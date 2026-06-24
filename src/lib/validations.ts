@@ -104,6 +104,22 @@ export const CharityDonationSchema = z.object({
   notes: z.string().optional(),
 })
 
+export const SupplierSchema = z.object({
+  name: z.string().min(2),
+  companyName: z.string().optional().nullable(),
+  phone: z.string().min(3),
+  whatsappNumber: z.string().optional().nullable(),
+  email: z.string().email().optional().or(z.literal('')).nullable(),
+  imageUrl: z.string().url().optional().or(z.literal('')).nullable(),
+  notes: z.string().optional().nullable(),
+  isActive: z.boolean().default(true),
+})
+
+const OptionalRelationId = z.preprocess(
+  (value) => value === '' || value === undefined ? null : value,
+  z.string().nullable().optional()
+)
+
 const PricingFields = {
   priceTwin: z.number().positive().optional(),
   priceChild: z.number().positive().optional(),
@@ -141,6 +157,7 @@ export const PackageSchema = z.object({
   slug: z.string().min(3),
   category: z.enum(['FAMILY', 'HONEYMOON', 'SOLO', 'SQUAD', 'CORPORATE', 'SPECIAL', 'HOLIDAY']),
   destinationId: z.string(),
+  supplierId: OptionalRelationId,
   price: z.number().positive(),
   oldPrice: z.number().positive().optional(),
   duration: z.number().int().positive(),
@@ -165,6 +182,7 @@ export const TourSchema = z.object({
   region: z.string().min(2),
   multiDestinations: z.array(z.string()).default([]),
   primaryDestinationId: z.string(),
+  supplierId: OptionalRelationId,
   price: z.number().positive(),
   oldPrice: z.number().positive().optional(),
   duration: z.number().int().positive(),

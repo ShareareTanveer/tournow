@@ -9,7 +9,10 @@ export const metadata = { title: 'Tours' }
 export default async function ToursPage() {
   const tours = await prisma.tour.findMany({
     orderBy: [{ isFeatured: 'desc' }, { createdAt: 'desc' }],
-    include: { primaryDestination: { select: { name: true } } },
+    include: {
+      primaryDestination: { select: { name: true } },
+      supplier: { select: { name: true, phone: true, whatsappNumber: true } },
+    },
   })
 
   const active   = tours.filter(t => t.isActive).length

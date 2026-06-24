@@ -8,10 +8,17 @@ async function getDestinations() {
 }
 
 export default async function NewPackagePage() {
-  const destinations = await getDestinations()
+  const [destinations, suppliers] = await Promise.all([
+    getDestinations(),
+    prisma.supplier.findMany({
+      where: { isActive: true },
+      orderBy: { name: 'asc' },
+      select: { id: true, name: true, phone: true, whatsappNumber: true },
+    }).catch(() => []),
+  ])
   return (
     <AdminShell title="Add New Package">
-      <PackageForm destinations={destinations} />
+      <PackageForm destinations={destinations} suppliers={suppliers} />
     </AdminShell>
   )
 }

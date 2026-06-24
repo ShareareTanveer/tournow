@@ -6,8 +6,9 @@ import {
   FiEdit2, FiSend, FiCheck, FiX, FiExternalLink, FiDownload,
   FiPhone, FiMail, FiUser, FiCalendar, FiUsers, FiHome,
   FiAlertCircle, FiCheckCircle, FiClock, FiUpload, FiFileText,
-  FiDollarSign, FiTag, FiLink, FiPlus,
+  FiDollarSign, FiTag, FiLink, FiPlus, FiMessageCircle,
 } from 'react-icons/fi'
+import { buildSupplierWhatsAppLink } from '@/lib/supplier-whatsapp'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -59,6 +60,7 @@ interface Booking {
   currency: string
   status: string
   paymentStatus: string
+  supplierConfirmToken?: string | null
   adminNotes?: string | null
   staffQuote?: StaffQuote | null
   originalSnapshot?: OriginalSnapshot | null
@@ -72,9 +74,15 @@ interface Booking {
   notes?: string | null
   createdAt: string
   updatedAt: string
-  package?: { id: string; title: string; slug: string; images: string[] } | null
-  tour?: { id: string; title: string; slug: string; images: string[] } | null
+  package?: { id: string; title: string; slug: string; images: string[]; supplier?: SupplierContact | null } | null
+  tour?: { id: string; title: string; slug: string; images: string[]; supplier?: SupplierContact | null } | null
   customer?: { id: string; name: string; email: string; phone?: string | null } | null
+}
+
+interface SupplierContact {
+  name?: string | null
+  phone?: string | null
+  whatsappNumber?: string | null
 }
 
 // ─── Status config ────────────────────────────────────────────────────────────
@@ -85,6 +93,7 @@ const PIPELINE = [
   { status: 'EDIT_RESEND',      label: 'Edit & Resend',    color: 'text-amber-700',  bg: 'bg-amber-100',   dot: 'bg-amber-500',   ring: 'ring-amber-200' },
   { status: 'AWAITING_CONFIRM', label: 'Awaiting Confirm', color: 'text-indigo-700', bg: 'bg-indigo-100',  dot: 'bg-indigo-500',  ring: 'ring-indigo-200' },
   { status: 'CONFIRMED',        label: 'Confirmed',        color: 'text-teal-700',   bg: 'bg-teal-100',    dot: 'bg-teal-500',    ring: 'ring-teal-200' },
+  { status: 'SUPPLIER_CONFIRMED', label: 'Supplier Confirmed', color: 'text-emerald-700', bg: 'bg-emerald-100', dot: 'bg-emerald-500', ring: 'ring-emerald-200' },
   { status: 'RECEIPT_UPLOADED', label: 'Receipt Uploaded', color: 'text-violet-700', bg: 'bg-violet-100',  dot: 'bg-violet-500',  ring: 'ring-violet-200' },
   { status: 'ADMIN_CONFIRMING', label: 'Admin Confirming', color: 'text-pink-700',   bg: 'bg-pink-100',    dot: 'bg-pink-500',    ring: 'ring-pink-200' },
   { status: 'ALL_CONFIRMED',    label: 'All Confirmed',    color: 'text-emerald-700',bg: 'bg-emerald-100', dot: 'bg-emerald-500', ring: 'ring-emerald-200' },
@@ -112,6 +121,7 @@ const TIMELINE_STEPS = [
   { key: 'REQUESTED',        short: 'Request' },
   { key: 'AWAITING_CONFIRM', short: 'Quote Sent' },
   { key: 'CONFIRMED',        short: 'Confirmed' },
+  { key: 'SUPPLIER_CONFIRMED', short: 'Supplier' },
   { key: 'RECEIPT_UPLOADED', short: 'Receipt' },
   { key: 'ALL_CONFIRMED',    short: 'All Confirmed' },
   { key: 'MAIL_SENT',        short: 'Complete' },
@@ -365,6 +375,25 @@ function QuickActions({ booking, type, onUpdate }: {
   }
 
   const s = booking.status
+  const itemTitle = type === 'package' ? booking.package?.title : booking.tour?.title
+  const supplier = type === 'package' ? booking.package?.supplier : booking.tour?.supplier
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  const supplierConfirmUrl = booking.supplierConfirmToken && origin ? `${origin}/supplier-confirm/${booking.supplierConfirmToken}` : null
+  const supplierWhatsAppLink = buildSupplierWhatsAppLink(supplier, {
+    bookingRef: booking.bookingRef,
+    itemTitle: itemTitle ?? 'Booking',
+    customerName: booking.customerName,
+    customerPhone: booking.customerPhone,
+    travelDate: booking.travelDate,
+    returnDate: booking.returnDate,
+    paxAdult: booking.paxAdult,
+    paxChild: booking.paxChild,
+    paxInfant: booking.paxInfant,
+    totalPrice: booking.totalPrice,
+    currency: booking.currency,
+    notes: booking.notes || booking.customerNote,
+    confirmUrl: supplierConfirmUrl,
+  })
 
   return (
     <div className="flex flex-wrap gap-2">
@@ -372,6 +401,13 @@ function QuickActions({ booking, type, onUpdate }: {
         className="flex items-center gap-1.5 text-xs bg-indigo-600 text-white px-3.5 py-2 rounded-xl font-semibold hover:bg-indigo-700 transition-colors">
         <FiEdit2 size={13} /> {booking.staffQuote ? 'Edit Quote' : 'Build Quote'}
       </Link>
+
+      {supplierWhatsAppLink && (
+        <a href={supplierWhatsAppLink} target="_blank" rel="noopener noreferrer"
+          className="flex items-center gap-1.5 text-xs bg-emerald-600 text-white px-3.5 py-2 rounded-xl font-semibold hover:bg-emerald-700 transition-colors">
+          <FiMessageCircle size={13} /> Send Supplier Link
+        </a>
+      )}
 
       {booking.staffQuote && ['REQUESTED', 'CALL_REQUIRED', 'EDIT_RESEND'].includes(s) && (
         <button onClick={() => act('send_quote', { staffQuote: booking.staffQuote, adminNotes: booking.adminNotes })}

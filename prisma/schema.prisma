@@ -60,6 +60,7 @@ enum BookingStatus {
   AWAITING_CONFIRM   // Waiting for customer confirmation
   // Confirmed flow
   CONFIRMED          // Customer confirmed
+  SUPPLIER_CONFIRMED // Supplier confirmed availability
   RECEIPT_UPLOADED   // Customer uploaded payment receipt
   ADMIN_CONFIRMING   // Admin reviewing receipt / finalising
   ALL_CONFIRMED      // Fully confirmed by admin
@@ -194,6 +195,7 @@ model Package {
   slug           String          @unique
   category       PackageCategory
   destinationId  String
+  supplierId     String?
   price          Float
   oldPrice       Float?
   duration       Int
@@ -264,6 +266,7 @@ model Package {
   updatedAt      DateTime        @updatedAt
 
   destination    Destination          @relation(fields: [destinationId], references: [id])
+  supplier       Supplier?            @relation(fields: [supplierId], references: [id], onDelete: SetNull)
   itinerary      ItineraryDay[]
   inquiries      Inquiry[]
   bookings       Booking[]
@@ -314,6 +317,7 @@ model Tour {
   region        String   // e.g. "South East Asia"
   multiDestinations String[] // e.g. ["Singapore", "Malaysia", "Thailand"]
   primaryDestinationId String
+  supplierId    String?
   price         Float
   oldPrice      Float?
   duration      Int
@@ -388,6 +392,7 @@ model Tour {
   updatedAt     DateTime @updatedAt
 
   primaryDestination Destination      @relation(fields: [primaryDestinationId], references: [id])
+  supplier           Supplier?        @relation(fields: [supplierId], references: [id], onDelete: SetNull)
   itinerary          TourItineraryDay[]
   accommodations     TourAccommodation[]
   inquiries          TourInquiry[]
@@ -493,6 +498,8 @@ model TourBooking {
   rooms         Json?         // [{type, qty, label}] multi-room selection
   isAirfareIncluded Boolean   @default(false)
   customerNote  String?       @db.Text  // customer counter-request note
+  supplierConfirmToken String?
+  supplierNotifiedAt DateTime?
   ticketUrl     String?       // legacy — superseded by documents
   documents     Json?         // [{url, name, note}] admin-uploaded files/vouchers
   documentNote  String?       @db.Text  // note shown to customer alongside documents
@@ -696,6 +703,8 @@ model Booking {
   rooms         Json?         // [{type, qty, label}] multi-room selection
   isAirfareIncluded Boolean   @default(false)  // customer-selected during booking
   customerNote  String?       @db.Text  // customer counter-request note
+  supplierConfirmToken String?
+  supplierNotifiedAt DateTime?
   ticketUrl     String?       // legacy — superseded by documents
   documents     Json?         // [{url, name, note}] admin-uploaded files/vouchers
   documentNote  String?       @db.Text  // note shown to customer alongside documents
@@ -789,6 +798,25 @@ model Staff {
 }
 
 // ─── NEWS ─────────────────────────────────────────────────────────────────────
+
+model Supplier {
+  id             String   @id @default(cuid())
+  name           String
+  companyName    String?
+  phone          String
+  whatsappNumber String?
+  email          String?
+  imageUrl       String?
+  notes          String?  @db.Text
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  packages Package[]
+  tours    Tour[]
+
+  @@map("suppliers")
+}
 
 model News {
   id          String   @id @default(cuid())

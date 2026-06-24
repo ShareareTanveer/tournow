@@ -15,7 +15,8 @@ import { SeoInput } from '@/lib/seo-score'
 const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor'), { ssr: false })
 
 interface Destination { id: string; name: string; region: string }
-interface Props { destinations: Destination[]; pkg?: any }
+interface Supplier { id: string; name: string; phone: string; whatsappNumber?: string | null }
+interface Props { destinations: Destination[]; suppliers: Supplier[]; pkg?: any }
 
 interface OptionItem { label: string; price: number; isDefault?: boolean }
 interface CancellationTier { daysBeforeDep: number; refundPercent: number; label: string }
@@ -197,7 +198,7 @@ function CancellationTiersEditor({ tiers, onChange }: { tiers: CancellationTier[
   )
 }
 
-export default function PackageForm({ destinations, pkg }: Props) {
+export default function PackageForm({ destinations, suppliers, pkg }: Props) {
   const router = useRouter()
   const isEdit = !!pkg
   const [tab, setTab] = useState<'basic' | 'content' | 'details' | 'pricing' | 'media' | 'flags' | 'seo'>('basic')
@@ -207,6 +208,7 @@ export default function PackageForm({ destinations, pkg }: Props) {
     slug: pkg?.slug ?? '',
     category: pkg?.category ?? 'FAMILY',
     destinationId: pkg?.destinationId ?? (destinations[0]?.id ?? ''),
+    supplierId: pkg?.supplierId ?? '',
     price: pkg?.price ?? '',
     oldPrice: pkg?.oldPrice ?? '',
     priceTwin: pkg?.priceTwin ?? '',
@@ -463,6 +465,18 @@ export default function PackageForm({ destinations, pkg }: Props) {
                 <select required value={form.destinationId} onChange={(e) => setForm({ ...form, destinationId: e.target.value })}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 bg-white">
                   {destinations.map((d) => <option key={d.id} value={d.id}>{d.name} ({d.region})</option>)}
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-500 mb-1.5">Supplier <span className="font-normal text-gray-400">(optional)</span></label>
+                <select value={form.supplierId} onChange={(e) => setForm({ ...form, supplierId: e.target.value })}
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 bg-white">
+                  <option value="">No supplier assigned</option>
+                  {suppliers.map((supplier) => (
+                    <option key={supplier.id} value={supplier.id}>
+                      {supplier.name} - {supplier.whatsappNumber || supplier.phone}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>

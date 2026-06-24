@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
+import { onBookingStatusChange } from '@/lib/notifications'
 
 type Props = { params: Promise<{ token: string }> }
 
@@ -21,6 +22,13 @@ export default async function SupplierConfirmPage({ params }: Props) {
     })
     title = updated.package.title
     bookingRef = updated.bookingRef
+    onBookingStatusChange({
+      bookingId: updated.id,
+      customerId: updated.customerId,
+      packageTitle: updated.package.title,
+      newStatus: 'SUPPLIER_CONFIRMED',
+      triggeredBy: 'supplier',
+    }).catch(console.error)
   } else {
     const tourBooking = await prisma.tourBooking.findFirst({
       where: { supplierConfirmToken: token },
@@ -35,6 +43,13 @@ export default async function SupplierConfirmPage({ params }: Props) {
       })
       title = updated.tour.title
       bookingRef = updated.bookingRef
+      onBookingStatusChange({
+        bookingId: updated.id,
+        customerId: updated.customerId,
+        packageTitle: updated.tour.title,
+        newStatus: 'SUPPLIER_CONFIRMED',
+        triggeredBy: 'supplier',
+      }).catch(console.error)
     }
   }
 

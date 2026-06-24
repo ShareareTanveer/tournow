@@ -141,7 +141,7 @@ export async function onNewBooking(opts: {
 
 export async function onBookingStatusChange(opts: {
   bookingId: string; customerId?: string | null; packageTitle: string; newStatus: string
-  triggeredBy?: 'admin' | 'customer'  // who caused this change
+  triggeredBy?: 'admin' | 'customer' | 'supplier'  // who caused this change
 }) {
   const triggeredBy = opts.triggeredBy ?? 'admin'
 
@@ -157,6 +157,7 @@ export async function onBookingStatusChange(opts: {
   // Labels for notifications sent TO admins (only when customer triggers)
   const ADMIN_LABELS: Record<string, string> = {
     CONFIRMED:        'Customer confirmed the booking',
+    SUPPLIER_CONFIRMED: 'Supplier confirmed availability',
     RECEIPT_UPLOADED: 'Customer uploaded a payment receipt',
     CANCELLED:        'Customer cancelled the booking',
   }
@@ -172,8 +173,8 @@ export async function onBookingStatusChange(opts: {
     })
   }
 
-  // Notify admins only when customer triggered the change
-  if (triggeredBy === 'customer' && ADMIN_LABELS[opts.newStatus]) {
+  // Notify admins when customer or supplier triggered the change
+  if ((triggeredBy === 'customer' || triggeredBy === 'supplier') && ADMIN_LABELS[opts.newStatus]) {
     await notify({
       type: 'BOOKING_STATUS', audience: 'ADMIN',
       title: `Booking Update — ${opts.packageTitle}`,

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import AdminShell from '@/components/admin/AdminShell'
 import { prisma } from '@/lib/prisma'
 import BookingDetailClient from './BookingDetailClient'
+import { randomUUID } from 'crypto'
 
 type Params = { params: Promise<{ id: string }> }
 
@@ -29,7 +30,34 @@ async function getBooking(id: string) {
       payments: true,
     },
   })
-  if (pkg) return { booking: pkg, type: 'package' as const }
+  if (pkg) {
+    if (pkg.package.supplier && !pkg.supplierConfirmToken) {
+      const updated = await prisma.booking.update({
+        where: { id: pkg.id },
+        data: { supplierConfirmToken: randomUUID() },
+        include: {
+          package: {
+            select: {
+              id: true,
+              title: true,
+              slug: true,
+              images: true,
+              price: true,
+              priceTwin: true,
+              priceChild: true,
+              extraNightPrice: true,
+              options: true,
+              supplier: { select: { name: true, phone: true, whatsappNumber: true } },
+            },
+          },
+          customer: { select: { id: true, name: true, email: true, phone: true } },
+          payments: true,
+        },
+      })
+      return { booking: updated, type: 'package' as const }
+    }
+    return { booking: pkg, type: 'package' as const }
+  }
 
   // Try tour booking
   const tour = await prisma.tourBooking.findUnique({
@@ -53,7 +81,34 @@ async function getBooking(id: string) {
       payments: true,
     },
   })
-  if (tour) return { booking: tour, type: 'tour' as const }
+  if (tour) {
+    if (tour.tour.supplier && !tour.supplierConfirmToken) {
+      const updated = await prisma.tourBooking.update({
+        where: { id: tour.id },
+        data: { supplierConfirmToken: randomUUID() },
+        include: {
+          tour: {
+            select: {
+              id: true,
+              title: true,
+              slug: true,
+              images: true,
+              price: true,
+              priceTwin: true,
+              priceChild: true,
+              extraNightPrice: true,
+              options: true,
+              supplier: { select: { name: true, phone: true, whatsappNumber: true } },
+            },
+          },
+          customer: { select: { id: true, name: true, email: true, phone: true } },
+          payments: true,
+        },
+      })
+      return { booking: updated, type: 'tour' as const }
+    }
+    return { booking: tour, type: 'tour' as const }
+  }
 
   return null
 }

@@ -4,6 +4,7 @@ import AdminShell from '@/components/admin/AdminShell'
 import { prisma } from '@/lib/prisma'
 import BookingsTable, { type Booking } from './BookingsTable'
 import { FiBookOpen, FiDollarSign, FiClock, FiCheckCircle, FiTrendingUp } from 'react-icons/fi'
+import { randomUUID } from 'crypto'
 
 async function getBookings() {
   try {
@@ -37,9 +38,26 @@ async function getBookings() {
         orderBy: { createdAt: 'desc' },
       }),
     ])
+    const packageRows = await Promise.all(pkgBookings.map(async (b) => {
+      let supplierConfirmToken = b.supplierConfirmToken
+      if (b.package.supplier && !supplierConfirmToken) {
+        supplierConfirmToken = randomUUID()
+        await prisma.booking.update({ where: { id: b.id }, data: { supplierConfirmToken } })
+      }
+      return { ...b, supplierConfirmToken, _type: 'package' as const, title: b.package.title, image: b.package.images?.[0], supplier: b.package.supplier }
+    }))
+    const tourRows = await Promise.all(tourBookings.map(async (b) => {
+      let supplierConfirmToken = b.supplierConfirmToken
+      if (b.tour.supplier && !supplierConfirmToken) {
+        supplierConfirmToken = randomUUID()
+        await prisma.tourBooking.update({ where: { id: b.id }, data: { supplierConfirmToken } })
+      }
+      return { ...b, supplierConfirmToken, _type: 'tour' as const, title: b.tour.title, image: b.tour.images?.[0], supplier: b.tour.supplier }
+    }))
+
     const normalised = [
-      ...pkgBookings.map((b) => ({ ...b, _type: 'package' as const, title: b.package.title, image: b.package.images?.[0], supplier: b.package.supplier })),
-      ...tourBookings.map((b) => ({ ...b, _type: 'tour' as const, title: b.tour.title, image: b.tour.images?.[0], supplier: b.tour.supplier })),
+      ...packageRows,
+      ...tourRows,
     ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     return normalised
   } catch { return [] }

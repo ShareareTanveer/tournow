@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { getAuthUser, verifyToken } from '@/lib/auth'
 import { BookingSchema } from '@/lib/validations'
 import { randomUUID } from 'crypto'
+import { onNewBooking } from '@/lib/notifications'
 
 export async function POST(req: NextRequest) {
   try {
@@ -63,6 +64,14 @@ export async function POST(req: NextRequest) {
       },
       include: { tour: { select: { title: true } } },
     })
+
+    onNewBooking({
+      bookingId: booking.id,
+      bookingRef: booking.bookingRef,
+      customerName: booking.customerName,
+      customerId: booking.customerId,
+      packageTitle: booking.tour.title,
+    }).catch(console.error)
 
     return NextResponse.json({ bookingRef: booking.bookingRef, id: booking.id }, { status: 201 })
   } catch {

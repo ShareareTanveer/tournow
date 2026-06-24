@@ -4,6 +4,8 @@ import { prisma } from '@/lib/prisma'
 import { FiPlus } from 'react-icons/fi'
 import PackagesClient from './PackagesClient'
 
+export const dynamic = 'force-dynamic'
+
 async function getPackages() {
   try {
     return await prisma.package.findMany({

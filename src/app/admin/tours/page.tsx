@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { FiPlus } from 'react-icons/fi'
 import ToursClient from './ToursClient'
 
+export const dynamic = 'force-dynamic'
 export const metadata = { title: 'Tours' }
 
 export default async function ToursPage() {

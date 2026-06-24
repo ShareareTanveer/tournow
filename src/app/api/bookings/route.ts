@@ -4,6 +4,7 @@ import { getAuthUser, verifyToken } from '@/lib/auth'
 import { BookingSchema } from '@/lib/validations'
 import { onNewBooking } from '@/lib/notifications'
 import { randomUUID } from 'crypto'
+import { sendSupplierBookingWhatsApp } from '@/lib/twilio-whatsapp'
 
 export async function GET(req: NextRequest) {
   const adminUser = await getAuthUser(req)
@@ -64,7 +65,10 @@ export async function POST(req: NextRequest) {
     const d = parsed.data
     if (!d.packageId) return NextResponse.json({ error: 'packageId required' }, { status: 400 })
 
-    const pkg = await prisma.package.findUnique({ where: { id: d.packageId } })
+    const pkg = await prisma.package.findUnique({
+      where: { id: d.packageId },
+      include: { supplier: { select: { name: true, phone: true, whatsappNumber: true } } },
+    })
     if (!pkg) return NextResponse.json({ error: 'Package not found' }, { status: 404 })
 
     const snapshot = {
@@ -84,6 +88,7 @@ export async function POST(req: NextRequest) {
       notes: d.notes,
     }
 
+    const supplierConfirmToken = randomUUID()
     const booking = await prisma.booking.create({
       data: {
         packageId: d.packageId,
@@ -109,7 +114,7 @@ export async function POST(req: NextRequest) {
         notes: d.notes,
         originalSnapshot: snapshot as any,
         status: 'REQUESTED',
-        supplierConfirmToken: randomUUID(),
+        supplierConfirmToken,
       },
       include: { package: { select: { title: true } } },
     })
@@ -122,6 +127,34 @@ export async function POST(req: NextRequest) {
       customerId: booking.customerId,
       packageTitle: booking.package.title,
     }).catch(console.error)
+
+    if (pkg.supplier) {
+      const result = await sendSupplierBookingWhatsApp({
+        supplier: pkg.supplier,
+        booking: {
+          bookingRef: booking.bookingRef,
+          itemTitle: booking.package.title,
+          customerName: booking.customerName,
+          customerPhone: booking.customerPhone,
+          travelDate: booking.travelDate,
+          returnDate: booking.returnDate,
+          paxAdult: booking.paxAdult,
+          paxChild: booking.paxChild,
+          paxInfant: booking.paxInfant,
+          totalPrice: booking.totalPrice,
+          currency: booking.currency,
+          notes: booking.notes,
+          confirmUrl: `${req.nextUrl.origin}/supplier-confirm/${supplierConfirmToken}`,
+        },
+      }).catch((error) => {
+        console.error('[twilio-whatsapp] package booking send failed', error)
+        return { sent: false }
+      })
+
+      if (result.sent) {
+        await prisma.booking.update({ where: { id: booking.id }, data: { supplierNotifiedAt: new Date() } })
+      }
+    }
 
     return NextResponse.json({ bookingRef: booking.bookingRef, id: booking.id }, { status: 201 })
   } catch {

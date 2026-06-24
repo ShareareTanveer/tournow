@@ -24,10 +24,15 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
     social_tiktok: g(settings, 'social_tiktok'),
     // SEO
     robots_disallow: g(settings, 'robots_disallow', ''),
+    // Automation
+    twilio_account_sid: g(settings, 'twilio_account_sid'),
+    twilio_auth_token: g(settings, 'twilio_auth_token'),
+    twilio_whatsapp_from: g(settings, 'twilio_whatsapp_from', 'whatsapp:+14155238886'),
+    twilio_content_sid: g(settings, 'twilio_content_sid'),
   })
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
-  const [tab, setTab] = useState<'general' | 'contact' | 'social' | 'theme' | 'seo'>('general')
+  const [tab, setTab] = useState<'general' | 'contact' | 'social' | 'automation' | 'theme' | 'seo'>('general')
 
   // Theme fields parsed from JSON
   const [theme, setTheme] = useState(() => {
@@ -85,6 +90,7 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
     { id: 'general', label: 'General' },
     { id: 'contact', label: 'Contact' },
     { id: 'social', label: 'Social' },
+    { id: 'automation', label: 'Automation' },
     { id: 'theme', label: 'Theme Colors' },
     { id: 'seo', label: 'SEO / Robots' },
   ] as const
@@ -128,6 +134,27 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
             {inp('social_youtube', 'YouTube URL', 'url', 'https://youtube.com/…')}
             {inp('social_tiktok', 'TikTok URL', 'url', 'https://tiktok.com/…')}
           </>
+        )}
+
+        {tab === 'automation' && (
+          <div className="space-y-5">
+            <div>
+              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1">Twilio WhatsApp Automation</p>
+              <p className="text-xs text-gray-400">
+                If Account SID, Auth Token, and From number are filled, new supplier-assigned bookings will be sent through Twilio automatically. If any required field is blank, the manual WhatsApp link flow is used.
+              </p>
+            </div>
+            {inp('twilio_account_sid', 'Twilio Account SID', 'text', 'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')}
+            {inp('twilio_auth_token', 'Twilio Auth Token', 'password', 'Your Twilio auth token')}
+            {inp('twilio_whatsapp_from', 'Twilio WhatsApp From', 'text', 'whatsapp:+14155238886')}
+            {inp('twilio_content_sid', 'Content SID / Template SID (optional)', 'text', 'HXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')}
+            <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+              <p className="text-xs font-semibold text-amber-700 mb-1">Sandbox note</p>
+              <p className="text-xs leading-5 text-amber-700">
+                For Twilio Sandbox, suppliers must join your sandbox first. Leave Content SID blank to send the full booking details as a normal WhatsApp message. Use Content SID only when Twilio requires an approved template for business-initiated messages.
+              </p>
+            </div>
+          </div>
         )}
 
         {tab === 'seo' && (

@@ -31,6 +31,10 @@ function formatDate(value?: string | Date | null) {
   return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
 }
 
+export function formatSupplierMessageDate(value?: string | Date | null) {
+  return formatDate(value)
+}
+
 export function getSupplierWhatsAppNumber(supplier?: Supplier | null) {
   return cleanWhatsAppNumber(supplier?.whatsappNumber || supplier?.phone)
 }

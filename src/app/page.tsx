@@ -98,7 +98,7 @@ export default async function HomePage() {
       </section>
 
       {/* Perks */}
-      <PerksSection perks={perks} />
+      {/* <PerksSection perks={perks} /> */}
 
       {/* Blog Collage */}
       {blogs.length > 0 && (

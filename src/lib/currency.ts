@@ -1,14 +1,19 @@
 export type Currency = 'LKR' | 'USD' | 'EUR' | 'GBP' | 'AUD' | 'SGD' | 'AED'
 
-export const CURRENCIES: { code: Currency; symbol: string; label: string; rate: number }[] = [
-  { code: 'LKR', symbol: 'Rs', label: 'Sri Lankan Rupee', rate: 1 },
-  { code: 'USD', symbol: '$', label: 'US Dollar', rate: 0.0033 },
+export const CURRENCIES: {
+  code: Currency;
+  symbol: string;
+  label: string;
+  rate: number;
+}[] = [
+  { code: 'LKR', symbol: 'Rs', label: 'Sri Lankan', rate: 1 },
+  { code: 'USD', symbol: '$', label: 'US', rate: 0.0033 },
   { code: 'EUR', symbol: '€', label: 'Euro', rate: 0.0030 },
-  { code: 'GBP', symbol: '£', label: 'British Pound', rate: 0.0026 },
-  { code: 'AUD', symbol: 'A$', label: 'Australian Dollar', rate: 0.0050 },
-  { code: 'SGD', symbol: 'S$', label: 'Singapore Dollar', rate: 0.0044 },
-  { code: 'AED', symbol: 'AED', label: 'UAE Dirham', rate: 0.012 },
-]
+  { code: 'GBP', symbol: '£', label: 'British', rate: 0.0026 },
+  { code: 'AUD', symbol: 'A$', label: 'Australian', rate: 0.0050 },
+  { code: 'SGD', symbol: 'S$', label: 'Singapore', rate: 0.0044 },
+  { code: 'AED', symbol: 'AED', label: 'UAE', rate: 0.012 },
+];
 
 export function formatPrice(lkrAmount: number, currency: Currency): string {
   const c = CURRENCIES.find(x => x.code === currency)!

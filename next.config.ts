@@ -23,15 +23,6 @@ const nextConfig: NextConfig = {
   },
   // Keep optional heavy packages out of the client bundle
   serverExternalPackages: ['@aws-sdk/client-s3', 'cloudinary', 'mime-types'],
-  webpack: (config, { dev }) => {
-    if (dev) {
-      config.watchOptions = {
-        poll: false,
-        aggregateTimeout: 300,
-      };
-    }
-    return config;
-  },
 };
 
 export default nextConfig;

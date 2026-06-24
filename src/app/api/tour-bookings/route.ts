@@ -82,6 +82,8 @@ export async function POST(req: NextRequest) {
       const result = await sendSupplierBookingWhatsApp({
         supplier: tour.supplier,
         booking: {
+          bookingId: booking.id,
+          bookingType: 'tour',
           bookingRef: booking.bookingRef,
           itemTitle: booking.tour.title,
           customerName: booking.customerName,

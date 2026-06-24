@@ -818,6 +818,30 @@ model Supplier {
   @@map("suppliers")
 }
 
+model WhatsAppMessageLog {
+  id             String   @id @default(cuid())
+  provider       String   @default("twilio")
+  status         String
+  reason         String?
+  bookingId      String?
+  bookingRef     String?
+  bookingType    String?
+  itemTitle      String?
+  supplierName   String?
+  toNumber       String?
+  fromNumber     String?
+  twilioSid      String?
+  responseStatus Int?
+  responseBody   String?  @db.Text
+  error          String?  @db.Text
+  requestPayload Json?
+  createdAt      DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([status])
+  @@map("whatsapp_message_logs")
+}
+
 model News {
   id          String   @id @default(cuid())
   title       String

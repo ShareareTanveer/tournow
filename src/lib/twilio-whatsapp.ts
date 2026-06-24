@@ -12,6 +12,8 @@ type Supplier = {
 }
 
 type BookingMessage = {
+  bookingId?: string
+  bookingType?: string
   bookingRef: string
   itemTitle: string
   customerName: string
@@ -34,11 +36,61 @@ type TwilioSettings = {
   contentSid: string
 }
 
+type WhatsAppLogInput = {
+  status: string
+  reason?: string
+  booking: BookingMessage
+  supplier?: Supplier | null
+  toNumber?: string
+  fromNumber?: string
+  twilioSid?: string
+  responseStatus?: number
+  responseBody?: string
+  error?: string
+  requestPayload?: Record<string, string>
+}
+
 function asWhatsappAddress(value: string) {
   const trimmed = value.trim()
   if (trimmed.startsWith('whatsapp:')) return trimmed
   const digits = trimmed.replace(/[^\d]/g, '')
   return digits ? `whatsapp:+${digits}` : ''
+}
+
+async function writeWhatsAppLog({
+  status,
+  reason,
+  booking,
+  supplier,
+  toNumber,
+  fromNumber,
+  twilioSid,
+  responseStatus,
+  responseBody,
+  error,
+  requestPayload,
+}: WhatsAppLogInput) {
+  await prisma.whatsAppMessageLog.create({
+    data: {
+      provider: 'twilio',
+      status,
+      reason,
+      bookingId: booking.bookingId,
+      bookingRef: booking.bookingRef,
+      bookingType: booking.bookingType,
+      itemTitle: booking.itemTitle,
+      supplierName: supplier?.name,
+      toNumber,
+      fromNumber,
+      twilioSid,
+      responseStatus,
+      responseBody,
+      error,
+      requestPayload: requestPayload as any,
+    },
+  }).catch((logError) => {
+    console.error('[twilio-whatsapp] log write failed', logError)
+  })
 }
 
 async function getTwilioSettings(): Promise<TwilioSettings | null> {
@@ -77,10 +129,27 @@ export async function sendSupplierBookingWhatsApp({
   booking: BookingMessage
 }) {
   const settings = await getTwilioSettings()
-  if (!settings) return { sent: false, reason: 'not_configured' as const }
+  if (!settings) {
+    await writeWhatsAppLog({
+      status: 'skipped',
+      reason: 'not_configured',
+      supplier,
+      booking,
+    })
+    return { sent: false, reason: 'not_configured' as const }
+  }
 
   const toNumber = getSupplierWhatsAppNumber(supplier)
-  if (!toNumber) return { sent: false, reason: 'missing_supplier_number' as const }
+  if (!toNumber) {
+    await writeWhatsAppLog({
+      status: 'failed',
+      reason: 'missing_supplier_number',
+      supplier,
+      booking,
+      fromNumber: settings.from,
+    })
+    return { sent: false, reason: 'missing_supplier_number' as const }
+  }
 
   const params = new URLSearchParams()
   params.set('From', settings.from)
@@ -96,21 +165,67 @@ export async function sendSupplierBookingWhatsApp({
     params.set('Body', buildSupplierBookingMessage(booking))
   }
 
-  const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${settings.accountSid}/Messages.json`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Basic ${Buffer.from(`${settings.accountSid}:${settings.authToken}`).toString('base64')}`,
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: params,
-  })
+  const requestPayload = Object.fromEntries(params.entries())
+  const toAddress = requestPayload.To
 
-  if (!res.ok) {
+  try {
+    const res = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${settings.accountSid}/Messages.json`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${settings.accountSid}:${settings.authToken}`).toString('base64')}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: params,
+    })
+
     const text = await res.text().catch(() => '')
-    console.error('[twilio-whatsapp] send failed', res.status, text.slice(0, 500))
-    return { sent: false, reason: 'twilio_error' as const }
-  }
 
-  const data = await res.json().catch(() => ({}))
-  return { sent: true, sid: typeof data.sid === 'string' ? data.sid : undefined }
+    if (!res.ok) {
+      console.error('[twilio-whatsapp] send failed', res.status, text.slice(0, 500))
+      await writeWhatsAppLog({
+        status: 'failed',
+        reason: 'twilio_error',
+        supplier,
+        booking,
+        toNumber: toAddress,
+        fromNumber: settings.from,
+        responseStatus: res.status,
+        responseBody: text,
+        requestPayload,
+      })
+      return { sent: false, reason: 'twilio_error' as const }
+    }
+
+    let data: Record<string, unknown> = {}
+    try {
+      data = text ? JSON.parse(text) : {}
+    } catch {}
+    const sid = typeof data.sid === 'string' ? data.sid : undefined
+    await writeWhatsAppLog({
+      status: 'sent',
+      supplier,
+      booking,
+      toNumber: toAddress,
+      fromNumber: settings.from,
+      twilioSid: sid,
+      responseStatus: res.status,
+      responseBody: text,
+      requestPayload,
+    })
+    return { sent: true, sid }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    console.error('[twilio-whatsapp] send exception', message)
+    await writeWhatsAppLog({
+      status: 'failed',
+      reason: 'exception',
+      supplier,
+      booking,
+      toNumber: toAddress,
+      fromNumber: settings.from,
+      error: message,
+      requestPayload,
+    })
+    return { sent: false, reason: 'exception' as const }
+  }
 }

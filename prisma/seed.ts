@@ -67,10 +67,10 @@ const IMG = {
 async function main() {
   console.log('🌱 Seeding Metro Voyage database...')
 
-  // ── Admin User ──────────────────────────────────────────────────────────────
+  // ── Admin User ───────────────────────────────────────────── ─────────────────
   const adminPassword = await bcrypt.hash('admin123', 12)
   await prisma.user.upsert({
-    where: { email: 'admin@gmail.com' },
+    where: { email: 'admin@gmail.com' }, 
     update: {},
     create: {
       name: 'Super Admin',

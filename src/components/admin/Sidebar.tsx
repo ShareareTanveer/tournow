@@ -10,7 +10,7 @@ import {
   FiHeart, FiCreditCard, FiZap, FiEdit2, FiImage, FiSettings,
   FiGlobe, FiLogOut, FiTag, FiChevronDown, FiMenu, FiX,
   FiCalendar, FiBarChart2, FiTrendingUp, FiChevronsLeft,
-  FiChevronsRight, FiPhone,
+  FiChevronsRight, FiPhone, FiMessageCircle,
 } from 'react-icons/fi'
 
 type NavItem = {
@@ -78,6 +78,7 @@ const GROUPS: NavGroupData[] = [
     items: [
       { label: 'Staff', href: '/admin/staff', icon: <FiUsers size={16} /> },
       { label: 'Suppliers', href: '/admin/suppliers', icon: <FiPhone size={16} /> },
+      { label: 'WhatsApp Logs', href: '/admin/whatsapp-logs', icon: <FiMessageCircle size={16} /> },
       { label: 'Media Library', href: '/admin/media', icon: <FiImage size={16} /> },
       { label: 'AI Provider Config', href: '/admin/settings/ai', icon: <FiZap size={16} /> },
       { label: 'Settings', href: '/admin/settings', icon: <FiSettings size={16} />, exact: true },

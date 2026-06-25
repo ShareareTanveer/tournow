@@ -855,7 +855,7 @@ export default function TourForm({ destinations, suppliers, tour }: Props) {
 
       {error && <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-4 py-3 rounded-xl">{error}</div>}
 
-      <div className="admin-form-actions flex gap-3">
+      <div className="admin-form-actions flex flex-wrap gap-2">
         <button type="submit" disabled={loading}
           className="bg-indigo-500 hover:bg-sky-600 disabled:opacity-60 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
           {loading ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Tour'}
@@ -866,7 +866,7 @@ export default function TourForm({ destinations, suppliers, tour }: Props) {
         </button>
         {isEdit && (
           <button type="button" onClick={handleDelete}
-            className="ml-auto text-red-500 hover:bg-red-50 border border-red-200 font-medium px-5 py-3 rounded-xl transition-colors text-sm">
+            className="text-red-500 hover:bg-red-50 border border-red-200 font-medium px-5 py-3 rounded-xl transition-colors text-sm sm:ml-auto">
             Deactivate
           </button>
         )}

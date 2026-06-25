@@ -1,13 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import AdminTable, { Column } from '@/components/admin/AdminTable'
 import { FiEdit2, FiExternalLink, FiGlobe, FiMapPin, FiEye, FiEyeOff, FiStar, FiPhone } from 'react-icons/fi'
 
 interface Tour {
   id: string; slug: string; title: string; region: string
   price: number; duration: number; nights: number
-  isFeatured: boolean; isActive: boolean; createdAt: string
+  images: string[]; isFeatured: boolean; isActive: boolean; createdAt: string
   multiDestinations: string[]
   primaryDestination: { name: string }
   supplier?: { name: string; phone: string; whatsappNumber?: string | null } | null
@@ -18,9 +19,18 @@ export default function ToursClient({ tours }: { tours: Tour[] }) {
     {
       key: 'title', label: 'Tour', sortable: true,
       render: t => (
-        <div>
-          <p className="font-semibold text-gray-800 leading-tight line-clamp-1 max-w-48">{t.title}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5">{t.primaryDestination.name}</p>
+        <div className="admin-item-cell">
+          <div className="admin-item-thumb">
+            {t.images?.[0] ? (
+              <Image src={t.images[0]} alt={t.title} fill className="object-cover" sizes="44px" />
+            ) : (
+              <span>{t.title.charAt(0)}</span>
+            )}
+          </div>
+          <div className="min-w-0">
+            <p title={t.title} className="admin-item-title">{t.title}</p>
+            <p className="admin-item-meta">{t.primaryDestination.name}</p>
+          </div>
         </div>
       ),
     },

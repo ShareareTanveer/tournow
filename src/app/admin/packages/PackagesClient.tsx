@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import AdminTable, { Column } from '@/components/admin/AdminTable'
 import { FiEdit2, FiExternalLink, FiStar, FiEye, FiEyeOff, FiPhone } from 'react-icons/fi'
 
@@ -9,7 +10,7 @@ const STAR_MAP: Record<string, string> = { THREE: '3★', FOUR: '4★', FIVE: '5
 interface Pkg {
   id: string; slug: string; title: string; category: string
   price: number; duration: number; nights: number; starRating: string
-  isFeatured: boolean; isActive: boolean; createdAt: string
+  images: string[]; isFeatured: boolean; isActive: boolean; createdAt: string
   destination?: { name: string } | null
   supplier?: { name: string; phone: string; whatsappNumber?: string | null } | null
 }
@@ -19,9 +20,18 @@ export default function PackagesClient({ packages }: { packages: Pkg[] }) {
     {
       key: 'title', label: 'Package', sortable: true,
       render: pkg => (
-        <div>
-          <p className="font-semibold text-gray-800 leading-tight line-clamp-1 max-w-48">{pkg.title}</p>
-          <p className="text-[11px] text-gray-400 mt-0.5">/{pkg.slug}</p>
+        <div className="admin-item-cell">
+          <div className="admin-item-thumb">
+            {pkg.images?.[0] ? (
+              <Image src={pkg.images[0]} alt={pkg.title} fill className="object-cover" sizes="44px" />
+            ) : (
+              <span>{pkg.title.charAt(0)}</span>
+            )}
+          </div>
+          <div className="min-w-0">
+            <p title={pkg.title} className="admin-item-title">{pkg.title}</p>
+            <p className="admin-item-meta">{pkg.destination?.name ?? 'No destination'}</p>
+          </div>
         </div>
       ),
     },

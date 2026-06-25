@@ -2,17 +2,37 @@ import AdminShell from '@/components/admin/AdminShell'
 import Link from 'next/link'
 import { prisma } from '@/lib/prisma'
 import {
-  FiDollarSign, FiBookOpen, FiInbox, FiVideo,
-  FiStar, FiPackage, FiMail, FiCheckCircle,
-  FiPlus, FiEdit3, FiFileText, FiSettings, FiZap,
-  FiArrowUpRight, FiTrendingUp, FiUsers, FiClock,
-  FiBarChart2, FiCalendar,
+  FiArrowUpRight,
+  FiBarChart2,
+  FiBookOpen,
+  FiCalendar,
+  FiCheckCircle,
+  FiClock,
+  FiDollarSign,
+  FiEdit3,
+  FiFileText,
+  FiInbox,
+  FiMail,
+  FiPackage,
+  FiPlus,
+  FiSettings,
+  FiStar,
+  FiTrendingUp,
+  FiUsers,
+  FiVideo,
+  FiZap,
 } from 'react-icons/fi'
 import { BookingStatus } from '@prisma/client'
 
+export const dynamic = 'force-dynamic'
+
 const CONFIRMED_STATUSES: BookingStatus[] = [
-  'CONFIRMED', 'RECEIPT_UPLOADED', 'ADMIN_CONFIRMING',
-  'ALL_CONFIRMED', 'MAIL_SENT', 'COMPLETED',
+  'CONFIRMED',
+  'RECEIPT_UPLOADED',
+  'ADMIN_CONFIRMING',
+  'ALL_CONFIRMED',
+  'MAIL_SENT',
+  'COMPLETED',
 ]
 
 async function getStats() {
@@ -48,280 +68,382 @@ async function getStats() {
       }),
     ])
     return {
-      totalBookings:     pkgBookingCount + tourBookingCount,
+      totalBookings: pkgBookingCount + tourBookingCount,
       confirmedBookings: confirmedPkgCount + confirmedTourCount,
-      totalInquiries, newInquiries,
-      pendingConsultations, pendingReviews,
-      totalSubscribers, totalPackages,
+      totalInquiries,
+      newInquiries,
+      pendingConsultations,
+      pendingReviews,
+      totalSubscribers,
+      totalPackages,
       totalRevenue: (pkgRevenueAgg._sum.totalPrice ?? 0) + (tourRevenueAgg._sum.totalPrice ?? 0),
-      recentInquiries, recentBookings,
+      recentInquiries,
+      recentBookings,
     }
-  } catch { return null }
+  } catch {
+    return null
+  }
 }
 
 const STATUS_BADGE: Record<string, string> = {
-  NEW:              'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
-  CONTACTED:        'bg-sky-50 text-sky-700 ring-1 ring-sky-200',
-  CONVERTED:        'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
-  CLOSED:           'bg-gray-50 text-gray-500 ring-1 ring-gray-200',
-  CONFIRMED:        'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
-  PENDING:          'bg-orange-50 text-orange-700 ring-1 ring-orange-200',
-  CANCELLED:        'bg-rose-50 text-rose-600 ring-1 ring-rose-200',
-  REQUESTED:        'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200',
-  ALL_CONFIRMED:    'bg-teal-50 text-teal-700 ring-1 ring-teal-200',
-  COMPLETED:        'bg-gray-50 text-gray-600 ring-1 ring-gray-200',
+  NEW: 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
+  CONTACTED: 'bg-sky-50 text-sky-700 ring-1 ring-sky-200',
+  CONVERTED: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
+  CLOSED: 'bg-gray-50 text-gray-500 ring-1 ring-gray-200',
+  CONFIRMED: 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200',
+  PENDING: 'bg-orange-50 text-orange-700 ring-1 ring-orange-200',
+  CANCELLED: 'bg-rose-50 text-rose-600 ring-1 ring-rose-200',
+  REQUESTED: 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200',
+  ALL_CONFIRMED: 'bg-teal-50 text-teal-700 ring-1 ring-teal-200',
+  COMPLETED: 'bg-gray-50 text-gray-600 ring-1 ring-gray-200',
+}
+
+function formatMoney(value?: number | null) {
+  if (value == null) return 'LKR 0'
+  if (value >= 1_000_000) return `LKR ${(value / 1_000_000).toFixed(value >= 10_000_000 ? 0 : 1)}M`
+  if (value >= 1_000) return `LKR ${(value / 1_000).toFixed(0)}K`
+  return `LKR ${value.toLocaleString()}`
+}
+
+function formatStatus(value?: string | null) {
+  return value ? value.replace(/_/g, ' ') : 'UNKNOWN'
+}
+
+function percent(part: number, total: number) {
+  if (!total) return 0
+  return Math.min(100, Math.round((part / total) * 100))
+}
+
+function initials(name?: string | null) {
+  return name?.trim()?.charAt(0)?.toUpperCase() || '?'
+}
+
+function MetricCard({
+  label,
+  value,
+  helper,
+  href,
+  Icon,
+  tone,
+}: {
+  label: string
+  value: string | number
+  helper: string
+  href: string
+  Icon: any
+  tone: string
+}) {
+  return (
+    <Link
+      href={href}
+      className="group min-w-0 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lg"
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${tone}`}>
+          <Icon size={18} />
+        </div>
+        <FiArrowUpRight size={16} className="text-slate-300 transition group-hover:text-slate-500" />
+      </div>
+      <p className="mt-5 truncate text-2xl font-semibold tracking-tight text-slate-950">{value}</p>
+      <p className="mt-1 text-sm font-medium text-slate-700">{label}</p>
+      <p className="mt-1 text-xs leading-5 text-slate-500">{helper}</p>
+    </Link>
+  )
+}
+
+function PanelHeader({
+  title,
+  subtitle,
+  href,
+  Icon,
+}: {
+  title: string
+  subtitle: string
+  href: string
+  Icon: any
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4 border-b border-slate-100 px-5 py-4">
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white">
+          <Icon size={15} />
+        </div>
+        <div className="min-w-0">
+          <h2 className="text-sm font-semibold text-slate-950">{title}</h2>
+          <p className="mt-0.5 truncate text-xs text-slate-500">{subtitle}</p>
+        </div>
+      </div>
+      <Link href={href} className="shrink-0 text-xs font-semibold text-[#007f89] hover:text-[#063c43]">
+        View all
+      </Link>
+    </div>
+  )
 }
 
 export default async function DashboardPage() {
   const stats = await getStats()
+  const conversionRate = percent(stats?.confirmedBookings ?? 0, stats?.totalBookings ?? 0)
+  const inquiryLoad = (stats?.newInquiries ?? 0) + (stats?.pendingConsultations ?? 0) + (stats?.pendingReviews ?? 0)
 
-  // Primary metrics (featured cards)
-  const PRIMARY_METRICS = [
+  const primaryMetrics = [
     {
-      label: 'Total Revenue', value: stats ? `LKR ${(stats.totalRevenue / 1000).toFixed(0)}k` : '—',
-      sub: 'from paid bookings', Icon: FiDollarSign,
-      gradient: 'from-emerald-500 to-emerald-600', bgLight: 'bg-emerald-50', textColor: 'text-emerald-600',
-      link: '/admin/bookings',
+      label: 'Revenue',
+      value: stats ? formatMoney(stats.totalRevenue) : '-',
+      helper: 'Paid package and tour bookings',
+      Icon: FiDollarSign,
+      href: '/admin/bookings',
+      tone: 'bg-emerald-50 text-emerald-700',
     },
     {
-      label: 'Total Bookings', value: stats?.totalBookings ?? '—',
-      sub: `${stats?.confirmedBookings ?? 0} confirmed`, Icon: FiBookOpen,
-      gradient: 'from-blue-500 to-blue-600', bgLight: 'bg-blue-50', textColor: 'text-blue-600',
-      link: '/admin/bookings',
+      label: 'Bookings',
+      value: stats?.totalBookings ?? '-',
+      helper: `${stats?.confirmedBookings ?? 0} confirmed`,
+      Icon: FiBookOpen,
+      href: '/admin/bookings',
+      tone: 'bg-sky-50 text-sky-700',
     },
     {
-      label: 'Active Packages', value: stats?.totalPackages ?? '—',
-      sub: 'live on website', Icon: FiPackage,
-      gradient: 'from-cyan-500 to-cyan-600', bgLight: 'bg-cyan-50', textColor: 'text-cyan-600',
-      link: '/admin/packages',
+      label: 'Live Packages',
+      value: stats?.totalPackages ?? '-',
+      helper: 'Active packages on the website',
+      Icon: FiPackage,
+      href: '/admin/packages',
+      tone: 'bg-cyan-50 text-cyan-700',
     },
     {
-      label: 'Newsletter', value: stats?.totalSubscribers ?? '—',
-      sub: 'active subscribers', Icon: FiMail,
-      gradient: 'from-fuchsia-500 to-fuchsia-600', bgLight: 'bg-fuchsia-50', textColor: 'text-fuchsia-600',
-      link: '/admin/newsletter',
+      label: 'Subscribers',
+      value: stats?.totalSubscribers ?? '-',
+      helper: 'Active newsletter audience',
+      Icon: FiMail,
+      href: '/admin/newsletter',
+      tone: 'bg-violet-50 text-violet-700',
     },
   ]
 
-  // Secondary metrics (smaller cards)
-  const SECONDARY_METRICS = [
-    {
-      label: 'New Inquiries', value: stats?.newInquiries ?? '—',
-      sub: `${stats?.totalInquiries ?? 0} total`, Icon: FiInbox,
-      link: '/admin/inquiries',
-    },
-    {
-      label: 'Pending Consults', value: stats?.pendingConsultations ?? '—',
-      sub: 'awaiting response', Icon: FiVideo,
-      link: '/admin/consultations',
-    },
-    {
-      label: 'Pending Reviews', value: stats?.pendingReviews ?? '—',
-      sub: 'need approval', Icon: FiStar,
-      link: '/admin/reviews',
-    },
-    {
-      label: 'Confirmed Bookings', value: stats?.confirmedBookings ?? '—',
-      sub: 'all confirmed', Icon: FiCheckCircle,
-      link: '/admin/bookings',
-    },
+  const workload = [
+    { label: 'New inquiries', value: stats?.newInquiries ?? 0, href: '/admin/inquiries', Icon: FiInbox },
+    { label: 'Pending consultations', value: stats?.pendingConsultations ?? 0, href: '/admin/consultations', Icon: FiVideo },
+    { label: 'Reviews to approve', value: stats?.pendingReviews ?? 0, href: '/admin/reviews', Icon: FiStar },
   ]
 
-  const QUICK_ACTIONS = [
-    { label: 'Create Package', href: '/admin/packages/new', Icon: FiPlus, color: 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm' },
-    { label: 'Write Blog', href: '/admin/blogs/new', Icon: FiEdit3, color: 'bg-sky-600 hover:bg-sky-700 text-white shadow-sm' },
-    { label: 'Add Article', href: '/admin/news/new', Icon: FiFileText, color: 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm' },
-    { label: 'View Inquiries', href: '/admin/inquiries', Icon: FiInbox, color: 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50' },
-    { label: 'Manage Reviews', href: '/admin/reviews', Icon: FiStar, color: 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50' },
-    { label: 'AI Settings', href: '/admin/settings/ai', Icon: FiZap, color: 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50' },
-    { label: 'Site Settings', href: '/admin/settings', Icon: FiSettings, color: 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50' },
+  const quickActions = [
+    { label: 'Create package', href: '/admin/packages/new', Icon: FiPlus, primary: true },
+    { label: 'Write blog', href: '/admin/blogs/new', Icon: FiEdit3 },
+    { label: 'Add news', href: '/admin/news/new', Icon: FiFileText },
+    { label: 'View calendar', href: '/admin/calendar', Icon: FiCalendar },
+    { label: 'AI settings', href: '/admin/settings/ai', Icon: FiZap },
+    { label: 'Site settings', href: '/admin/settings', Icon: FiSettings },
   ]
 
   return (
     <AdminShell
       title="Dashboard"
-      subtitle="Welcome back — here's what's happening with your business"
+      subtitle="Business overview, pending work, and recent customer activity"
+      actions={
+        <Link
+          href="/admin/packages/new"
+          className="hidden items-center gap-2 rounded-xl bg-slate-950 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 sm:flex"
+        >
+          <FiPlus size={14} /> New package
+        </Link>
+      }
     >
-      {/* Primary Metrics - Featured Cards */}
-      <div className="admin-dashboard-metrics grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
-        {PRIMARY_METRICS.map((metric) => (
-          <Link
-            key={metric.label}
-            href={metric.link}
-            className="admin-dashboard-metric group relative bg-white rounded-xl border border-gray-100 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 overflow-hidden"
-          >
-            <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-gray-50 to-transparent rounded-bl-2xl opacity-50" />
-            <div className="flex items-start justify-between mb-3">
-              <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${metric.gradient} flex items-center justify-center shadow-md`}>
-                <metric.Icon size={20} className="text-white" />
+      <div className="space-y-6">
+        <section className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-950 text-white shadow-sm">
+          <div className="grid gap-0 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="p-6 sm:p-7">
+              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/80">
+                <FiTrendingUp size={13} />
+                Operations snapshot
               </div>
-              <FiArrowUpRight size={16} className="text-gray-300 group-hover:text-gray-500 transition-colors" />
-            </div>
-            <p className="text-2xl font-bold text-gray-900 tracking-tight mb-1">{metric.value}</p>
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{metric.label}</p>
-            <p className="text-[11px] text-gray-400 mt-1.5">{metric.sub}</p>
-          </Link>
-        ))}
-      </div>
-
-      {/* Secondary Metrics - Compact Row */}
-      <div className="admin-dashboard-secondary grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-        {SECONDARY_METRICS.map((metric) => (
-          <Link
-            key={metric.label}
-            href={metric.link}
-            className="admin-dashboard-mini bg-white rounded-lg border border-gray-100 p-4 hover:shadow-md hover:border-gray-200 transition-all duration-200"
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-8 h-8 rounded-lg bg-gray-50 flex items-center justify-center">
-                <metric.Icon size={14} className="text-gray-500" />
+              <h2 className="max-w-2xl text-2xl font-semibold tracking-tight sm:text-3xl">
+                Keep sales, service, and content work moving from one clean view.
+              </h2>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-white/60">
+                Review revenue, booking progress, open customer work, and the latest activity without leaving the dashboard.
+              </p>
+              <div className="mt-6 grid grid-cols-2 gap-3 sm:max-w-xl sm:grid-cols-3">
+                <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
+                  <p className="text-xs text-white/50">Conversion</p>
+                  <p className="mt-1 text-2xl font-semibold">{conversionRate}%</p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
+                  <p className="text-xs text-white/50">Open work</p>
+                  <p className="mt-1 text-2xl font-semibold">{inquiryLoad}</p>
+                </div>
+                <div className="col-span-2 rounded-2xl border border-white/10 bg-white/[0.06] p-4 sm:col-span-1">
+                  <p className="text-xs text-white/50">Revenue</p>
+                  <p className="mt-1 text-2xl font-semibold">{stats ? formatMoney(stats.totalRevenue) : '-'}</p>
+                </div>
               </div>
-              <p className="text-lg font-bold text-gray-800">{metric.value}</p>
             </div>
-            <p className="text-xs font-medium text-gray-600">{metric.label}</p>
-            <p className="text-[10px] text-gray-400 mt-0.5">{metric.sub}</p>
-          </Link>
-        ))}
-      </div>
 
-      {/* Quick Actions Section */}
-      <div className="admin-dashboard-actions bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100 p-4 mb-8">
-        <div className="flex items-center gap-2 mb-4">
-          <div className="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center">
-            <FiTrendingUp size={14} className="text-white" />
+            <div className="border-t border-white/10 bg-white/[0.04] p-6 sm:p-7 lg:border-l lg:border-t-0">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold">Booking health</p>
+                  <p className="mt-1 text-xs text-white/50">Confirmed against total booking requests</p>
+                </div>
+                <div className="rounded-full bg-white px-3 py-1 text-sm font-semibold text-slate-950">
+                  {conversionRate}%
+                </div>
+              </div>
+              <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/10">
+                <div className="h-full rounded-full bg-[#f0d492]" style={{ width: `${conversionRate}%` }} />
+              </div>
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                <Link href="/admin/bookings" className="rounded-2xl border border-white/10 bg-white/[0.06] p-4 transition hover:bg-white/[0.1]">
+                  <FiCheckCircle size={16} className="text-[#f0d492]" />
+                  <p className="mt-3 text-xl font-semibold">{stats?.confirmedBookings ?? 0}</p>
+                  <p className="text-xs text-white/50">Confirmed</p>
+                </Link>
+                <Link href="/admin/bookings" className="rounded-2xl border border-white/10 bg-white/[0.06] p-4 transition hover:bg-white/[0.1]">
+                  <FiBookOpen size={16} className="text-[#f0d492]" />
+                  <p className="mt-3 text-xl font-semibold">{stats?.totalBookings ?? 0}</p>
+                  <p className="text-xs text-white/50">Total requests</p>
+                </Link>
+              </div>
+            </div>
           </div>
-          <h2 className="font-semibold text-gray-800 text-sm">Quick Actions</h2>
-          <span className="text-[10px] font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">shortcuts</span>
-        </div>
-        <div className="flex flex-wrap gap-2.5">
-          {QUICK_ACTIONS.map((action) => (
-            <Link
-              key={action.href}
-              href={action.href}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${action.color}`}
-            >
-              <action.Icon size={14} /> {action.label}
-            </Link>
+        </section>
+
+        <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {primaryMetrics.map((metric) => (
+            <MetricCard key={metric.label} {...metric} />
           ))}
-        </div>
-      </div>
+        </section>
 
-      {/* Recent Activity Section */}
-      <div className="admin-dashboard-activity grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Recent Inquiries */}
-        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
-          <div className="px-5 py-4 border-b border-gray-100 bg-white">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center shadow-sm">
-                  <FiInbox size={14} className="text-white" />
+        <section className="grid grid-cols-1 gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="border-b border-slate-100 px-5 py-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
+                  <FiBarChart2 size={16} />
                 </div>
                 <div>
-                  <h2 className="font-semibold text-gray-800 text-sm">Recent Inquiries</h2>
-                  <p className="text-[10px] text-gray-400 mt-0.5">Latest customer questions</p>
+                  <h2 className="text-sm font-semibold text-slate-950">Needs attention</h2>
+                  <p className="mt-0.5 text-xs text-slate-500">Open work your team should clear first</p>
                 </div>
               </div>
-              <Link
-                href="/admin/inquiries"
-                className="text-xs font-medium text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
-              >
-                View all <FiArrowUpRight size={12} />
-              </Link>
             </div>
-          </div>
-          <div className="divide-y divide-gray-50">
-            {stats?.recentInquiries?.length ? (
-              stats.recentInquiries.map((inquiry: any) => (
-                <div key={inquiry.id} className="px-5 py-3.5 hover:bg-gray-50/60 transition-colors">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-violet-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold shadow-sm">
-                        {inquiry.name?.[0]?.toUpperCase() ?? '?'}
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-800">{inquiry.name}</p>
-                        <p className="text-[11px] text-gray-400">
-                          {inquiry.package?.title ?? inquiry.destination ?? 'General Inquiry'}
-                        </p>
-                      </div>
+            <div className="divide-y divide-slate-100">
+              {workload.map((item) => (
+                <Link key={item.label} href={item.href} className="flex items-center justify-between gap-4 px-5 py-4 transition hover:bg-slate-50">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
+                      <item.Icon size={15} />
                     </div>
-                    <span className={`text-[10px] px-2 py-1 rounded-full font-medium ${STATUS_BADGE[inquiry.status] ?? 'bg-gray-100 text-gray-500 ring-1 ring-gray-200'}`}>
-                      {inquiry.status}
-                    </span>
+                    <p className="truncate text-sm font-medium text-slate-700">{item.label}</p>
                   </div>
-                </div>
-              ))
-            ) : (
-              <div className="px-5 py-12 text-center">
-                <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mx-auto mb-3">
-                  <FiInbox size={20} className="text-gray-300" />
-                </div>
-                <p className="text-sm text-gray-400">No inquiries yet</p>
-                <p className="text-xs text-gray-300 mt-1">Customer inquiries will appear here</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Recent Bookings */}
-        <div className="bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm">
-          <div className="px-5 py-4 border-b border-gray-100 bg-white">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-sm">
-                  <FiCalendar size={14} className="text-white" />
-                </div>
-                <div>
-                  <h2 className="font-semibold text-gray-800 text-sm">Recent Bookings</h2>
-                  <p className="text-[10px] text-gray-400 mt-0.5">Latest customer bookings</p>
-                </div>
-              </div>
-              <Link
-                href="/admin/bookings"
-                className="text-xs font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1"
-              >
-                View all <FiArrowUpRight size={12} />
-              </Link>
-            </div>
-          </div>
-          <div className="divide-y divide-gray-50">
-            {stats?.recentBookings?.length ? (
-              stats.recentBookings.map((booking: any) => (
-                <Link
-                  key={booking.id}
-                  href={`/admin/bookings/${booking.id}`}
-                  className="px-5 py-3.5 hover:bg-gray-50/60 transition-colors block"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center text-white text-xs font-bold shadow-sm">
-                        {booking.customerName?.[0]?.toUpperCase() ?? '?'}
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-800">{booking.customerName}</p>
-                        <p className="text-[11px] text-gray-400 flex items-center gap-1">
-                          <FiClock size={9} />
-                          {booking.package?.title} · LKR {booking.totalPrice?.toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
-                    <span className={`text-[10px] px-2 py-1 rounded-full font-medium ${STATUS_BADGE[booking.status] ?? 'bg-gray-100 text-gray-500 ring-1 ring-gray-200'}`}>
-                      {booking.status?.replace(/_/g, ' ')}
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <span className="rounded-full bg-slate-950 px-2.5 py-1 text-xs font-semibold text-white">{item.value}</span>
+                    <FiArrowUpRight size={14} className="text-slate-300" />
                   </div>
                 </Link>
-              ))
-            ) : (
-              <div className="px-5 py-12 text-center">
-                <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mx-auto mb-3">
-                  <FiUsers size={20} className="text-gray-300" />
-                </div>
-                <p className="text-sm text-gray-400">No bookings yet</p>
-                <p className="text-xs text-gray-300 mt-1">Customer bookings will appear here</p>
-              </div>
-            )}
+              ))}
+            </div>
           </div>
-        </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-sm font-semibold text-slate-950">Quick actions</h2>
+                <p className="mt-1 text-xs text-slate-500">Common admin tasks and content updates</p>
+              </div>
+            </div>
+            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              {quickActions.map((action) => (
+                <Link
+                  key={action.href}
+                  href={action.href}
+                  className={`flex items-center justify-between rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
+                    action.primary
+                      ? 'border-slate-950 bg-slate-950 text-white hover:bg-slate-800'
+                      : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50'
+                  }`}
+                >
+                  <span className="flex min-w-0 items-center gap-3">
+                    <action.Icon size={15} className="shrink-0" />
+                    <span className="truncate">{action.label}</span>
+                  </span>
+                  <FiArrowUpRight size={14} className={action.primary ? 'text-white/60' : 'text-slate-300'} />
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <PanelHeader title="Recent inquiries" subtitle="Latest customer questions" href="/admin/inquiries" Icon={FiInbox} />
+            <div className="divide-y divide-slate-100">
+              {stats?.recentInquiries?.length ? (
+                stats.recentInquiries.map((inquiry: any) => (
+                  <div key={inquiry.id} className="flex items-center justify-between gap-4 px-5 py-4 transition hover:bg-slate-50">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#edf8f6] text-sm font-semibold text-[#007f89]">
+                        {initials(inquiry.name)}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-semibold text-slate-900">{inquiry.name}</p>
+                        <p className="mt-0.5 truncate text-xs text-slate-500">
+                          {inquiry.package?.title ?? inquiry.destination ?? 'General inquiry'}
+                        </p>
+                      </div>
+                    </div>
+                    <span className={`shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold ${STATUS_BADGE[inquiry.status] ?? 'bg-gray-100 text-gray-500 ring-1 ring-gray-200'}`}>
+                      {formatStatus(inquiry.status)}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <div className="px-5 py-12 text-center">
+                  <FiInbox size={22} className="mx-auto text-slate-300" />
+                  <p className="mt-3 text-sm font-medium text-slate-500">No inquiries yet</p>
+                  <p className="mt-1 text-xs text-slate-400">Customer inquiries will appear here.</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <PanelHeader title="Recent bookings" subtitle="Latest package booking requests" href="/admin/bookings" Icon={FiCalendar} />
+            <div className="divide-y divide-slate-100">
+              {stats?.recentBookings?.length ? (
+                stats.recentBookings.map((booking: any) => (
+                  <Link key={booking.id} href={`/admin/bookings/${booking.id}`} className="block px-5 py-4 transition hover:bg-slate-50">
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex min-w-0 items-center gap-3">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-sky-50 text-sm font-semibold text-sky-700">
+                          {initials(booking.customerName)}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-semibold text-slate-900">{booking.customerName}</p>
+                          <p className="mt-0.5 flex min-w-0 items-center gap-1 text-xs text-slate-500">
+                            <FiClock size={10} className="shrink-0" />
+                            <span className="truncate">{booking.package?.title ?? 'Package booking'}</span>
+                          </p>
+                        </div>
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <p className="text-sm font-semibold text-slate-950">{formatMoney(booking.totalPrice)}</p>
+                        <span className={`mt-1 inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold ${STATUS_BADGE[booking.status] ?? 'bg-gray-100 text-gray-500 ring-1 ring-gray-200'}`}>
+                          {formatStatus(booking.status)}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <div className="px-5 py-12 text-center">
+                  <FiUsers size={22} className="mx-auto text-slate-300" />
+                  <p className="mt-3 text-sm font-medium text-slate-500">No bookings yet</p>
+                  <p className="mt-1 text-xs text-slate-400">Customer bookings will appear here.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
       </div>
     </AdminShell>
   )

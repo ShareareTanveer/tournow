@@ -158,15 +158,15 @@ export default function AdminTable<T = any>({
   const useSelectFilter = Boolean(filterOptions && filterOptions.length > 10)
 
   return (
-    <div className="admin-data-table bg-white rounded-2xl border border-gray-200 overflow-hidden">
+    <div className="admin-data-table overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
       {/* ── Toolbar ── */}
-      <div className="px-5 py-3.5 border-b border-gray-100 space-y-3">
+      <div className="space-y-3 border-b border-slate-100 bg-white px-4 py-4 sm:px-5">
 
         {/* Search + right slot */}
-        <div className="flex items-center gap-3 flex-wrap">
-          <div className="relative flex-1 min-w-48">
-            <FiSearch size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="relative min-w-48 flex-1">
+            <FiSearch size={14} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               value={search}
               onChange={e => handleSearch(e.target.value)}

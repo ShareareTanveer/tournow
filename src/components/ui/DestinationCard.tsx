@@ -35,15 +35,15 @@ export default function DestinationCard({
   return (
     <Link
       href={`/destinations/${slug}`}
-      className="group block overflow-hidden rounded-lg border border-[#e5e8e4] bg-white shadow-[0_8px_28px_rgba(16,24,23,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-[#cdd7d1] hover:shadow-[0_24px_50px_rgba(16,24,23,0.14)]"
+      className="group flex h-full min-w-0 flex-col overflow-hidden rounded-lg border border-[#e5e8e4] bg-white shadow-[0_8px_28px_rgba(16,24,23,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-[#cdd7d1] hover:shadow-[0_24px_50px_rgba(16,24,23,0.14)]"
     >
-      <div className="relative h-48 overflow-hidden bg-[#edf0ed] sm:h-56">
+      <div className="relative aspect-[16/10] min-h-48 overflow-hidden bg-[#edf0ed] sm:aspect-[4/3]">
         <Image
           src={img}
           alt={name}
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-105"
-          sizes="(max-width: 640px) 50vw, 25vw"
+          sizes="(max-width: 520px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
         />
 
         <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(16,24,23,0.86),rgba(16,24,23,0.12),rgba(16,24,23,0.02))]" />
@@ -54,25 +54,25 @@ export default function DestinationCard({
           </div>
         )}
 
-        <div className="absolute bottom-0 left-0 right-0 p-4">
-          <p className="text-white/[0.62] text-[10px] font-bold uppercase tracking-[0.16em] mb-1">{region}</p>
-          <h3 className="text-white font-black text-xl leading-tight">{name}</h3>
+        <div className="absolute bottom-0 left-0 right-0 min-w-0 p-4">
+          <p className="mb-1 truncate text-[10px] font-bold uppercase tracking-[0.16em] text-white/[0.62]">{region}</p>
+          <h3 className="line-clamp-2 text-xl font-black leading-tight text-white">{name}</h3>
         </div>
       </div>
 
-      <div className="bg-white px-4 py-3.5">
-        <div className="mb-3 flex items-center justify-between">
-          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#52615d]">
+      <div className="flex flex-1 flex-col bg-white px-4 py-3.5">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <div className="flex min-w-0 items-center gap-1.5 text-[11px] font-semibold text-[#52615d]">
           <FiSun size={11} style={{ color: '#c99a45' }} />
-          {bestSeason}
+          <span className="truncate">{bestSeason}</span>
           </div>
-          <span className="text-[10px] font-black px-2.5 py-1 rounded-full flex items-center gap-1"
+          <span className="flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-black"
             style={{ background: cost.bg, color: cost.color }}>
             <span className="w-1.5 h-1.5 rounded-full" style={{ background: cost.dot }} />
             {costLevel}
           </span>
         </div>
-        <span className="flex items-center gap-1.5 text-xs font-black text-[#007f89] transition group-hover:gap-2.5">
+        <span className="mt-auto flex items-center gap-1.5 text-xs font-black text-[#007f89] transition group-hover:gap-2.5">
           Explore destination <FiArrowRight size={11} />
         </span>
       </div>

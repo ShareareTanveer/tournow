@@ -9,7 +9,7 @@ const DURATIONS = [
   { label: 'Up to 5 days', value: '5' },
   { label: 'Up to 6 days', value: '6' },
   { label: 'Up to 7 days', value: '7' },
-  { label: '8+ days', value: '8' },
+  { label: '8+ days', value: '8plus' },
 ]
 
 const BUDGETS = [
@@ -35,11 +35,20 @@ export default function FilterBar() {
   const [isPending, startTransition] = useTransition()
 
   const [duration, setDuration] = useState(searchParams.get('duration') ?? '')
-  const [budget, setBudget] = useState('')
+  const [budget, setBudget] = useState(() => {
+    const minPrice = searchParams.get('minPrice')
+    const maxPrice = searchParams.get('maxPrice')
+    return minPrice && maxPrice ? `${minPrice}-${maxPrice}` : ''
+  })
   const [starRating, setStarRating] = useState(searchParams.get('starRating') ?? '')
 
   const applyFilters = () => {
-    const params = new URLSearchParams()
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('page')
+    params.delete('duration')
+    params.delete('starRating')
+    params.delete('minPrice')
+    params.delete('maxPrice')
     if (duration) params.set('duration', duration)
     if (starRating) params.set('starRating', starRating)
     if (budget) {
@@ -47,8 +56,9 @@ export default function FilterBar() {
       params.set('minPrice', min)
       params.set('maxPrice', max)
     }
+    const query = params.toString()
     startTransition(() => {
-      router.push(`${pathname}?${params.toString()}`)
+      router.push(query ? `${pathname}?${query}` : pathname)
     })
   }
 
@@ -56,7 +66,15 @@ export default function FilterBar() {
     setDuration('')
     setBudget('')
     setStarRating('')
-    startTransition(() => router.push(pathname))
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('page')
+    params.delete('duration')
+    params.delete('starRating')
+    params.delete('minPrice')
+    params.delete('maxPrice')
+    params.delete('destination')
+    const query = params.toString()
+    startTransition(() => router.push(query ? `${pathname}?${query}` : pathname))
   }
 
   return (

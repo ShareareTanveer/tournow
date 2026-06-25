@@ -193,16 +193,16 @@ export default function BookingModal({ open, onClose, target }: Props) {
   const brandBtn = 'linear-gradient(135deg, #007f89, #063c43)'
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4">
       <div className="absolute inset-0 bg-[#101817]/70 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative mt-12 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-xl border border-[#d8ded9] bg-[#fbfaf7] shadow-[0_28px_90px_rgba(0,0,0,0.30)]">
+      <div className="relative flex max-h-[100dvh] w-full flex-col overflow-hidden rounded-t-xl border border-[#d8ded9] bg-[#fbfaf7] shadow-[0_28px_90px_rgba(0,0,0,0.30)] sm:mt-12 sm:max-h-[92vh] sm:max-w-lg sm:rounded-xl">
         {/* Header */}
-        <div className="shrink-0 border-b border-[#e3e7e3] bg-white/90 px-6 pb-4 pt-5">
-          <div className="flex items-start justify-between">
-          <div>
+        <div className="shrink-0 border-b border-[#e3e7e3] bg-white/90 px-4 pb-3 pt-4 sm:px-6 sm:pb-4 sm:pt-5">
+          <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
             <p className="mb-0.5 text-[11px] font-bold uppercase tracking-[0.16em] text-[#007f89]">Book Now</p>
-            <h2 className="line-clamp-2 max-w-[340px] text-base font-black leading-snug text-[#17211f]">{target.title}</h2>
+            <h2 className="line-clamp-2 text-sm font-black leading-snug text-[#17211f] sm:text-base">{target.title}</h2>
           </div>
           <button onClick={onClose} className="ml-2 shrink-0 rounded-lg border border-[#d8ded9] bg-white p-2 hover:bg-[#f4efe6]">
             <FiX size={18} className="text-[#52615d]" />
@@ -212,7 +212,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
 
         {/* Step indicator */}
         {step !== 'done' && (
-          <div className="flex shrink-0 gap-1 px-6 pb-1 pt-3">
+          <div className="flex shrink-0 gap-1 px-4 pb-1 pt-3 sm:px-6">
             {stepOrder.map((s, i) => (
               <div key={s} className="flex items-center gap-1 flex-1">
                 <div className={`h-1 flex-1 rounded-full transition-colors ${
@@ -224,13 +224,13 @@ export default function BookingModal({ open, onClose, target }: Props) {
         )}
 
         {/* Content */}
-        <div className="flex-1 space-y-5 overflow-y-auto px-6 py-5">
+        <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4 sm:space-y-5 sm:px-6 sm:py-5">
 
           {/* ── STEP 1: Dates & Pax ── */}
           {step === 'dates' && (
             <>
               <Section title="Travel Dates">
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <div>
                     <label className="text-xs font-semibold text-gray-500 block mb-1">Departure Date *</label>
                     <input type="date" required
@@ -251,7 +251,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
               </Section>
 
               <Section title="Travellers">
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-3">
                   <Counter label="Adults" min={1} value={form.paxAdult}
                     priceHint={`LKR ${target.price.toLocaleString()}/pax`}
                     onChange={v => setForm(f => ({ ...f, paxAdult: v }))} />
@@ -316,7 +316,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                   const isSelected = qty > 0
                   return (
                     <div key={rc.type}
-                      className={`flex items-center justify-between rounded-lg border-2 p-4 transition-colors ${
+                      className={`flex flex-col gap-3 rounded-lg border-2 p-3 transition-colors min-[420px]:flex-row min-[420px]:items-center min-[420px]:justify-between sm:p-4 ${
                         isSelected ? 'border-[#007f89] bg-[#edf8f6]' : 'border-[#e6ebe8] bg-white'
                       }`}>
                       <div className="flex-1 min-w-0">
@@ -331,7 +331,7 @@ export default function BookingModal({ open, onClose, target }: Props) {
                           )}
                         </p>
                       </div>
-                      <div className="flex items-center gap-2 ml-3 shrink-0">
+                      <div className="flex shrink-0 items-center justify-end gap-2 min-[420px]:ml-3">
                         <button type="button"
                           onClick={() => setRoomQty(rc.type, rc.label, Math.max(0, qty - 1))}
                           disabled={qty === 0}
@@ -368,21 +368,21 @@ export default function BookingModal({ open, onClose, target }: Props) {
                       const selected = form.selectedOptions.some(o => o.label === opt.label)
                       return (
                         <button key={opt.label} type="button" onClick={() => toggleOption(opt)}
-                          className={`flex w-full items-center justify-between rounded-lg border-2 p-3 transition-colors ${
+                          className={`flex w-full items-start justify-between gap-3 rounded-lg border-2 p-3 text-left transition-colors ${
                             selected ? 'border-[#007f89] bg-[#edf8f6]' : 'border-[#e6ebe8] bg-white hover:border-[#d8ded9]'
                           }`}>
-                          <div className="flex items-center gap-3">
+                          <div className="flex min-w-0 items-center gap-3">
                             <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 ${
                               selected ? 'border-[#007f89] bg-[#007f89]' : 'border-[#cfd8d3]'
                             }`}>
                               {selected && <FiCheckCircle size={12} className="text-white" />}
                             </div>
-                            <span className="text-sm font-medium text-gray-800">{opt.label}</span>
+                            <span className="min-w-0 text-sm font-medium text-gray-800">{opt.label}</span>
                             {opt.isDefault && (
                               <span className="rounded-full bg-[#ecf7f0] px-1.5 py-0.5 text-[10px] font-semibold text-[#3f8f64]">Included</span>
                             )}
                           </div>
-                          <span className="text-sm font-bold text-[#007f89]">
+                          <span className="shrink-0 text-sm font-bold text-[#007f89]">
                             {opt.price > 0 ? `+ LKR ${opt.price.toLocaleString()}` : 'Free'}
                           </span>
                         </button>
@@ -512,50 +512,50 @@ export default function BookingModal({ open, onClose, target }: Props) {
 
         {/* Footer navigation */}
         {step !== 'done' && (
-          <div className="shrink-0 border-t border-[#e3e7e3] bg-white px-6 py-4">
-            <div className="flex items-center justify-between">
+          <div className="shrink-0 border-t border-[#e3e7e3] bg-white px-4 py-3 sm:px-6 sm:py-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             {step !== 'dates' ? (
               <button
                 onClick={() => {
                   const prev: Record<Step, Step> = { dates: 'dates', rooms: 'dates', options: 'rooms', summary: 'options', done: 'summary' }
                   setStep(prev[step])
                 }}
-                className="rounded-lg px-4 py-2 text-sm font-semibold text-[#52615d] hover:bg-[#f4efe6] hover:text-[#17211f]">
+                className="w-full rounded-lg px-4 py-2 text-sm font-semibold text-[#52615d] hover:bg-[#f4efe6] hover:text-[#17211f] sm:w-auto">
                 ← Back
               </button>
-            ) : <div />}
+            ) : <div className="hidden sm:block" />}
 
-            <div className="flex items-center gap-3">
+            <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
               {step !== 'summary' && grandTotal > 0 && (
-                <div className="text-right">
+                <div className="text-left sm:text-right">
                   <p className="text-xs text-[#8a9691]">Est. Total</p>
                   <p className="text-base font-black text-[#007f89]">LKR {grandTotal.toLocaleString()}</p>
                 </div>
               )}
               {step === 'dates' && (
                 <button onClick={() => setStep('rooms')} disabled={!canGoToRooms}
-                  className="flex items-center gap-1.5 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-all disabled:opacity-40"
+                  className="flex w-full items-center justify-center gap-1.5 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-all disabled:opacity-40 sm:w-auto"
                   style={{ background: brandBtn }}>
                   Choose Rooms <FiChevronRight size={14} />
                 </button>
               )}
               {step === 'rooms' && (
                 <button onClick={() => setStep('options')} disabled={!canGoToOptions}
-                  className="flex items-center gap-1.5 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-all disabled:opacity-40"
+                  className="flex w-full items-center justify-center gap-1.5 rounded-lg px-5 py-2.5 text-sm font-semibold text-white transition-all disabled:opacity-40 sm:w-auto"
                   style={{ background: brandBtn }}>
                   Continue <FiChevronRight size={14} />
                 </button>
               )}
               {step === 'options' && (
                 <button onClick={() => setStep('summary')}
-                  className="flex items-center gap-1.5 rounded-lg px-5 py-2.5 text-sm font-semibold text-white"
+                  className="flex w-full items-center justify-center gap-1.5 rounded-lg px-5 py-2.5 text-sm font-semibold text-white sm:w-auto"
                   style={{ background: brandBtn }}>
                   Review Booking <FiChevronRight size={14} />
                 </button>
               )}
               {step === 'summary' && (
                 <button onClick={submitBooking} disabled={loading}
-                  className="flex items-center gap-1.5 rounded-lg px-6 py-2.5 text-sm font-semibold text-white transition-all disabled:opacity-60"
+                  className="flex w-full items-center justify-center gap-1.5 rounded-lg px-6 py-2.5 text-sm font-semibold text-white transition-all disabled:opacity-60 sm:w-auto"
                   style={{ background: brandBtn }}>
                   {loading ? 'Submitting...' : 'Send Booking Request'}
                 </button>

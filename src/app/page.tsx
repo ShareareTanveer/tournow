@@ -75,24 +75,31 @@ export default async function HomePage() {
       {/* Destinations */}
       <section className="py-20 sm:py-24 bg-[#fbfaf7]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-end justify-between mb-12">
-            <div>
+          <div className="mb-10 flex flex-col gap-4 sm:mb-12 sm:flex-row sm:items-end sm:justify-between">
+            <div className="min-w-0">
               <SectionTag className="mb-3">Where To Go</SectionTag>
               <h2 className="text-3xl sm:text-5xl font-black text-[#101817] mb-3">
                 Popular <span className="gradient-text">Destinations</span>
               </h2>
-              <p className="text-[#52615d] text-sm leading-6">Explore high-demand destinations selected for scenery, access, and seasonal value.</p>
+              <p className="max-w-xl text-sm leading-6 text-[#52615d]">Explore high-demand destinations selected for scenery, access, and seasonal value.</p>
             </div>
             <Link href="/destinations"
-              className="hidden sm:flex items-center gap-2 text-sm font-bold px-5 py-3 rounded-lg border border-[#d8ded9] hover:border-[#007f89] text-[#52615d] hover:text-[#007f89] transition-all">
+              className="hidden shrink-0 items-center gap-2 rounded-lg border border-[#d8ded9] px-5 py-3 text-sm font-bold text-[#52615d] transition-all hover:border-[#007f89] hover:text-[#007f89] sm:flex">
               All destinations <FiArrowRight size={13} />
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 gap-4 min-[520px]:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {displayDestinations.slice(0, 8).map((dest: any) => (
               <DestinationCard key={dest.slug} {...dest} packageCount={dest._count?.packages} />
             ))}
+          </div>
+
+          <div className="mt-8 text-center sm:hidden">
+            <Link href="/destinations"
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#d8ded9] px-5 py-3 text-sm font-bold text-[#52615d] transition-all hover:border-[#007f89] hover:text-[#007f89]">
+              All destinations <FiArrowRight size={13} />
+            </Link>
           </div>
         </div>
       </section>

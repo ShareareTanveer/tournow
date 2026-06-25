@@ -50,7 +50,7 @@ export default function InquiryModal({ open, onClose, packageId, packageTitle }:
       const res = await fetch('/api/inquiries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, packageId }),
+        body: JSON.stringify({ ...form, message: form.message.trim(), packageId }),
       })
       if (!res.ok) throw new Error('Failed to submit')
       setSuccess(true)
@@ -69,23 +69,23 @@ export default function InquiryModal({ open, onClose, packageId, packageTitle }:
 
   return (
     <>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm ">
-        <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl max-h-[80vh] overflow-y-auto mt-5">
+      <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 backdrop-blur-sm sm:items-center sm:p-4">
+        <div className="max-h-[100dvh] w-full overflow-y-auto rounded-t-2xl bg-white shadow-2xl sm:mt-5 sm:max-h-[86vh] sm:max-w-xl sm:rounded-2xl">
           {/* Header */}
-          <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between rounded-t-2xl">
-            <div>
+          <div className="sticky top-0 z-10 flex items-center justify-between gap-3 rounded-t-2xl border-b border-gray-100 bg-white px-4 py-4 sm:px-6">
+            <div className="min-w-0">
               <h2 className="text-lg font-bold text-gray-900">Send Inquiry</h2>
               {packageTitle && (
-                <p className="text-xs text-gray-500 mt-0.5">{packageTitle}</p>
+                <p className="mt-0.5 line-clamp-1 text-xs text-gray-500">{packageTitle}</p>
               )}
             </div>
-            <button onClick={handleClose} className="p-2 rounded-xl hover:bg-gray-100">
+            <button onClick={handleClose} className="shrink-0 p-2 rounded-xl hover:bg-gray-100">
               <FiX size={18} className="text-gray-500" />
             </button>
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             {success ? (
               <div className="text-center py-8">
                 <div className="text-5xl mb-4">✅</div>
@@ -175,13 +175,12 @@ export default function InquiryModal({ open, onClose, packageId, packageTitle }:
 
                   {/* Message FULL WIDTH */}
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Message *</label>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Message</label>
                     <textarea
-                      required
                       rows={3}
                       value={form.message}
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
-                      placeholder="Tell us about your dream holiday..."
+                      placeholder="Tell us about your dream holiday... (optional)"
                       className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-400 transition-colors resize-none"
                     />
                   </div>

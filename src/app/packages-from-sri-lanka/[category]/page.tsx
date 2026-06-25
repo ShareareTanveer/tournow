@@ -3,6 +3,7 @@ import PackageCard from '@/components/ui/PackageCard'
 import FilterBar from '@/components/packages/FilterBar'
 import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
 import { prisma } from '@/lib/prisma'
+import { getPackageSearchResults } from '@/lib/package-search'
 import { FiMapPin } from 'react-icons/fi'
 
 const CATEGORY_META: Record<string, { label: string; desc: string }> = {
@@ -40,20 +41,6 @@ async function getCategoryConfig(slug: string) {
   } catch { return null }
 }
 
-async function getPackages(category: string, searchParams: Record<string, string>) {
-  const params = new URLSearchParams({ category, limit: '12', ...searchParams })
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_APP_URL}/api/packages?${params}`,
-      { next: { revalidate: 1800 } }
-    )
-    if (!res.ok) return { packages: [], total: 0 }
-    return res.json()
-  } catch {
-    return { packages: [], total: 0 }
-  }
-}
-
 export default async function PackageListingPage({ params, searchParams }: Props & { searchParams: Promise<Record<string, string>> }) {
   const { category } = await params
   const sp = await searchParams
@@ -61,7 +48,7 @@ export default async function PackageListingPage({ params, searchParams }: Props
 
   const [categoryConfig, { packages, total }] = await Promise.all([
     getCategoryConfig(category),
-    getPackages(category, sp),
+    getPackageSearchResults({ ...sp, category, limit: '12' }),
   ])
 
   // Use DB image if available, else generic fallback

@@ -8,7 +8,7 @@ export const InquirySchema = z.object({
   destination: z.string().optional(),
   travelDate: z.string().optional(),
   paxCount: z.number().int().positive().optional(),
-  message: z.string().min(10),
+  message: z.string().optional().default(''),
 })
 
 export const ConsultationSchema = z.object({

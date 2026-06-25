@@ -62,7 +62,8 @@ export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string })
     const [min, max] = budget.value.split('-')
     params.set('minPrice', min)
     params.set('maxPrice', max)
-    router.push(`/packages-from-sri-lanka?${params.toString()}`)
+    const query = params.toString()
+    router.push(query ? `/packages-from-sri-lanka?${query}` : '/packages-from-sri-lanka')
   }
 
   return (

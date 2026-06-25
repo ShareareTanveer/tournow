@@ -2375,6 +2375,7 @@ body {
 .admin-ui a.bg-indigo-500,
 .admin-ui button.bg-indigo-600,
 .admin-ui a.bg-indigo-600 {
+  color: #fff !important;
   background: #0f172a !important;
   box-shadow: none !important;
 }
@@ -2425,10 +2426,125 @@ body {
   background: #f8fafc !important;
 }
 
-.admin-data-table [class*="bg-indigo-500"] {
-  color: #0f172a !important;
-  background: #fff !important;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08) !important;
+.admin-data-table a.bg-indigo-500,
+.admin-data-table button.bg-indigo-500,
+.admin-data-table a.bg-indigo-600,
+.admin-data-table button.bg-indigo-600 {
+  color: #fff !important;
+  background: #0f172a !important;
+}
+
+.admin-data-table a.bg-indigo-500 svg,
+.admin-data-table button.bg-indigo-500 svg,
+.admin-data-table a.bg-indigo-600 svg,
+.admin-data-table button.bg-indigo-600 svg {
+  color: #fff !important;
+}
+
+.admin-ui a[class*="bg-blue-500"],
+.admin-ui button[class*="bg-blue-500"],
+.admin-ui a[class*="bg-blue-600"],
+.admin-ui button[class*="bg-blue-600"],
+.admin-ui a[class*="bg-blue-700"],
+.admin-ui button[class*="bg-blue-700"],
+.admin-ui a[class*="bg-sky-500"],
+.admin-ui button[class*="bg-sky-500"],
+.admin-ui a[class*="bg-sky-600"],
+.admin-ui button[class*="bg-sky-600"],
+.admin-ui a[class*="bg-sky-700"],
+.admin-ui button[class*="bg-sky-700"],
+.admin-ui a[class*="bg-emerald-500"],
+.admin-ui button[class*="bg-emerald-500"],
+.admin-ui a[class*="bg-emerald-600"],
+.admin-ui button[class*="bg-emerald-600"],
+.admin-ui a[class*="bg-emerald-700"],
+.admin-ui button[class*="bg-emerald-700"],
+.admin-ui a[class*="bg-violet-500"],
+.admin-ui button[class*="bg-violet-500"],
+.admin-ui a[class*="bg-violet-600"],
+.admin-ui button[class*="bg-violet-600"],
+.admin-ui a[class*="bg-violet-700"],
+.admin-ui button[class*="bg-violet-700"],
+.admin-ui a[class*="bg-red-500"],
+.admin-ui button[class*="bg-red-500"],
+.admin-ui a[class*="bg-red-600"],
+.admin-ui button[class*="bg-red-600"],
+.admin-ui a[class*="bg-red-700"],
+.admin-ui button[class*="bg-red-700"],
+.admin-ui a[class*="bg-rose-500"],
+.admin-ui button[class*="bg-rose-500"],
+.admin-ui a[class*="bg-rose-600"],
+.admin-ui button[class*="bg-rose-600"],
+.admin-ui a[class*="bg-rose-700"],
+.admin-ui button[class*="bg-rose-700"],
+.admin-ui a[class*="bg-slate-500"],
+.admin-ui button[class*="bg-slate-500"],
+.admin-ui a[class*="bg-slate-600"],
+.admin-ui button[class*="bg-slate-600"],
+.admin-ui a[class*="bg-slate-700"],
+.admin-ui button[class*="bg-slate-700"],
+.admin-ui a[class*="bg-slate-900"],
+.admin-ui button[class*="bg-slate-900"],
+.admin-ui a[class*="bg-indigo-500"],
+.admin-ui button[class*="bg-indigo-500"],
+.admin-ui a[class*="bg-indigo-600"],
+.admin-ui button[class*="bg-indigo-600"],
+.admin-ui a[class*="bg-indigo-700"],
+.admin-ui button[class*="bg-indigo-700"] {
+  color: #fff !important;
+}
+
+.admin-ui a[class*="bg-blue-500"] svg,
+.admin-ui button[class*="bg-blue-500"] svg,
+.admin-ui a[class*="bg-blue-600"] svg,
+.admin-ui button[class*="bg-blue-600"] svg,
+.admin-ui a[class*="bg-blue-700"] svg,
+.admin-ui button[class*="bg-blue-700"] svg,
+.admin-ui a[class*="bg-sky-500"] svg,
+.admin-ui button[class*="bg-sky-500"] svg,
+.admin-ui a[class*="bg-sky-600"] svg,
+.admin-ui button[class*="bg-sky-600"] svg,
+.admin-ui a[class*="bg-sky-700"] svg,
+.admin-ui button[class*="bg-sky-700"] svg,
+.admin-ui a[class*="bg-emerald-500"] svg,
+.admin-ui button[class*="bg-emerald-500"] svg,
+.admin-ui a[class*="bg-emerald-600"] svg,
+.admin-ui button[class*="bg-emerald-600"] svg,
+.admin-ui a[class*="bg-emerald-700"] svg,
+.admin-ui button[class*="bg-emerald-700"] svg,
+.admin-ui a[class*="bg-violet-500"] svg,
+.admin-ui button[class*="bg-violet-500"] svg,
+.admin-ui a[class*="bg-violet-600"] svg,
+.admin-ui button[class*="bg-violet-600"] svg,
+.admin-ui a[class*="bg-violet-700"] svg,
+.admin-ui button[class*="bg-violet-700"] svg,
+.admin-ui a[class*="bg-red-500"] svg,
+.admin-ui button[class*="bg-red-500"] svg,
+.admin-ui a[class*="bg-red-600"] svg,
+.admin-ui button[class*="bg-red-600"] svg,
+.admin-ui a[class*="bg-red-700"] svg,
+.admin-ui button[class*="bg-red-700"] svg,
+.admin-ui a[class*="bg-rose-500"] svg,
+.admin-ui button[class*="bg-rose-500"] svg,
+.admin-ui a[class*="bg-rose-600"] svg,
+.admin-ui button[class*="bg-rose-600"] svg,
+.admin-ui a[class*="bg-rose-700"] svg,
+.admin-ui button[class*="bg-rose-700"] svg,
+.admin-ui a[class*="bg-slate-500"] svg,
+.admin-ui button[class*="bg-slate-500"] svg,
+.admin-ui a[class*="bg-slate-600"] svg,
+.admin-ui button[class*="bg-slate-600"] svg,
+.admin-ui a[class*="bg-slate-700"] svg,
+.admin-ui button[class*="bg-slate-700"] svg,
+.admin-ui a[class*="bg-slate-900"] svg,
+.admin-ui button[class*="bg-slate-900"] svg,
+.admin-ui a[class*="bg-indigo-500"] svg,
+.admin-ui button[class*="bg-indigo-500"] svg,
+.admin-ui a[class*="bg-indigo-600"] svg,
+.admin-ui button[class*="bg-indigo-600"] svg,
+.admin-ui a[class*="bg-indigo-700"] svg,
+.admin-ui button[class*="bg-indigo-700"] svg {
+  color: currentColor !important;
 }
 
 .admin-item-cell {

@@ -21,7 +21,8 @@
  *   />
  */
 
-import { useState, useMemo, ReactNode } from 'react'
+import { useEffect, useMemo, ReactNode, useState } from 'react'
+import { usePathname } from 'next/navigation'
 import {
   FiSearch, FiChevronUp, FiChevronDown, FiChevronsLeft, FiChevronsRight,
   FiChevronLeft, FiChevronRight, FiSliders,
@@ -106,12 +107,68 @@ export default function AdminTable<T = any>({
   emptyMessage = 'No records found',
   toolbarRight,
 }: Props<T>) {
+  const pathname = usePathname()
   const [search,    setSearch]    = useState('')
   const [activeTab, setActiveTab] = useState(filterOptions?.[0] ?? 'ALL')
   const [sortKey,   setSortKey]   = useState(defaultSort?.key ?? '')
   const [sortDir,   setSortDir]   = useState<'asc'|'desc'>(defaultSort?.dir ?? 'asc')
   const [page,      setPage]      = useState(1)
   const [pageSize,  setPageSize]  = useState(defaultPageSize)
+  const [columnMenuOpen, setColumnMenuOpen] = useState(false)
+  const [columnsLoaded, setColumnsLoaded] = useState(false)
+  const columnKeySignature = useMemo(() => columns.map(col => col.key).join('|'), [columns])
+  const allColumnKeys = useMemo(() => columnKeySignature ? columnKeySignature.split('|') : [], [columnKeySignature])
+  const [visibleColumnKeys, setVisibleColumnKeys] = useState<string[]>(() => columns.map(col => col.key))
+  const columnStorageKey = useMemo(
+    () => `admin-table-columns:${pathname ?? 'admin'}:${columnKeySignature}`,
+    [pathname, columnKeySignature]
+  )
+
+  useEffect(() => {
+    const fallbackKeys = columns.map(col => col.key)
+
+    try {
+      const saved = window.localStorage.getItem(columnStorageKey)
+      if (!saved) {
+        setVisibleColumnKeys(fallbackKeys)
+        setColumnsLoaded(true)
+        return
+      }
+
+      const parsed = JSON.parse(saved)
+      if (!Array.isArray(parsed)) {
+        setVisibleColumnKeys(fallbackKeys)
+        setColumnsLoaded(true)
+        return
+      }
+
+      const nextKeys = parsed.filter((key): key is string =>
+        typeof key === 'string' && fallbackKeys.includes(key)
+      )
+
+      setVisibleColumnKeys(nextKeys.length > 0 ? nextKeys : fallbackKeys)
+    } catch {
+      setVisibleColumnKeys(fallbackKeys)
+    } finally {
+      setColumnsLoaded(true)
+    }
+  }, [columnStorageKey, columnKeySignature])
+
+  useEffect(() => {
+    if (!columnsLoaded) return
+
+    try {
+      window.localStorage.setItem(columnStorageKey, JSON.stringify(visibleColumnKeys))
+    } catch {
+      // localStorage can be unavailable in private browsing or restricted environments.
+    }
+  }, [columnStorageKey, columnsLoaded, visibleColumnKeys])
+
+  const visibleColumns = useMemo(() => {
+    const visibleSet = new Set(visibleColumnKeys)
+    const nextColumns = columns.filter(col => visibleSet.has(col.key))
+    return nextColumns.length > 0 ? nextColumns : columns
+  }, [columns, visibleColumnKeys])
 
   // 1. Tab filter — coerce booleans to string for comparison
   const tabFiltered = useMemo(() => {
@@ -149,6 +206,16 @@ export default function AdminTable<T = any>({
 
   const handleSearch = (v: string) => { setSearch(v); setPage(1) }
   const handleTab    = (v: string) => { setActiveTab(v); setPage(1) }
+  const toggleColumn = (key: string) => {
+    setVisibleColumnKeys(current => {
+      if (current.includes(key)) {
+        return current.length <= 1 ? current : current.filter(colKey => colKey !== key)
+      }
+
+      return allColumnKeys.filter(colKey => colKey === key || current.includes(colKey))
+    })
+  }
+  const resetColumns = () => setVisibleColumnKeys(allColumnKeys)
 
   const tabCount = (v: string) => {
     if (!filterKey || v === filterOptions?.[0]) return data.length
@@ -184,7 +251,7 @@ export default function AdminTable<T = any>({
           </div>
 
           {/* Sort selector */}
-          {columns.some(c => c.sortable) && (
+          {visibleColumns.some(c => c.sortable) && (
             <div className="flex items-center gap-1.5">
               <select
                 value={sortKey ? `${sortKey}:${sortDir}` : ''}
@@ -197,13 +264,66 @@ export default function AdminTable<T = any>({
                 }}
                 className="border border-gray-200 rounded-lg px-2 py-1.5 text-xs bg-white focus:outline-none focus:border-indigo-300 cursor-pointer"
               >
-                {columns.filter(c => c.sortable).flatMap(c => [
+                {visibleColumns.filter(c => c.sortable).flatMap(c => [
                   <option key={`${c.key}:desc`} value={`${c.key}:desc`}>{c.label} ↓</option>,
                   <option key={`${c.key}:asc`}  value={`${c.key}:asc`}>{c.label} ↑</option>,
                 ])}
               </select>
             </div>
           )}
+
+          {/* Column visibility */}
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setColumnMenuOpen(open => !open)}
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 shadow-sm transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+              aria-expanded={columnMenuOpen}
+            >
+              <FiSliders size={12} className="text-gray-400" />
+              Columns
+              <span className="rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] font-black text-gray-500">
+                {visibleColumns.length}/{columns.length}
+              </span>
+            </button>
+
+            {columnMenuOpen && (
+              <div className="absolute right-0 z-30 mt-2 w-64 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl shadow-slate-200/70">
+                <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2">
+                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Table columns</p>
+                  <button
+                    type="button"
+                    onClick={resetColumns}
+                    className="rounded-md px-2 py-1 text-xs font-semibold text-indigo-600 hover:bg-indigo-50"
+                  >
+                    Reset
+                  </button>
+                </div>
+                <div className="max-h-72 overflow-y-auto p-2">
+                  {columns.map(col => {
+                    const checked = visibleColumnKeys.includes(col.key)
+                    const disableLastColumn = checked && visibleColumns.length <= 1
+
+                    return (
+                      <label
+                        key={col.key}
+                        className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          disabled={disableLastColumn}
+                          onChange={() => toggleColumn(col.key)}
+                          className="h-4 w-4 rounded border-gray-300 text-indigo-600 accent-indigo-600 disabled:cursor-not-allowed disabled:opacity-50"
+                        />
+                        <span className="min-w-0 flex-1 truncate">{col.label}</span>
+                      </label>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
 
           {/* Page size */}
           <div className="flex items-center gap-1.5 text-xs text-gray-500">
@@ -278,7 +398,7 @@ export default function AdminTable<T = any>({
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-gray-100">
-              {columns.map(col => (
+              {visibleColumns.map(col => (
                 <th
                   key={col.key}
                   className={`px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider select-none ${
@@ -302,13 +422,13 @@ export default function AdminTable<T = any>({
           <tbody>
             {pageRows.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} className="px-5 py-16 text-center">
+                <td colSpan={visibleColumns.length} className="px-5 py-16 text-center">
                   <p className="text-gray-400 text-sm">{search ? `No results for "${search}"` : emptyMessage}</p>
                 </td>
               </tr>
             ) : pageRows.map((row: any, rowIndex) => (
               <tr key={row[rowKey] ?? `${safePage}-${rowIndex}`} className="border-b border-gray-50 hover:bg-gray-50/60 transition-colors">
-                {columns.map(col => (
+                {visibleColumns.map(col => (
                   <td
                     key={col.key}
                     data-label={col.label}

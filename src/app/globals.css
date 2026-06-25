@@ -1129,7 +1129,27 @@ body {
 
 .admin-ui table thead { background: #f6faf9; }
 .admin-ui table tbody tr:hover { background: #f0f8f6; }
-.admin-ui .overflow-x-auto { scrollbar-color: rgba(0, 127, 137, 0.45) transparent; }
+.admin-data-table > .overflow-x-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #b8c0cc transparent;
+}
+
+.admin-data-table > .overflow-x-auto::-webkit-scrollbar {
+  height: 6px;
+}
+
+.admin-data-table > .overflow-x-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-data-table > .overflow-x-auto::-webkit-scrollbar-thumb {
+  background: #b8c0cc;
+  border-radius: 999px;
+}
+
+.admin-data-table > .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background: #9aa4b2;
+}
 
 .admin-data-table {
   border-color: rgba(31, 91, 83, 0.12) !important;

@@ -115,7 +115,7 @@ export default function AdminTable<T = any>({
   const [page,      setPage]      = useState(1)
   const [pageSize,  setPageSize]  = useState(defaultPageSize)
   const [columnMenuOpen, setColumnMenuOpen] = useState(false)
-  const [columnsLoaded, setColumnsLoaded] = useState(false)
+  const [loadedColumnStorageKey, setLoadedColumnStorageKey] = useState('')
   const columnKeySignature = useMemo(() => columns.map(col => col.key).join('|'), [columns])
   const allColumnKeys = useMemo(() => columnKeySignature ? columnKeySignature.split('|') : [], [columnKeySignature])
   const [visibleColumnKeys, setVisibleColumnKeys] = useState<string[]>(() => columns.map(col => col.key))
@@ -131,14 +131,14 @@ export default function AdminTable<T = any>({
       const saved = window.localStorage.getItem(columnStorageKey)
       if (!saved) {
         setVisibleColumnKeys(fallbackKeys)
-        setColumnsLoaded(true)
+        setLoadedColumnStorageKey(columnStorageKey)
         return
       }
 
       const parsed = JSON.parse(saved)
       if (!Array.isArray(parsed)) {
         setVisibleColumnKeys(fallbackKeys)
-        setColumnsLoaded(true)
+        setLoadedColumnStorageKey(columnStorageKey)
         return
       }
 
@@ -150,19 +150,19 @@ export default function AdminTable<T = any>({
     } catch {
       setVisibleColumnKeys(fallbackKeys)
     } finally {
-      setColumnsLoaded(true)
+      setLoadedColumnStorageKey(columnStorageKey)
     }
   }, [columnStorageKey, columnKeySignature])
 
   useEffect(() => {
-    if (!columnsLoaded) return
+    if (loadedColumnStorageKey !== columnStorageKey) return
 
     try {
       window.localStorage.setItem(columnStorageKey, JSON.stringify(visibleColumnKeys))
     } catch {
       // localStorage can be unavailable in private browsing or restricted environments.
     }
-  }, [columnStorageKey, columnsLoaded, visibleColumnKeys])
+  }, [columnStorageKey, loadedColumnStorageKey, visibleColumnKeys])
 
   const visibleColumns = useMemo(() => {
     const visibleSet = new Set(visibleColumnKeys)

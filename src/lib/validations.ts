@@ -152,6 +152,17 @@ const DetailFields = {
   customizationNotes: z.string().optional(),
 }
 
+const ItineraryDaySchema = z.object({
+  dayNumber: z.number().int().positive(),
+  title: z.string().optional().default(''),
+  description: z.string().optional().default(''),
+  country: z.string().optional(),
+  activities: z.array(z.string()).default([]),
+  meals: z.array(z.string()).default([]),
+  accommodation: z.string().optional(),
+  imageUrl: z.string().optional(),
+})
+
 export const PackageSchema = z.object({
   title: z.string().min(3),
   slug: z.string().min(3),
@@ -172,6 +183,7 @@ export const PackageSchema = z.object({
   isFeatured: z.boolean().default(false),
   isActive: z.boolean().default(true),
   paxType: z.string().optional(),
+  itinerary: z.array(ItineraryDaySchema).optional(),
   ...PricingFields,
   ...DetailFields,
 })
@@ -198,6 +210,7 @@ export const TourSchema = z.object({
   isActive: z.boolean().default(true),
   paxType: z.string().optional(),
   visaNotes: z.string().optional(),
+  itinerary: z.array(ItineraryDaySchema).optional(),
   ...PricingFields,
   ...DetailFields,
 })

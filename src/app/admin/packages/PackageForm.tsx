@@ -10,6 +10,7 @@ import AiFieldAssist from '@/components/admin/AiFieldAssist'
 import InternalLinkPanel from '@/components/admin/InternalLinkPanel'
 import JsonEditorPanel from '@/components/admin/JsonEditorPanel'
 import ImagesAiPanel from '@/components/admin/ImagesAiPanel'
+import ItineraryEditor, { ItineraryFormDay, normalizeItineraryDays } from '@/components/admin/ItineraryEditor'
 import { SeoInput } from '@/lib/seo-score'
 
 const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor'), { ssr: false })
@@ -201,7 +202,7 @@ function CancellationTiersEditor({ tiers, onChange }: { tiers: CancellationTier[
 export default function PackageForm({ destinations, suppliers, pkg }: Props) {
   const router = useRouter()
   const isEdit = !!pkg
-  const [tab, setTab] = useState<'basic' | 'content' | 'details' | 'pricing' | 'media' | 'flags' | 'seo'>('basic')
+  const [tab, setTab] = useState<'basic' | 'content' | 'itinerary' | 'details' | 'pricing' | 'media' | 'flags' | 'seo'>('basic')
 
   const [form, setForm] = useState({
     title: pkg?.title ?? '',
@@ -271,6 +272,18 @@ export default function PackageForm({ destinations, suppliers, pkg }: Props) {
     try { return Array.isArray(pkg?.cancellationTiers) ? pkg.cancellationTiers : (pkg?.cancellationTiers ? JSON.parse(pkg.cancellationTiers) : []) }
     catch { return [] }
   })
+  const [itinerary, setItinerary] = useState<ItineraryFormDay[]>(() =>
+    (pkg?.itinerary ?? []).map((day: any, index: number) => ({
+      id: day.id,
+      dayNumber: day.dayNumber ?? index + 1,
+      title: day.title ?? '',
+      description: day.description ?? '',
+      activities: (day.activities ?? []) as string[],
+      meals: (day.meals ?? []) as string[],
+      accommodation: day.accommodation ?? '',
+      imageUrl: day.imageUrl ?? '',
+    }))
+  )
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -302,6 +315,7 @@ export default function PackageForm({ destinations, suppliers, pkg }: Props) {
         mustCarryItem: toArr(form.mustCarryItem),
         options,
         cancellationTiers,
+        itinerary: normalizeItineraryDays(itinerary),
       }
 
       const url = isEdit ? `/api/packages/${pkg.slug}` : '/api/packages'
@@ -366,6 +380,7 @@ export default function PackageForm({ destinations, suppliers, pkg }: Props) {
     { id: 'basic',    label: 'Basic Info' },
     { id: 'pricing',  label: 'Pricing' },
     { id: 'content',  label: 'Description' },
+    { id: 'itinerary', label: 'Itinerary' },
     { id: 'details',  label: 'Tour Details' },
     { id: 'media',    label: 'Media' },
     { id: 'flags',    label: 'Visibility' },
@@ -592,6 +607,13 @@ export default function PackageForm({ destinations, suppliers, pkg }: Props) {
         )}
 
         {/* ── TOUR DETAILS (GYG-style) ── */}
+        {tab === 'itinerary' && (
+          <ItineraryEditor
+            days={itinerary}
+            onChange={setItinerary}
+          />
+        )}
+
         {tab === 'details' && (
           <div className="space-y-5">
             <h3 className="font-bold text-gray-800 mb-2">Tour Details</h3>

@@ -35,7 +35,30 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
     const parsed:any = PackageSchema.partial().safeParse(body)
     if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
 
-    const pkg = await prisma.package.update({ where: { slug }, data: parsed.data })
+    const { itinerary, ...packageData } = parsed.data
+    const pkg = await prisma.$transaction(async (tx) => {
+      const updatedPackage = await tx.package.update({ where: { slug }, data: packageData })
+
+      if (Array.isArray(itinerary)) {
+        await tx.itineraryDay.deleteMany({ where: { packageId: updatedPackage.id } })
+        if (itinerary.length > 0) {
+          await tx.itineraryDay.createMany({
+            data: itinerary.map((day: any, index: number) => ({
+              packageId: updatedPackage.id,
+              dayNumber: day.dayNumber ?? index + 1,
+              title: day.title ?? '',
+              description: day.description ?? '',
+              activities: day.activities ?? [],
+              meals: day.meals ?? [],
+              accommodation: day.accommodation || null,
+              imageUrl: day.imageUrl || null,
+            })),
+          })
+        }
+      }
+
+      return updatedPackage
+    })
     return NextResponse.json(pkg)
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

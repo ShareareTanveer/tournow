@@ -56,7 +56,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
     }
 
-    const tour = await prisma.tour.create({ data: parsed.data })
+    const { itinerary, ...tourData } = parsed.data
+    const tour = await prisma.$transaction(async (tx) => {
+      const createdTour = await tx.tour.create({ data: tourData })
+
+      if (Array.isArray(itinerary) && itinerary.length > 0) {
+        await tx.tourItineraryDay.createMany({
+          data: itinerary.map((day: any, index: number) => ({
+            tourId: createdTour.id,
+            dayNumber: day.dayNumber ?? index + 1,
+            title: day.title ?? '',
+            description: day.description ?? '',
+            country: day.country || null,
+            activities: day.activities ?? [],
+            meals: day.meals ?? [],
+            accommodation: day.accommodation || null,
+            imageUrl: day.imageUrl || null,
+          })),
+        })
+      }
+
+      return createdTour
+    })
     return NextResponse.json(tour, { status: 201 })
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

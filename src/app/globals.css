@@ -2615,8 +2615,8 @@ body {
 .admin-form-tabs,
 .admin-ui form > .flex.gap-1.bg-gray-100 {
   position: static !important;
-  margin-top: -0.6rem;
-  margin-bottom: -0.35rem;
+  margin-top: 0.45rem;
+  margin-bottom: 0.45rem;
   padding: 0.3rem !important;
 }
 

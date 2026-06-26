@@ -36,7 +36,31 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ slug
     const parsed: any = TourSchema.partial().safeParse(body)
     if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 })
 
-    const tour = await prisma.tour.update({ where: { slug }, data: parsed.data })
+    const { itinerary, ...tourData } = parsed.data
+    const tour = await prisma.$transaction(async (tx) => {
+      const updatedTour = await tx.tour.update({ where: { slug }, data: tourData })
+
+      if (Array.isArray(itinerary)) {
+        await tx.tourItineraryDay.deleteMany({ where: { tourId: updatedTour.id } })
+        if (itinerary.length > 0) {
+          await tx.tourItineraryDay.createMany({
+            data: itinerary.map((day: any, index: number) => ({
+              tourId: updatedTour.id,
+              dayNumber: day.dayNumber ?? index + 1,
+              title: day.title ?? '',
+              description: day.description ?? '',
+              country: day.country || null,
+              activities: day.activities ?? [],
+              meals: day.meals ?? [],
+              accommodation: day.accommodation || null,
+              imageUrl: day.imageUrl || null,
+            })),
+          })
+        }
+      }
+
+      return updatedTour
+    })
     return NextResponse.json(tour)
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

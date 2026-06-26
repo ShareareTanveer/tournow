@@ -11,7 +11,10 @@ export default async function EditTourPage({ params }: Props) {
   const { slug } = await params
 
   const [tour, destinations, suppliers] = await Promise.all([
-    prisma.tour.findUnique({ where: { slug } }).catch(() => null),
+    prisma.tour.findUnique({
+      where: { slug },
+      include: { itinerary: { orderBy: { dayNumber: 'asc' } } },
+    }).catch(() => null),
     prisma.destination.findMany({
       where: { isActive: true },
       orderBy: { name: 'asc' },

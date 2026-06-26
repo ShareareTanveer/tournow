@@ -11,6 +11,7 @@ import InternalLinkPanel from '@/components/admin/InternalLinkPanel'
 import JsonEditorPanel from '@/components/admin/JsonEditorPanel'
 import ImagesAiPanel from '@/components/admin/ImagesAiPanel'
 import ItineraryEditor, { ItineraryFormDay, normalizeItineraryDays } from '@/components/admin/ItineraryEditor'
+import MediaUploader from '@/components/admin/MediaUploader'
 import { SeoInput } from '@/lib/seo-score'
 
 const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor'), { ssr: false })
@@ -801,12 +802,12 @@ export default function PackageForm({ destinations, suppliers, pkg }: Props) {
                     className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-500 mb-1.5">OG Image URL</label>
-                  <input value={form.ogImage}
-                    onChange={e => setForm({ ...form, ogImage: e.target.value })}
-                    placeholder="Auto-uses first package image if blank"
-                    type="url"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
+                  <MediaUploader
+                    label="OG Image"
+                    value={form.ogImage}
+                    onChange={(url) => setForm({ ...form, ogImage: url })}
+                    folder="packages"
+                  />
                   {form.images[0] && !form.ogImage && (
                     <p className="text-[10px] text-emerald-600 mt-1 flex items-center gap-1">
                       <FiInfo size={10} /> Will use first package image automatically

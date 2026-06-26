@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { FiEdit2, FiPlus, FiSave, FiX, FiPhone, FiMail, FiImage, FiEye, FiEyeOff } from 'react-icons/fi'
+import MediaUploader from '@/components/admin/MediaUploader'
 
 type Supplier = {
   id: string
@@ -168,7 +169,12 @@ export default function SuppliersClient({ suppliers: initial }: { suppliers: Sup
             {input('whatsappNumber', 'WhatsApp Number', 'Defaults to phone if blank')}
           </div>
           {input('email', 'Email', 'supplier@example.com', 'email')}
-          {input('imageUrl', 'Image URL', 'https://...', 'url')}
+          <MediaUploader
+            label="Supplier Image"
+            value={form.imageUrl}
+            onChange={(url) => setForm({ ...form, imageUrl: url })}
+            folder="suppliers"
+          />
           <div>
             <label className="mb-1.5 block text-xs font-semibold text-gray-500">Notes</label>
             <textarea value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} rows={4}

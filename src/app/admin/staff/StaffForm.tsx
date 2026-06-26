@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import MediaUploader from '@/components/admin/MediaUploader'
 
 export default function StaffForm({ member }: { member?: any }) {
   const router = useRouter()
@@ -61,11 +62,12 @@ export default function StaffForm({ member }: { member?: any }) {
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
           </div>
         </div>
-        <div>
-          <label className="block text-xs font-semibold text-gray-500 mb-1.5">Photo URL</label>
-          <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-            placeholder="https://…" className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
-        </div>
+        <MediaUploader
+          label="Staff Photo"
+          value={form.imageUrl}
+          onChange={(url) => setForm({ ...form, imageUrl: url })}
+          folder="staff"
+        />
         <div>
           <label className="block text-xs font-semibold text-gray-500 mb-1.5">Display Order</label>
           <input type="number" min={0} value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: e.target.value })}
@@ -85,3 +87,4 @@ export default function StaffForm({ member }: { member?: any }) {
     </form>
   )
 }
+

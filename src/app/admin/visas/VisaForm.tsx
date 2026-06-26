@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import MediaUploader from '@/components/admin/MediaUploader'
 
 export default function VisaForm({ visa }: { visa?: any }) {
   const router = useRouter()
@@ -75,11 +76,12 @@ export default function VisaForm({ visa }: { visa?: any }) {
             placeholder="Valid passport&#10;2 passport photos&#10;Bank statement…"
             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 resize-none" />
         </div>
-        <div>
-          <label className="block text-xs font-semibold text-gray-500 mb-1.5">Image URL</label>
-          <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-            placeholder="https://…" className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400" />
-        </div>
+        <MediaUploader
+          label="Visa Image"
+          value={form.imageUrl}
+          onChange={(url) => setForm({ ...form, imageUrl: url })}
+          folder="visas"
+        />
         <label className="flex items-center gap-2 cursor-pointer">
           <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="w-4 h-4 accent-indigo-500" />
           <span className="text-sm text-gray-700">Active</span>
@@ -94,3 +96,4 @@ export default function VisaForm({ visa }: { visa?: any }) {
     </form>
   )
 }
+

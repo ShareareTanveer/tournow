@@ -1,6 +1,7 @@
 'use client'
 
-import { FiPlus, FiTrash2 } from 'react-icons/fi'
+import { FiArrowDown, FiArrowUp, FiPlus, FiTrash2 } from 'react-icons/fi'
+import MediaUploader from '@/components/admin/MediaUploader'
 
 export interface ItineraryFormDay {
   id?: string
@@ -72,6 +73,14 @@ export default function ItineraryEditor({
     })))
   }
 
+  const moveDay = (index: number, direction: -1 | 1) => {
+    const nextIndex = index + direction
+    if (nextIndex < 0 || nextIndex >= days.length) return
+    const nextDays = [...days]
+    ;[nextDays[index], nextDays[nextIndex]] = [nextDays[nextIndex], nextDays[index]]
+    onChange(nextDays.map((day, dayIndex) => ({ ...day, dayNumber: dayIndex + 1 })))
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -114,6 +123,26 @@ export default function ItineraryEditor({
                 >
                   <FiTrash2 size={13} /> Remove
                 </button>
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => moveDay(index, -1)}
+                    disabled={index === 0}
+                    className="grid h-8 w-8 place-items-center rounded-lg border border-gray-200 text-gray-500 hover:border-indigo-200 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-35"
+                    title="Move day up"
+                  >
+                    <FiArrowUp size={13} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => moveDay(index, 1)}
+                    disabled={index === days.length - 1}
+                    className="grid h-8 w-8 place-items-center rounded-lg border border-gray-200 text-gray-500 hover:border-indigo-200 hover:text-indigo-600 disabled:cursor-not-allowed disabled:opacity-35"
+                    title="Move day down"
+                  >
+                    <FiArrowDown size={13} />
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -178,15 +207,12 @@ export default function ItineraryEditor({
                     className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
                   />
                 </div>
-                <div>
-                  <label className="mb-1.5 block text-xs font-semibold text-gray-500">Image URL</label>
-                  <input
-                    value={day.imageUrl ?? ''}
-                    onChange={event => updateDay(index, { imageUrl: event.target.value })}
-                    placeholder="https://..."
-                    className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
-                  />
-                </div>
+                <MediaUploader
+                  label="Day Image"
+                  value={day.imageUrl ?? ''}
+                  onChange={url => updateDay(index, { imageUrl: url })}
+                  folder="itinerary"
+                />
               </div>
             </div>
           ))}

@@ -2,6 +2,8 @@
 
 import { FiArrowDown, FiArrowUp, FiPlus, FiTrash2 } from 'react-icons/fi'
 import MediaUploader from '@/components/admin/MediaUploader'
+import SearchableCreatableSelect from '@/components/admin/SearchableCreatableSelect'
+import { ACCOMMODATION_OPTIONS, ACTIVITY_OPTIONS, MEAL_OPTIONS } from '@/lib/admin-select-options'
 
 export interface ItineraryFormDay {
   id?: string
@@ -13,14 +15,6 @@ export interface ItineraryFormDay {
   meals: string[]
   accommodation?: string
   imageUrl?: string
-}
-
-function toLines(items: string[] | undefined | null) {
-  return (items ?? []).join('\n')
-}
-
-function fromLines(value: string) {
-  return value.split('\n').map(item => item.trim()).filter(Boolean)
 }
 
 function blankDay(dayNumber: number): ItineraryFormDay {
@@ -176,37 +170,30 @@ export default function ItineraryEditor({
                     className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
                   />
                 </div>
-                <div>
-                  <label className="mb-1.5 block text-xs font-semibold text-gray-500">Activities</label>
-                  <p className="mb-1 text-xs text-gray-400">One activity per line</p>
-                  <textarea
-                    rows={4}
-                    value={toLines(day.activities)}
-                    onChange={event => updateDay(index, { activities: fromLines(event.target.value) })}
-                    placeholder={'Airport pickup\nHotel check-in\nEvening city walk'}
-                    className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1.5 block text-xs font-semibold text-gray-500">Meals</label>
-                  <p className="mb-1 text-xs text-gray-400">One meal per line</p>
-                  <textarea
-                    rows={4}
-                    value={toLines(day.meals)}
-                    onChange={event => updateDay(index, { meals: fromLines(event.target.value) })}
-                    placeholder={'Breakfast\nDinner'}
-                    className="w-full resize-none rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1.5 block text-xs font-semibold text-gray-500">Accommodation</label>
-                  <input
-                    value={day.accommodation ?? ''}
-                    onChange={event => updateDay(index, { accommodation: event.target.value })}
-                    placeholder="Beach resort / 4-star hotel"
-                    className="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
-                  />
-                </div>
+                <SearchableCreatableSelect
+                  label="Activities"
+                  hint="Select activities or add custom"
+                  value={day.activities}
+                  options={ACTIVITY_OPTIONS}
+                  onChange={items => updateDay(index, { activities: items })}
+                  placeholder="Select activities"
+                />
+                <SearchableCreatableSelect
+                  label="Meals"
+                  hint="Select meals or add custom"
+                  value={day.meals}
+                  options={MEAL_OPTIONS}
+                  onChange={items => updateDay(index, { meals: items })}
+                  placeholder="Select meals"
+                />
+                <SearchableCreatableSelect
+                  label="Accommodation"
+                  value={day.accommodation ? [day.accommodation] : []}
+                  options={ACCOMMODATION_OPTIONS}
+                  onChange={items => updateDay(index, { accommodation: items[0] ?? '' })}
+                  multiple={false}
+                  placeholder="Select accommodation"
+                />
                 <MediaUploader
                   label="Day Image"
                   value={day.imageUrl ?? ''}

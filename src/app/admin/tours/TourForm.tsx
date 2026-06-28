@@ -12,6 +12,22 @@ import JsonEditorPanel from '@/components/admin/JsonEditorPanel'
 import ImagesAiPanel from '@/components/admin/ImagesAiPanel'
 import ItineraryEditor, { ItineraryFormDay, normalizeItineraryDays } from '@/components/admin/ItineraryEditor'
 import MediaUploader from '@/components/admin/MediaUploader'
+import SearchableCreatableSelect from '@/components/admin/SearchableCreatableSelect'
+import {
+  ADD_ON_OPTIONS,
+  CANCELLATION_DAY_OPTIONS,
+  CANCELLATION_LABEL_OPTIONS,
+  CANCELLATION_POLICY_OPTIONS,
+  COMMON_DESTINATION_OPTIONS,
+  EXCLUSION_OPTIONS,
+  HIGHLIGHT_OPTIONS,
+  INCLUSION_OPTIONS,
+  LANGUAGE_OPTIONS,
+  VISA_NOTE_OPTIONS,
+  mustCarryOptions,
+  notAllowedOptions,
+  notSuitableOptions,
+} from '@/lib/admin-select-options'
 import { SeoInput } from '@/lib/seo-score'
 
 const RichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor'), { ssr: false })
@@ -26,71 +42,21 @@ const STARS = ['THREE', 'FOUR', 'FIVE']
 const DIFFICULTIES = ['EASY', 'MODERATE', 'CHALLENGING', 'EXTREME']
 const REGIONS = ['South East Asia', 'Middle East', 'Europe', 'Far East', 'South Asia', 'Africa', 'Americas', 'Pacific']
 
-const INCLUSION_PRESETS = [
-  'Return airfare', 'Hotel accommodation', 'Hotel breakfast', 'All meals', 'Airport transfers',
-  'AC transport', 'Tour guide', 'Entrance fees', 'Travel insurance', 'Visa assistance',
-  'Sightseeing tours', 'Boat transfers', 'Wi-Fi on board', 'Mineral water',
-]
-const EXCLUSION_PRESETS = [
-  'Visa fees', 'Travel insurance', 'Personal expenses', 'Tips & gratuities',
-  'Optional activities', 'International flights', 'Laundry', 'Alcohol',
-  'Room service', 'Camera fees at monuments', 'Medical expenses',
-]
-
 function toArr(s: string) { return s?.split('\n').map((l) => l.trim()).filter(Boolean) }
 function fromArr(a: string[] | undefined | null) { return (a ?? []).join('\n') }
 
 function ChipList({ label, items, presets, accentColor = 'sky', onChange }: {
   label: string; items: string[]; presets: string[]; accentColor?: string; onChange: (v: string[]) => void
 }) {
-  const [input, setInput] = useState('')
-  const available = presets.filter(p => !items.includes(p))
-  const focusBorder = accentColor === 'sky' ? 'focus:border-sky-400' : 'focus:border-indigo-400'
-  const chipBg = accentColor === 'sky' ? 'bg-sky-50 text-sky-700' : 'bg-indigo-50 text-indigo-700'
-  const addBg = accentColor === 'sky' ? 'bg-indigo-500 hover:bg-sky-600' : 'bg-indigo-500 hover:bg-indigo-600'
-
-  function add(val: string) {
-    const v = val.trim()
-    if (v && !items.includes(v)) onChange([...items, v])
-    setInput('')
-  }
-
   return (
-    <div>
-      <label className="block text-xs font-semibold text-gray-500 mb-1.5">{label}</label>
-      <div className={`border border-gray-200 rounded-xl p-3 space-y-2 focus-within:border-sky-400 transition-colors`}>
-        <div className="flex flex-wrap gap-1.5 min-h-[24px]">
-          {items.map(item => (
-            <span key={item} className={`flex items-center gap-1 text-xs px-2.5 py-1 rounded-full font-medium ${chipBg}`}>
-              {item}
-              <button type="button" onClick={() => onChange(items.filter(i => i !== item))}
-                className="hover:text-red-500 ml-0.5"><FiX size={10} /></button>
-            </span>
-          ))}
-          {items.length === 0 && <span className="text-xs text-gray-300">None added yet</span>}
-        </div>
-        <div className="flex gap-2">
-          <input value={input} onChange={e => setInput(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); add(input) } }}
-            placeholder="Type custom item or pick below…"
-            className={`flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none ${focusBorder}`} />
-          <button type="button" onClick={() => add(input)}
-            className={`text-xs text-white px-2.5 py-1.5 rounded-lg flex items-center gap-1 ${addBg}`}>
-            <FiPlus size={11} /> Add
-          </button>
-        </div>
-        {available.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {available.slice(0, 10).map(p => (
-              <button key={p} type="button" onClick={() => add(p)}
-                className="text-[10px] bg-gray-100 hover:bg-sky-50 hover:text-sky-600 text-gray-500 px-2 py-0.5 rounded-full transition-colors">
-                + {p}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+    <SearchableCreatableSelect
+      label={label}
+      value={items}
+      options={presets}
+      onChange={onChange}
+      accent={accentColor === 'sky' ? 'sky' : 'indigo'}
+      placeholder={`Select ${label.toLowerCase()}`}
+    />
   )
 }
 
@@ -126,16 +92,21 @@ function OptionsEditor({ options, onChange }: { options: OptionItem[]; onChange:
             ))}
           </div>
         )}
-        <div className="flex gap-2">
-          <input value={newLabel} onChange={e => setNewLabel(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); add() } }}
-            placeholder="Option name (e.g. Travel insurance)"
-            className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-400" />
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-[minmax(0,1fr)_7rem_auto]">
+          <SearchableCreatableSelect
+            label="Option"
+            value={newLabel ? [newLabel] : []}
+            options={ADD_ON_OPTIONS}
+            onChange={items => setNewLabel(items[0] ?? '')}
+            multiple={false}
+            accent="sky"
+            placeholder="Select or add option"
+          />
           <input value={newPrice} onChange={e => setNewPrice(e.target.value)} type="number" min="0"
             placeholder="Price"
-            className="w-24 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-400" />
+            className="self-end text-xs border border-gray-200 rounded-lg px-2.5 py-2.5 focus:outline-none focus:border-sky-400" />
           <button type="button" onClick={add}
-            className="text-xs bg-indigo-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-sky-600 flex items-center gap-1">
+            className="self-end text-xs bg-indigo-500 text-white px-3 py-2.5 rounded-lg hover:bg-sky-600 flex items-center gap-1">
             <FiPlus size={11} /> Add
           </button>
         </div>
@@ -179,20 +150,32 @@ function CancellationTiersEditor({ tiers, onChange }: { tiers: CancellationTier[
             ))}
           </div>
         )}
-        <div className="flex gap-2 flex-wrap">
-          <input value={days} onChange={e => setDays(e.target.value)} type="number" min="0"
-            placeholder="Days before"
-            className="w-24 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-400" />
+        <div className="grid grid-cols-1 gap-2 md:grid-cols-[minmax(0,1fr)_7rem_minmax(0,1.5fr)_auto]">
+          <SearchableCreatableSelect
+            label="Days before"
+            value={days ? [days] : []}
+            options={CANCELLATION_DAY_OPTIONS}
+            onChange={items => setDays(items[0] ?? '')}
+            multiple={false}
+            accent="sky"
+            placeholder="Select days"
+          />
           <select value={refund} onChange={e => setRefund(e.target.value)}
-            className="w-28 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-400 bg-white">
+            className="self-end text-xs border border-gray-200 rounded-lg px-2.5 py-2.5 focus:outline-none focus:border-sky-400 bg-white">
             <option value="">% Refund</option>
             {[100, 75, 50, 25, 0].map(r => <option key={r} value={r}>{r}%</option>)}
           </select>
-          <input value={tierLabel} onChange={e => setTierLabel(e.target.value)}
-            placeholder="Label (optional)"
-            className="flex-1 text-xs border border-gray-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-400" />
+          <SearchableCreatableSelect
+            label="Label"
+            value={tierLabel ? [tierLabel] : []}
+            options={CANCELLATION_LABEL_OPTIONS}
+            onChange={items => setTierLabel(items[0] ?? '')}
+            multiple={false}
+            accent="sky"
+            placeholder="Select or add label"
+          />
           <button type="button" onClick={add}
-            className="text-xs bg-indigo-500 text-white px-2.5 py-1.5 rounded-lg hover:bg-sky-600 flex items-center gap-1">
+            className="self-end text-xs bg-indigo-500 text-white px-3 py-2.5 rounded-lg hover:bg-sky-600 flex items-center gap-1">
             <FiPlus size={11} /> Add
           </button>
         </div>
@@ -422,6 +405,11 @@ export default function TourForm({ destinations, suppliers, tour }: Props) {
     focusKeyword: form.focusKeyword,
   }), [form.title, form.duration, form.summary, form.focusKeyword])
 
+  const destinationOptions = useMemo(
+    () => Array.from(new Set([...destinations.map(destination => destination.name), ...COMMON_DESTINATION_OPTIONS])),
+    [destinations]
+  )
+
   return (
     <>
     <SeoScorePanel input={seoInput} onAutoFixH1={handleAutoFixH1} />
@@ -501,12 +489,15 @@ export default function TourForm({ destinations, suppliers, tour }: Props) {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-semibold text-gray-500 mb-1.5">Countries / Destinations Covered</label>
-                <p className="text-xs text-gray-400 mb-1">One per line — all countries this tour visits</p>
-                <textarea rows={3} value={form.multiDestinations}
-                  onChange={(e) => setForm({ ...form, multiDestinations: e.target.value })}
-                  placeholder={'Singapore\nMalaysia\nThailand'}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400 resize-none" />
+                <SearchableCreatableSelect
+                  label="Countries / Destinations Covered"
+                  hint="Select all countries this tour visits or add custom"
+                  value={toArr(form.multiDestinations)}
+                  options={destinationOptions}
+                  onChange={items => setForm({ ...form, multiDestinations: fromArr(items) })}
+                  accent="sky"
+                  placeholder="Select destinations"
+                />
               </div>
 
               <div>
@@ -556,14 +547,16 @@ export default function TourForm({ destinations, suppliers, tour }: Props) {
             <hr className="border-gray-100" />
             <CancellationTiersEditor tiers={cancellationTiers} onChange={setCancellationTiers} />
 
-            <div>
-              <label className="block text-xs font-semibold text-gray-500 mb-1.5">Cancellation Policy Text</label>
-              <p className="text-xs text-gray-400 mb-1">Brief summary shown on the booking panel</p>
-              <textarea rows={2} value={form.cancellationPolicy}
-                onChange={(e) => setForm({ ...form, cancellationPolicy: e.target.value })}
-                placeholder="e.g. Free cancellation up to 30 days before departure"
-                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400 resize-none" />
-            </div>
+            <SearchableCreatableSelect
+              label="Cancellation Policy Text"
+              hint="Brief summary shown on the booking panel"
+              value={form.cancellationPolicy ? [form.cancellationPolicy] : []}
+              options={CANCELLATION_POLICY_OPTIONS}
+              onChange={items => setForm({ ...form, cancellationPolicy: items[0] ?? '' })}
+              multiple={false}
+              accent="sky"
+              placeholder="Select or add policy text"
+            />
           </div>
         )}
 
@@ -594,29 +587,37 @@ export default function TourForm({ destinations, suppliers, tour }: Props) {
             </div>
             <hr className="border-gray-100" />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <div className="flex items-center justify-between mb-1.5">
-                  <label className="text-xs font-semibold text-gray-500">Highlights (one per line)</label>
-                  <AiFieldAssist fieldLabel="Highlights" fieldName="highlights" currentValue={form.highlights} formContext={aiContext} onApply={v => setForm(f => ({ ...f, highlights: v }))} accentColor="sky" />
-                </div>
-                <textarea rows={5} value={form.highlights}
-                  onChange={e => setForm({ ...form, highlights: e.target.value })}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400 resize-none" />
-              </div>
-              {area('visaNotes', 'Visa Notes', 4, 'Notes about visa requirements for each country covered')}
+              <SearchableCreatableSelect
+                label="Highlights"
+                hint="Select common highlights or add custom highlights"
+                value={toArr(form.highlights)}
+                options={HIGHLIGHT_OPTIONS}
+                onChange={items => setForm({ ...form, highlights: fromArr(items) })}
+                accent="sky"
+                placeholder="Select highlights"
+              />
+              <SearchableCreatableSelect
+                label="Visa Notes"
+                hint="Notes about visa requirements for each country covered"
+                value={toArr(form.visaNotes)}
+                options={VISA_NOTE_OPTIONS}
+                onChange={items => setForm({ ...form, visaNotes: fromArr(items) })}
+                accent="sky"
+                placeholder="Select visa notes"
+              />
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <ChipList
                 label="Inclusions"
                 items={form.inclusions}
-                presets={INCLUSION_PRESETS}
+                presets={INCLUSION_OPTIONS}
                 accentColor="sky"
                 onChange={v => setForm({ ...form, inclusions: v })}
               />
               <ChipList
                 label="Exclusions"
                 items={form.exclusions}
-                presets={EXCLUSION_PRESETS}
+                presets={EXCLUSION_OPTIONS}
                 accentColor="sky"
                 onChange={v => setForm({ ...form, exclusions: v })}
               />
@@ -644,18 +645,69 @@ export default function TourForm({ destinations, suppliers, tour }: Props) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {area('meetingPoint', 'Meeting Point', 2)}
               {area('dropOff', 'Drop-off Point', 2)}
-              {area('hostLanguage', 'Host Language(s)', 2, 'One per line')}
-              {area('audioGuideLanguage', 'Audio Guide Language(s)', 2, 'One per line')}
-              {area('bookletLanguage', 'Booklet Language(s)', 2, 'One per line')}
+              <SearchableCreatableSelect
+                label="Host Language(s)"
+                hint="Select languages or add custom"
+                value={toArr(form.hostLanguage)}
+                options={LANGUAGE_OPTIONS}
+                onChange={items => setForm({ ...form, hostLanguage: fromArr(items) })}
+                accent="sky"
+              />
+              <SearchableCreatableSelect
+                label="Audio Guide Language(s)"
+                hint="Select languages or add custom"
+                value={toArr(form.audioGuideLanguage)}
+                options={LANGUAGE_OPTIONS}
+                onChange={items => setForm({ ...form, audioGuideLanguage: fromArr(items) })}
+                accent="sky"
+              />
+              <SearchableCreatableSelect
+                label="Booklet Language(s)"
+                hint="Select languages or add custom"
+                value={toArr(form.bookletLanguage)}
+                options={LANGUAGE_OPTIONS}
+                onChange={items => setForm({ ...form, bookletLanguage: fromArr(items) })}
+                accent="sky"
+              />
               {inp('emergencyContact', 'Emergency Contact')}
             </div>
             <hr className="border-gray-100" />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {area('inclusionService', 'Included Services', 4, 'One per line')}
-              {area('exclusionService', 'Excluded Services', 4, 'One per line')}
-              {area('notSuitable', 'Not Suitable For', 3, 'One per line')}
-              {area('notAllowed', 'Not Allowed', 3, 'One per line')}
-              {area('mustCarryItem', 'Must Carry Items', 3, 'One per line')}
+              <SearchableCreatableSelect
+                label="Included Services"
+                value={toArr(form.inclusionService)}
+                options={INCLUSION_OPTIONS}
+                onChange={items => setForm({ ...form, inclusionService: fromArr(items) })}
+                accent="sky"
+              />
+              <SearchableCreatableSelect
+                label="Excluded Services"
+                value={toArr(form.exclusionService)}
+                options={EXCLUSION_OPTIONS}
+                onChange={items => setForm({ ...form, exclusionService: fromArr(items) })}
+                accent="sky"
+              />
+              <SearchableCreatableSelect
+                label="Not Suitable For"
+                value={toArr(form.notSuitable)}
+                options={notSuitableOptions}
+                onChange={items => setForm({ ...form, notSuitable: fromArr(items) })}
+                accent="sky"
+              />
+              <SearchableCreatableSelect
+                label="Not Allowed"
+                value={toArr(form.notAllowed)}
+                options={notAllowedOptions}
+                onChange={items => setForm({ ...form, notAllowed: fromArr(items) })}
+                accent="sky"
+              />
+              <SearchableCreatableSelect
+                label="Must Carry Items"
+                value={toArr(form.mustCarryItem)}
+                options={mustCarryOptions}
+                onChange={items => setForm({ ...form, mustCarryItem: fromArr(items) })}
+                accent="sky"
+              />
             </div>
             <hr className="border-gray-100" />
             {form.isCustomizable && (
@@ -852,7 +904,7 @@ export default function TourForm({ destinations, suppliers, tour }: Props) {
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-sky-400 bg-white">
                   <option value="index, follow">index, follow (default — recommended)</option>
                   <option value="noindex, follow">noindex, follow — hide from Google</option>
-                  <option value="index, nofollow">index, nofollow — don't follow links</option>
+                  <option value="index, nofollow">index, nofollow — don&apos;t follow links</option>
                   <option value="noindex, nofollow">noindex, nofollow — full block</option>
                 </select>
               </div>

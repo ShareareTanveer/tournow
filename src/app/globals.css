@@ -2329,6 +2329,7 @@ body {
 .admin-form-panel {
   border-radius: 1rem !important;
   background: #fff !important;
+  overflow: visible !important;
 }
 
 .admin-form-panel::after,

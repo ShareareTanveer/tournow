@@ -3,17 +3,31 @@
 import { useEffect, useRef, useState } from 'react'
 import AdminShell from '@/components/admin/AdminShell'
 import MediaUploader from '@/components/admin/MediaUploader'
-import { FiEdit2, FiCheck, FiX, FiHash, FiAlignLeft, FiLayers, FiImage } from 'react-icons/fi'
+import {
+  FiEdit2, FiCheck, FiX, FiHash, FiAlignLeft, FiLayers, FiImage,
+  FiUsers, FiHeart, FiUser, FiBriefcase, FiGift, FiSun, FiPackage,
+} from 'react-icons/fi'
+import type { IconType } from 'react-icons'
 
 const DEFAULT_CATEGORIES = [
-  { slug: 'family',    label: 'Family',    description: 'Family-friendly tours for all ages',   emoji: '👨‍👩‍👧‍👦' },
-  { slug: 'honeymoon', label: 'Honeymoon', description: 'Romantic getaways for couples',         emoji: '💑' },
-  { slug: 'solo',      label: 'Solo',      description: 'Adventures for solo travelers',         emoji: '🧳' },
-  { slug: 'squad',     label: 'Squad',     description: 'Group adventures with friends',         emoji: '👯' },
-  { slug: 'corporate', label: 'Corporate', description: 'Business travel and team outings',      emoji: '💼' },
-  { slug: 'special',   label: 'Special',   description: 'Special occasion packages',             emoji: '🎉' },
-  { slug: 'holiday',   label: 'Holiday',   description: 'Seasonal holiday packages',             emoji: '🌴' },
+  { slug: 'family',    label: 'Family',    description: 'Family-friendly tours for all ages',   iconName: 'family' },
+  { slug: 'honeymoon', label: 'Honeymoon', description: 'Romantic getaways for couples',         iconName: 'honeymoon' },
+  { slug: 'solo',      label: 'Solo',      description: 'Adventures for solo travelers',         iconName: 'solo' },
+  { slug: 'squad',     label: 'Squad',     description: 'Group adventures with friends',         iconName: 'squad' },
+  { slug: 'corporate', label: 'Corporate', description: 'Business travel and team outings',      iconName: 'corporate' },
+  { slug: 'special',   label: 'Special',   description: 'Special occasion packages',             iconName: 'special' },
+  { slug: 'holiday',   label: 'Holiday',   description: 'Seasonal holiday packages',             iconName: 'holiday' },
 ]
+
+const CATEGORY_ICONS: Record<string, IconType> = {
+  family: FiUsers,
+  honeymoon: FiHeart,
+  solo: FiUser,
+  squad: FiUsers,
+  corporate: FiBriefcase,
+  special: FiGift,
+  holiday: FiSun,
+}
 
 const SLUG_COLORS: Record<string, { from: string; to: string; accent: string; light: string }> = {
   family:    { from: 'from-orange-400', to: 'to-amber-500',   accent: 'bg-orange-500',  light: 'bg-orange-50 text-orange-700 border-orange-200' },
@@ -34,7 +48,11 @@ interface Cat {
   iconName?: string
   sortOrder?: number
   isActive?: boolean
-  emoji?: string
+}
+
+function CategoryIcon({ slug, className = '' }: { slug: string; className?: string }) {
+  const Icon = CATEGORY_ICONS[slug] ?? FiPackage
+  return <Icon className={className} />
 }
 
 // ─── Edit Modal ───────────────────────────────────────────────────────────────
@@ -49,8 +67,6 @@ function EditModal({ cat, onSave, onClose }: {
   const overlayRef = useRef<HTMLDivElement>(null)
 
   const colors = SLUG_COLORS[cat.slug] ?? { from: 'from-gray-400', to: 'to-gray-500', accent: 'bg-gray-500', light: '' }
-  const def = DEFAULT_CATEGORIES.find(d => d.slug === cat.slug)
-  const emoji = def?.emoji ?? '📦'
 
   async function handleSave() {
     setSaving(true)
@@ -81,7 +97,7 @@ function EditModal({ cat, onSave, onClose }: {
         {/* Modal header — colored cover */}
         <div className={`relative h-20 bg-linear-to-br ${colors.from} ${colors.to} flex items-end px-6 pb-4`}>
           <div className="flex items-center gap-3">
-            <span className="text-4xl drop-shadow">{emoji}</span>
+            <CategoryIcon slug={cat.slug} className="h-9 w-9 text-white drop-shadow" />
             <div>
               <p className="text-white font-black text-xl leading-tight drop-shadow">{cat.label}</p>
               <p className="text-white/70 text-xs font-mono">{cat.slug}</p>
@@ -256,8 +272,6 @@ export default function CategoriesPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {cats.map((cat) => {
           const colors = SLUG_COLORS[cat.slug] ?? { from: 'from-gray-400', to: 'to-gray-500', accent: 'bg-gray-500', light: '' }
-          const def = DEFAULT_CATEGORIES.find(d => d.slug === cat.slug)
-          const emoji = def?.emoji ?? '📦'
 
           return (
             <div key={cat.slug} className={`group bg-white rounded-2xl border overflow-hidden shadow-sm transition-all duration-200 ${
@@ -272,7 +286,7 @@ export default function CategoriesPage() {
                   <img src={cat.imageUrl} alt={cat.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                   <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
                   <div className="absolute bottom-3 left-3 flex items-center gap-2">
-                    <span className="text-xl drop-shadow">{emoji}</span>
+                    <CategoryIcon slug={cat.slug} className="h-5 w-5 text-white drop-shadow" />
                     <span className="text-white font-black text-base drop-shadow">{cat.label}</span>
                   </div>
                   {cat.sortOrder != null && cat.sortOrder > 0 && (
@@ -283,7 +297,7 @@ export default function CategoriesPage() {
                 </div>
               ) : (
                 <div className={`h-28 bg-linear-to-br ${colors.from} ${colors.to} flex flex-col items-center justify-center gap-1.5 relative`}>
-                  <span className="text-4xl drop-shadow">{emoji}</span>
+                  <CategoryIcon slug={cat.slug} className="h-9 w-9 text-white drop-shadow" />
                   <span className="text-white font-black text-base">{cat.label}</span>
                   <span className="absolute top-2 right-2 text-[10px] font-semibold bg-white/20 text-white px-2 py-0.5 rounded-full backdrop-blur-sm">
                     No image

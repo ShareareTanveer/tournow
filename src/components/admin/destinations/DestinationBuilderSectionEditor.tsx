@@ -4,6 +4,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import MediaUploader from '@/components/admin/MediaUploader'
+import DestinationBuilderSectionIcon from '@/components/admin/destinations/DestinationBuilderSectionIcon'
 import { DESTINATION_BUILDER_SECTION_TYPES } from '@/components/admin/destinations/DestinationBuilderSectionTypes'
 import TailwindHtmlBlock from '@/components/ui/TailwindHtmlBlock'
 import { applyHtmlTemplateBindings, extractHtmlTemplateFields } from '@/lib/html-template'
@@ -452,7 +453,7 @@ Output:
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
       <div className="flex items-center justify-between border-b border-gray-200 p-4">
         <div className="flex items-center gap-2">
-          <span className="text-lg">{typeConfig?.icon || '📄'}</span>
+          <DestinationBuilderSectionIcon iconName={typeConfig?.iconName} className="h-5 w-5 text-gray-400" />
           <div>
             <input
               value={title}

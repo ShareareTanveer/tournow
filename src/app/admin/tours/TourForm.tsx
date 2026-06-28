@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
-import { FiPlus, FiX, FiInfo } from 'react-icons/fi'
+import { FiPlus, FiX, FiInfo, FiCheckCircle, FiAlertCircle } from 'react-icons/fi'
 import MultiImageUploader, { GalleryLayout } from '@/components/admin/MultiImageUploader'
 import SeoScorePanel from '@/components/admin/SeoScorePanel'
 import AiFieldAssist from '@/components/admin/AiFieldAssist'
@@ -923,8 +923,12 @@ export default function TourForm({ destinations, suppliers, tour }: Props) {
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-xs font-mono focus:outline-none focus:border-sky-400 resize-none"
                   spellCheck={false} />
                 {form.schemaMarkup && (() => {
-                  try { JSON.parse(form.schemaMarkup); return <p className="text-[10px] text-emerald-600 mt-1">✓ Valid JSON</p> }
-                  catch { return <p className="text-[10px] text-red-500 mt-1">✗ Invalid JSON — please fix the syntax</p> }
+                  try {
+                    JSON.parse(form.schemaMarkup)
+                    return <p className="flex items-center gap-1 text-[10px] text-emerald-600 mt-1"><FiCheckCircle size={11} /> Valid JSON</p>
+                  } catch {
+                    return <p className="flex items-center gap-1 text-[10px] text-red-500 mt-1"><FiAlertCircle size={11} /> Invalid JSON - please fix the syntax</p>
+                  }
                 })()}
               </div>
             </div>

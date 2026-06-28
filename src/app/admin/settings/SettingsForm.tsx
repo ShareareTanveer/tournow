@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { FiCheckCircle } from 'react-icons/fi'
 import { useRouter } from 'next/navigation'
 
 function g(settings: Record<string, string>, key: string, fallback = '') {
@@ -236,7 +237,7 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
         </button>
         {saved && (
           <span className="flex items-center gap-1.5 text-sm text-emerald-600 font-semibold bg-emerald-50 px-3 py-2 rounded-lg border border-emerald-100">
-            ✓ Saved successfully
+            <FiCheckCircle size={14} /> Saved successfully
           </span>
         )}
       </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { FiUpload, FiX, FiImage, FiLoader, FiLink, FiZap } from 'react-icons/fi'
+import { FiUpload, FiX, FiImage, FiLoader, FiLink, FiZap, FiAlertCircle, FiArrowDown } from 'react-icons/fi'
 
 // ─── Client-side image compression ─────────────────────────────────────────────
 
@@ -241,11 +241,11 @@ export default function MediaUploader({
           className="flex items-center gap-1.5 text-xs font-semibold text-white bg-gray-700 hover:bg-gray-800 disabled:opacity-50 px-3 py-2 rounded-xl transition-colors"
         >
           {loadingUrl ? <FiLoader size={12} className="animate-spin" /> : <FiLink size={12} />}
-          {loadingUrl ? 'Loading…' : '⬇ Load'}
+          {loadingUrl ? 'Loading…' : <><FiArrowDown size={12} /> Load</>}
         </button>
       </div>
 
-      {error && <p className="text-xs text-red-500 flex items-center gap-1"><span>✗</span> {error}</p>}
+      {error && <p className="text-xs text-red-500 flex items-center gap-1"><FiAlertCircle size={12} /> {error}</p>}
 
       <input
         ref={inputRef}

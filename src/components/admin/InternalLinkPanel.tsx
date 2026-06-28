@@ -8,7 +8,7 @@
  *   - Title, type badge, score, already-linked badge
  *   - Match reason chips (keywords / category)
  *   - Anchor phrase chips — click to copy <a> HTML
- *   - ⚡ Auto-Link button — injects link directly into content
+ *   - Auto-Link button injects link directly into content
  *
  * Usage:
  *   <InternalLinkPanel
@@ -20,7 +20,11 @@
  */
 
 import { useState, useCallback } from 'react'
-import { FiLink, FiX, FiLoader, FiCopy, FiCheck, FiZap, FiRefreshCw } from 'react-icons/fi'
+import {
+  FiLink, FiX, FiLoader, FiCopy, FiCheck, FiZap, FiRefreshCw,
+  FiPackage, FiCompass, FiEdit3, FiFileText,
+} from 'react-icons/fi'
+import type { IconType } from 'react-icons'
 import { autoInsertLinks } from '@/lib/link-suggester'
 
 interface Suggestion {
@@ -45,10 +49,17 @@ interface Props {
 }
 
 const TYPE_LABEL: Record<string, string> = {
-  package: '📦 Package',
-  tour:    '🧭 Tour',
-  blog:    '📝 Blog',
-  news:    '📰 News',
+  package: 'Package',
+  tour:    'Tour',
+  blog:    'Blog',
+  news:    'News',
+}
+
+const TYPE_ICON: Record<string, IconType> = {
+  package: FiPackage,
+  tour:    FiCompass,
+  blog:    FiEdit3,
+  news:    FiFileText,
 }
 
 const TYPE_COLOR: Record<string, string> = {
@@ -173,14 +184,16 @@ export default function InternalLinkPanel({ title, content, currentSlug, onAutoL
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 shrink-0">
               <div>
                 <h2 className="font-black text-gray-900 text-base">
-                  🔗 Internal Link Suggestions
+                  <span className="inline-flex items-center gap-2">
+                    <FiLink size={16} /> Internal Link Suggestions
+                  </span>
                   {!loading && suggestions.length > 0 && (
                     <span className="ml-2 text-sm font-semibold text-indigo-600">{suggestions.length} found</span>
                   )}
                 </h2>
                 {reloadNote && (
-                  <p className="text-[11px] text-emerald-600 mt-0.5">
-                    ✓ Link inserted — save the form to persist changes
+                  <p className="flex items-center gap-1 text-[11px] text-emerald-600 mt-0.5">
+                    <FiCheck size={11} /> Link inserted - save the form to persist changes
                   </p>
                 )}
               </div>
@@ -230,12 +243,19 @@ export default function InternalLinkPanel({ title, content, currentSlug, onAutoL
               {/* Groups */}
               {groups.map(({ type, items }) => (
                 <div key={type}>
-                  <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">{TYPE_LABEL[type]}</p>
+                  <p className="flex items-center gap-1.5 text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+                    {(() => {
+                      const Icon = TYPE_ICON[type]
+                      return <Icon size={12} />
+                    })()}
+                    {TYPE_LABEL[type]}
+                  </p>
                   <div className="space-y-3">
                     {items.map(s => (
                       <SuggestionCard
                         key={s.id}
                         s={s}
+                        type={type}
                         typeColor={TYPE_COLOR[type]}
                         typeLabel={TYPE_LABEL[type]}
                         linkStatus={linkState[s.id] ?? ''}
@@ -253,7 +273,11 @@ export default function InternalLinkPanel({ title, content, currentSlug, onAutoL
             {suggestions.length > 0 && (
               <div className="px-6 py-3 border-t border-gray-100 shrink-0">
                 <p className="text-[11px] text-gray-400">
-                  ⚡ Auto-Link inserts directly into the content · 📋 Copy gives you the HTML anchor tag
+                  <span className="inline-flex items-center gap-1.5">
+                    <FiZap size={11} /> Auto-Link inserts directly into the content
+                    <span className="text-gray-300">-</span>
+                    <FiCopy size={11} /> Copy gives you the HTML anchor tag
+                  </span>
                 </p>
               </div>
             )}
@@ -267,9 +291,10 @@ export default function InternalLinkPanel({ title, content, currentSlug, onAutoL
 // ─── Suggestion card ──────────────────────────────────────────────────────────
 
 function SuggestionCard({
-  s, typeColor, typeLabel, linkStatus, copied, onCopy, onAutoLink,
+  s, type, typeColor, typeLabel, linkStatus, copied, onCopy, onAutoLink,
 }: {
   s:           Suggestion
+  type:        string
   typeColor:   string
   typeLabel:   string
   linkStatus:  string
@@ -281,6 +306,7 @@ function SuggestionCard({
   const isDone    = linkStatus === 'done'
   const isError   = linkStatus.startsWith('error:')
   const errorMsg  = isError ? linkStatus.slice(6) : ''
+  const TypeIcon = TYPE_ICON[type] ?? FiFileText
 
   // Anchor phrases: focusKeyword + up to 2 matched terms as phrases
   const phrases: string[] = []
@@ -300,10 +326,12 @@ function SuggestionCard({
               className="text-sm font-semibold text-gray-800 hover:text-indigo-600 transition-colors truncate">
               {s.title}
             </a>
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${typeColor}`}>{typeLabel}</span>
+            <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full ${typeColor}`}>
+              <TypeIcon size={10} /> {typeLabel}
+            </span>
             {s.alreadyLinked && (
-              <span className="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
-                ✓ already linked
+              <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">
+                <FiCheck size={10} /> already linked
               </span>
             )}
           </div>
@@ -357,7 +385,7 @@ function SuggestionCard({
           >
             {isLinking && <FiLoader size={10} className="animate-spin" />}
             {isDone    && <><FiCheck size={10} /> Linked!</>}
-            {isError   && `✗ ${errorMsg}`}
+            {isError   && <><FiX size={10} /> {errorMsg}</>}
             {!isLinking && !isDone && !isError && <><FiZap size={10} /> Auto-Link</>}
           </button>
         </div>

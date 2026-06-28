@@ -4,24 +4,24 @@ export type DestinationBuilderSectionType = {
   type: string
   label: string
   description: string
-  icon: string
+  iconName: string
   category: 'layout' | 'content' | 'data' | 'advanced'
 }
 
 const ICONS: Record<string, string> = {
-  hero: '🏠',
-  'quick-facts': '📌',
-  story: '📖',
-  highlights: '✨',
-  gallery: '🖼️',
-  'stats-strip': '📊',
-  packages: '🎒',
-  tours: '🗺️',
-  faq: '❓',
-  testimonial: '💬',
-  cta: '📣',
-  'html-block': '🔧',
-  canvas: '🧩',
+  hero: 'home',
+  'quick-facts': 'info',
+  story: 'book',
+  highlights: 'star',
+  gallery: 'image',
+  'stats-strip': 'bar-chart',
+  packages: 'package',
+  tours: 'map',
+  faq: 'help-circle',
+  testimonial: 'message-circle',
+  cta: 'send',
+  'html-block': 'code',
+  canvas: 'layout',
 }
 
 const CATEGORIES: Record<string, DestinationBuilderSectionType['category']> = {
@@ -45,6 +45,6 @@ export const DESTINATION_BUILDER_SECTION_TYPES: DestinationBuilderSectionType[] 
     type: item.type,
     label: item.label,
     description: item.description,
-    icon: ICONS[item.type] ?? '📄',
+    iconName: ICONS[item.type] ?? 'file-text',
     category: CATEGORIES[item.type] ?? 'content',
   }))

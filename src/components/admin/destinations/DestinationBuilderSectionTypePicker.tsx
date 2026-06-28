@@ -1,6 +1,7 @@
 'use client'
 
 import { DESTINATION_BUILDER_SECTION_TYPES } from '@/components/admin/destinations/DestinationBuilderSectionTypes'
+import DestinationBuilderSectionIcon from '@/components/admin/destinations/DestinationBuilderSectionIcon'
 
 const CATEGORIES = [
   { key: 'layout', label: 'Layout' },
@@ -33,7 +34,7 @@ export default function DestinationBuilderSectionTypePicker({
                   onClick={() => onSelect(item.type)}
                   className="flex items-start gap-3 rounded-lg border border-gray-200 bg-white p-3 text-left transition hover:border-blue-400 hover:bg-blue-50"
                 >
-                  <span className="mt-0.5 text-xl">{item.icon}</span>
+                  <DestinationBuilderSectionIcon iconName={item.iconName} className="mt-0.5 h-5 w-5 flex-shrink-0 text-gray-400" />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-gray-900">{item.label}</p>
                     <p className="line-clamp-2 text-[11px] text-gray-400">{item.description}</p>

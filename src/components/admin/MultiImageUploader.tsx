@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from 'react'
 import {
   FiUpload, FiX, FiStar, FiImage, FiLoader, FiPlus,
-  FiArrowLeft, FiArrowRight, FiLink, FiZap,
+  FiArrowLeft, FiArrowRight, FiLink, FiZap, FiAlertCircle, FiArrowDown,
 } from 'react-icons/fi'
 
 export type GalleryLayout = 'grid-2x2' | 'grid-3col' | 'featured-left' | 'featured-right' | 'strip'
@@ -321,7 +321,9 @@ export default function MultiImageUploader({
               ? <div className="flex flex-col items-center gap-2 text-indigo-500"><FiLoader size={24} className="animate-spin" /><p className="text-sm font-medium">Uploading…</p></div>
               : <div className="flex flex-col items-center gap-2 text-gray-400">
                   <FiImage size={28} />
-                  <p className="text-sm font-medium text-gray-600">📁 Click to browse or drag & drop image</p>
+                  <p className="flex items-center gap-1.5 text-sm font-medium text-gray-600">
+                    <FiUpload size={14} /> Click to browse or drag & drop image
+                  </p>
                   <p className="text-xs">PNG, JPG, WebP · up to {maxImages} images · compressed automatically</p>
                 </div>
             }
@@ -354,12 +356,12 @@ export default function MultiImageUploader({
             <button type="button" onClick={loadFromUrl} disabled={loadingUrl || !urlInput.trim()}
               className="flex items-center gap-1.5 text-xs font-semibold text-white bg-gray-700 hover:bg-gray-800 disabled:opacity-50 px-3 py-2 rounded-xl transition-colors">
               {loadingUrl ? <FiLoader size={12} className="animate-spin" /> : <FiLink size={12} />}
-              {loadingUrl ? 'Loading…' : '⬇ Load'}
+              {loadingUrl ? 'Loading…' : <><FiArrowDown size={12} /> Load</>}
             </button>
           </div>
         )}
 
-        {error && <p className="text-xs text-red-500 flex items-center gap-1"><span>✗</span> {error}</p>}
+        {error && <p className="text-xs text-red-500 flex items-center gap-1"><FiAlertCircle size={12} /> {error}</p>}
       </div>
 
       {/* ── Gallery Layout picker ── */}

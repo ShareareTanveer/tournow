@@ -12,13 +12,13 @@
  *     onApply={(text) => setForm(f => ({ ...f, title: text }))}
  *   />
  *
- * Renders a small sparkle (✦) button inline next to the field.
- * Click → opens modal with:
+ * Renders a small AI button inline next to the field.
+ * Click opens modal with:
  *   - Page context (auto from formContext)
  *   - Current value (read-only reference)
  *   - Provider selector + optional model override
  *   - Instruction textarea (pre-filled with smart default)
- *   - Generate → shows output → Apply / Regenerate
+ *   - Generate shows output, then Apply / Regenerate
  */
 
 import { useState, useEffect, useCallback } from 'react'
@@ -234,7 +234,7 @@ Rules:
                       {providers.filter(p => p.isActive).map(p => (
                         <option key={p.provider} value={p.provider}>
                           {p.provider.charAt(0).toUpperCase() + p.provider.slice(1)}
-                          {p.isPrimary ? ' ★' : ''}
+                          {p.isPrimary ? ' - Primary' : ''}
                         </option>
                       ))}
                     </select>

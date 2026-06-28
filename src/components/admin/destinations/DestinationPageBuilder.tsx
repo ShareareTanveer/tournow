@@ -4,10 +4,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import DestinationBuilderSectionEditor from '@/components/admin/destinations/DestinationBuilderSectionEditor'
+import DestinationBuilderSectionIcon from '@/components/admin/destinations/DestinationBuilderSectionIcon'
 import DestinationBuilderSectionTypePicker from '@/components/admin/destinations/DestinationBuilderSectionTypePicker'
 import { DESTINATION_BUILDER_SECTION_TYPES } from '@/components/admin/destinations/DestinationBuilderSectionTypes'
 import { DESTINATION_SECTION_LIBRARY } from '@/lib/destination-page-builder'
-import { FiArrowLeft, FiChevronDown, FiChevronUp, FiEye, FiEyeOff, FiPlus, FiTrash2 } from 'react-icons/fi'
+import { FiArrowLeft, FiChevronDown, FiChevronUp, FiEdit3, FiEye, FiEyeOff, FiPlus, FiTrash2 } from 'react-icons/fi'
 
 type BuilderPayload = {
   destination: {
@@ -194,7 +195,7 @@ export default function DestinationPageBuilder({ slug }: { slug: string }) {
                     <div className="flex items-center justify-between">
                       <div className="min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="flex-shrink-0 text-base">{typeConfig?.icon || '📄'}</span>
+                          <DestinationBuilderSectionIcon iconName={typeConfig?.iconName} className="h-4 w-4 flex-shrink-0 text-gray-400" />
                           <div className="min-w-0">
                             <p className="truncate text-sm font-medium text-gray-900">{section.title}</p>
                             <p className="text-[11px] text-gray-400">{section.sectionType}</p>
@@ -263,7 +264,7 @@ export default function DestinationPageBuilder({ slug }: { slug: string }) {
             />
           ) : (
             <div className="rounded-xl border border-gray-200 bg-white p-12 text-center">
-              <div className="mb-3 text-4xl">👈</div>
+              <FiEdit3 className="mx-auto mb-3 h-10 w-10 text-gray-300" />
               <p className="text-sm text-gray-500">
                 Select a section from the left panel to edit it,
                 <br />

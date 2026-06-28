@@ -980,7 +980,7 @@ export default function BookingDetailClient({ booking: initial, type }: {
               {booking.extraNights > 0 && (
                 <TripRow icon={<FiCalendar size={11} />} label="Extra Nights" value={`${booking.extraNights} night(s)`} />
               )}
-              <TripRow icon={<span className="text-[11px]">✈</span>} label="Airfare"
+              <TripRow icon={<FiSend size={11} />} label="Airfare"
                 value={booking.isAirfareIncluded ? 'Requested' : 'Not included'}
                 valueClass={booking.isAirfareIncluded ? 'text-indigo-600' : 'text-gray-400'} />
               {booking.selectedOptions && booking.selectedOptions.length > 0 && (

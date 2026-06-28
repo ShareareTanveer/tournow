@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { FiUpload, FiCopy, FiTrash2, FiImage, FiLoader } from 'react-icons/fi'
+import { FiUpload, FiCopy, FiTrash2, FiImage, FiLoader, FiCheck } from 'react-icons/fi'
 
 interface MediaItem {
   id: string
@@ -89,7 +89,7 @@ export default function MediaLibraryClient({ initialItems }: { initialItems: Med
               <button onClick={() => copyUrl(item.url)}
                 className="w-8 h-8 bg-white rounded-lg flex items-center justify-center hover:bg-gray-100 transition-colors"
                 title="Copy URL">
-                {copied === item.url ? <span className="text-green-600 text-xs font-bold">✓</span> : <FiCopy size={13} />}
+                {copied === item.url ? <FiCheck size={13} className="text-green-600" /> : <FiCopy size={13} />}
               </button>
               <button onClick={() => del(item.id, item.url)}
                 className="w-8 h-8 bg-red-500 text-white rounded-lg flex items-center justify-center hover:bg-red-600 transition-colors"

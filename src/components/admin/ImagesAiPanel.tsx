@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import {
   FiImage, FiX, FiZap, FiLoader, FiCheck, FiTrash2,
   FiEdit2, FiExternalLink, FiCopy, FiRefreshCw, FiStar,
-  FiSave, FiType,
+  FiSave, FiType, FiTarget, FiEdit3, FiGlobe,
 } from 'react-icons/fi'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -234,7 +234,7 @@ function ImageCard({ meta, isFirst, onUpdate, onRemove, onFixName, onAiAlt, noPr
               className={`flex items-center gap-1 text-[10px] font-black px-2.5 py-1.5 rounded-lg transition-colors ${
                 meta.seoOpen ? 'bg-indigo-500 text-white' : 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200'
               }`}>
-              🎯 SEO
+              <FiTarget size={9} /> SEO
             </button>
 
             <button type="button"
@@ -430,7 +430,7 @@ export default function ImagesAiPanel({ images, title = '', onRemove }: Props) {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 bg-indigo-500 shrink-0">
               <h2 className="font-black text-white text-base flex items-center gap-2">
-                🎨 Images &amp; AI Generation
+                <FiImage size={17} /> Images &amp; AI Generation
               </h2>
               <button type="button" onClick={() => setOpen(false)}
                 className="w-8 h-8 flex items-center justify-center rounded-xl bg-white/20 hover:bg-white/30 text-white transition-colors">
@@ -441,9 +441,9 @@ export default function ImagesAiPanel({ images, title = '', onRemove }: Props) {
             {/* Tabs */}
             <div className="flex border-b border-gray-100 shrink-0">
               {([
-                { id: 'images',  label: '🖼 Images' },
-                { id: 'prompts', label: '✏️ Prompts' },
-                { id: 'sites',   label: '🌐 Sites' },
+                { id: 'images',  label: 'Images',  icon: FiImage },
+                { id: 'prompts', label: 'Prompts', icon: FiEdit3 },
+                { id: 'sites',   label: 'Sites',   icon: FiGlobe },
               ] as const).map(t => (
                 <button key={t.id} type="button" onClick={() => setTab(t.id)}
                   className={`flex-1 px-4 py-3 text-xs font-bold transition-colors border-b-2 ${
@@ -451,7 +451,9 @@ export default function ImagesAiPanel({ images, title = '', onRemove }: Props) {
                       ? 'border-indigo-500 text-indigo-600 bg-indigo-50/50'
                       : 'border-transparent text-gray-500 hover:text-gray-700'
                   }`}>
-                  {t.label}
+                  <span className="inline-flex items-center justify-center gap-1.5">
+                    <t.icon size={13} /> {t.label}
+                  </span>
                 </button>
               ))}
             </div>
@@ -465,7 +467,7 @@ export default function ImagesAiPanel({ images, title = '', onRemove }: Props) {
                     className="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-1.5 focus:outline-none focus:border-indigo-400 bg-white">
                     {providers.map(p => (
                       <option key={p.provider} value={p.provider}>
-                        {providerLabel(p.provider)} — {p.model}{p.isPrimary ? ' ★' : ''}
+                        {providerLabel(p.provider)} — {p.model}{p.isPrimary ? ' - Primary' : ''}
                       </option>
                     ))}
                   </select>

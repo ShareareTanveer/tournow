@@ -5,7 +5,7 @@ import Image from 'next/image'
 import AdminTable, { Column } from '@/components/admin/AdminTable'
 import { FiEdit2, FiExternalLink, FiStar, FiEye, FiEyeOff, FiPhone } from 'react-icons/fi'
 
-const STAR_MAP: Record<string, string> = { THREE: '3★', FOUR: '4★', FIVE: '5★' }
+const STAR_MAP: Record<string, number> = { THREE: 3, FOUR: 4, FIVE: 5 }
 
 interface Pkg {
   id: string; slug: string; title: string; category: string
@@ -70,7 +70,11 @@ export default function PackagesClient({ packages }: { packages: Pkg[] }) {
     },
     {
       key: 'starRating', label: 'Stars', sortable: true,
-      render: pkg => <span className="text-xs font-semibold text-amber-500">{STAR_MAP[pkg.starRating] ?? '—'}</span>,
+      render: pkg => STAR_MAP[pkg.starRating] ? (
+        <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-500">
+          {STAR_MAP[pkg.starRating]} <FiStar size={11} className="fill-current" />
+        </span>
+      ) : <span className="text-gray-300 text-xs">-</span>,
     },
     {
       key: 'isFeatured', label: 'Featured', align: 'center',

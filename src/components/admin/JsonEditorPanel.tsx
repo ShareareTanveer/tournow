@@ -40,9 +40,9 @@ export default function JsonEditorPanel({ formData, onApply, entityLabel }: Prop
     try {
       const parsed = JSON.parse(jsonText)
       const count = Object.keys(parsed).length
-      return { valid: true, message: `✓ Valid JSON — ${count} field${count !== 1 ? 's' : ''}`, count }
+      return { valid: true, message: `Valid JSON - ${count} field${count !== 1 ? 's' : ''}`, count }
     } catch (e: unknown) {
-      return { valid: false, message: `✗ Invalid JSON: ${e instanceof SyntaxError ? e.message : String(e)}` }
+      return { valid: false, message: `Invalid JSON: ${e instanceof SyntaxError ? e.message : String(e)}` }
     }
   }, [jsonText])
 
@@ -96,10 +96,10 @@ Rules:
     try {
       const parsed = JSON.parse(jsonText) as Record<string, unknown>
       onApply(parsed)
-      setApplyStatus(`✓ Applied ${jsonStatus.count} fields`)
+      setApplyStatus(`Applied ${jsonStatus.count} fields`)
       setTimeout(() => setApplyStatus(''), 3000)
     } catch {
-      setApplyStatus('✗ Failed to apply')
+      setApplyStatus('Failed to apply')
     }
   }
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import AdminShell from '@/components/admin/AdminShell'
+import { AdminTableSkeleton } from '@/components/admin/AdminSkeleton'
 import MediaUploader from '@/components/admin/MediaUploader'
 import {
   FiEdit2, FiCheck, FiX, FiHash, FiAlignLeft, FiLayers, FiImage,
@@ -193,10 +194,12 @@ function EditModal({ cat, onSave, onClose }: {
 
 export default function CategoriesPage() {
   const [cats, setCats] = useState<Cat[]>([])
+  const [loading, setLoading] = useState(true)
   const [editing, setEditing] = useState<Cat | null>(null)
   const [saved, setSaved] = useState<string | null>(null)
 
   useEffect(() => {
+    setLoading(true)
     fetch('/api/categories')
       .then(r => r.json())
       .then((data: Cat[]) => {
@@ -207,6 +210,7 @@ export default function CategoriesPage() {
         setCats(merged)
       })
       .catch(() => setCats(DEFAULT_CATEGORIES.map(d => ({ ...d, isActive: true, sortOrder: 0 }))))
+      .finally(() => setLoading(false))
   }, [])
 
   async function saveEdit(data: Partial<Cat>) {
@@ -269,7 +273,9 @@ export default function CategoriesPage() {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      {loading ? (
+        <AdminTableSkeleton rows={7} columns={4} showTabs={false} />
+      ) : <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {cats.map((cat) => {
           const colors = SLUG_COLORS[cat.slug] ?? { from: 'from-gray-400', to: 'to-gray-500', accent: 'bg-gray-500', light: '' }
 
@@ -343,7 +349,7 @@ export default function CategoriesPage() {
             </div>
           )
         })}
-      </div>
+      </div>}
     </AdminShell>
   )
 }

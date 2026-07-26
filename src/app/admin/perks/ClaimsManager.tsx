@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { FiClock, FiCheckCircle, FiXCircle, FiRefreshCw, FiUser, FiTag } from 'react-icons/fi'
 import AdminTable, { Column } from '@/components/admin/AdminTable'
+import { AdminTableSkeleton } from '@/components/admin/AdminSkeleton'
 
 interface Claim {
   id: string
@@ -139,11 +140,7 @@ export default function ClaimsManager() {
   ]
 
   if (loading) {
-    return (
-      <div className="bg-white rounded-2xl border border-gray-200 flex items-center justify-center py-16">
-        <p className="text-sm text-gray-400">Loading claims…</p>
-      </div>
-    )
+    return <AdminTableSkeleton rows={6} columns={5} />
   }
 
   return (

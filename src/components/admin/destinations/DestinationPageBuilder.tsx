@@ -6,6 +6,7 @@ import Link from 'next/link'
 import DestinationBuilderSectionEditor from '@/components/admin/destinations/DestinationBuilderSectionEditor'
 import DestinationBuilderSectionIcon from '@/components/admin/destinations/DestinationBuilderSectionIcon'
 import DestinationBuilderSectionTypePicker from '@/components/admin/destinations/DestinationBuilderSectionTypePicker'
+import { AdminSplitPanelSkeleton } from '@/components/admin/AdminSkeleton'
 import { DESTINATION_BUILDER_SECTION_TYPES } from '@/components/admin/destinations/DestinationBuilderSectionTypes'
 import { DESTINATION_SECTION_LIBRARY } from '@/lib/destination-page-builder'
 import { FiArrowLeft, FiChevronDown, FiChevronUp, FiEdit3, FiEye, FiEyeOff, FiPlus, FiTrash2 } from 'react-icons/fi'
@@ -126,7 +127,7 @@ export default function DestinationPageBuilder({ slug }: { slug: string }) {
   }
 
   if (loading && !data) {
-    return <div className="rounded-xl border border-gray-200 bg-white p-10 text-center text-sm text-gray-500">Loading builder...</div>
+    return <AdminSplitPanelSkeleton />
   }
 
   return (

@@ -24,6 +24,7 @@ import {
 } from "react-icons/fi";
 import CurrencySelector from "./CurrencySelector";
 import { useCustomerAuth } from "@/lib/customerAuth";
+import { DESTINATION_REGIONS } from "@/lib/navigation-data";
 
 const PACKAGE_CATEGORIES = [
   { label: "Family Packages",       slug: "family",    desc: "Perfect for the whole family",   icon: FiUsers,     color: "#2f6f9f" },
@@ -33,46 +34,6 @@ const PACKAGE_CATEGORIES = [
   { label: "Corporate Packages",    slug: "corporate", desc: "MICE & business travel",          icon: FiBriefcase, color: "#64748b" },
   { label: "Special Packages",      slug: "special",   desc: "VIP & exclusive experiences",     icon: FiStar,      color: "#c99a45" },
   { label: "2026 Holiday Packages", slug: "holiday",   desc: "Seasonal specials",               icon: FiSun,       color: "#007f89" },
-];
-
-const DESTINATION_REGIONS = [
-  {
-    region: "Asia",
-    destinations: [
-      { label: "Maldives", slug: "maldives" },
-      { label: "Thailand", slug: "thailand" },
-      { label: "Turkey", slug: "turkey" },
-      { label: "Japan", slug: "japan" },
-      { label: "Indonesia (Bali)", slug: "bali" },
-      { label: "China", slug: "china" },
-      { label: "South Korea", slug: "south-korea" },
-      { label: "Russia", slug: "russia" },
-    ],
-  },
-  {
-    region: "Europe",
-    destinations: [
-      { label: "France", slug: "france" },
-      { label: "Italy", slug: "italy" },
-      { label: "Greece", slug: "greece" },
-    ],
-  },
-  {
-    region: "Middle East",
-    destinations: [
-      { label: "Dubai (UAE)", slug: "dubai" },
-      { label: "Oman", slug: "oman" },
-      { label: "Azerbaijan", slug: "azerbaijan" },
-    ],
-  },
-  {
-    region: "Africa",
-    destinations: [{ label: "Egypt", slug: "egypt" }],
-  },
-  {
-    region: "Australia & Oceania",
-    destinations: [{ label: "Australia", slug: "australia" }],
-  },
 ];
 
 const TOUR_REGIONS = [

@@ -44,6 +44,21 @@ const DIFFICULTIES = ['EASY', 'MODERATE', 'CHALLENGING', 'EXTREME']
 function toArr(s: string) { return s?.split('\n').map((l) => l.trim()).filter(Boolean) }
 function fromArr(a: string[] | undefined | null) { return (a ?? []).join('\n') }
 
+function normalizeMoneyInput(value: string) {
+  const cleaned = value.replace(/,/g, '').replace(/[^\d.]/g, '')
+  const [whole = '', ...decimalParts] = cleaned.split('.')
+  return decimalParts.length > 0 ? `${whole}.${decimalParts.join('')}` : whole
+}
+
+function formatMoneyInput(value: string | number) {
+  const normalized = normalizeMoneyInput(String(value))
+  if (!normalized) return ''
+
+  const [whole, decimal] = normalized.split('.')
+  const formattedWhole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return decimal === undefined ? formattedWhole : `${formattedWhole}.${decimal}`
+}
+
 function ChipList({ label, items, presets, onChange }: {
   label: string; items: string[]; presets: string[]; onChange: (v: string[]) => void
 }) {
@@ -337,6 +352,21 @@ export default function PackageForm({ destinations, suppliers, pkg }: Props) {
     </div>
   )
 
+  const moneyInp = (key: 'price' | 'oldPrice' | 'priceTwin' | 'priceChild' | 'extraNightPrice', label: string, placeholder = '', required = false) => (
+    <div>
+      <label className="block text-xs font-semibold text-gray-500 mb-1.5">{label}{required && ' *'}</label>
+      <input
+        required={required}
+        type="text"
+        inputMode="decimal"
+        value={formatMoneyInput(form[key])}
+        placeholder={formatMoneyInput(placeholder)}
+        onChange={(e) => setForm({ ...form, [key]: normalizeMoneyInput(e.target.value) })}
+        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400"
+      />
+    </div>
+  )
+
   const area = (key: keyof typeof form, label: string, rows = 3, hint = '') => (
     <div>
       <label className="block text-xs font-semibold text-gray-500 mb-1.5">{label}</label>
@@ -508,11 +538,11 @@ export default function PackageForm({ destinations, suppliers, pkg }: Props) {
           <div className="space-y-5">
             <h3 className="font-bold text-gray-800 mb-2">Pricing</h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {inp('price', 'Base Price / Single (LKR) *', 'number', '120000', true)}
-              {inp('oldPrice', 'Old Price / Strikethrough (LKR)', 'number', '150000')}
-              {inp('priceTwin', 'Twin Sharing Price (LKR)', 'number', '95000')}
-              {inp('priceChild', 'Child Price (LKR)', 'number', '60000')}
-              {inp('extraNightPrice', 'Extra Night Price (LKR)', 'number', '8000')}
+              {moneyInp('price', 'Base Price / Single (LKR) *', '120000', true)}
+              {moneyInp('oldPrice', 'Old Price / Strikethrough (LKR)', '150000')}
+              {moneyInp('priceTwin', 'Twin Sharing Price (LKR)', '95000')}
+              {moneyInp('priceChild', 'Child Price (LKR)', '60000')}
+              {moneyInp('extraNightPrice', 'Extra Night Price (LKR)', '8000')}
             </div>
 
             <hr className="border-gray-100" />

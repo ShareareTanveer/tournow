@@ -1,31 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
-import { FiMapPin, FiDollarSign, FiSearch, FiStar, FiUsers, FiShield, FiCompass, FiAward } from 'react-icons/fi'
+import { FiMapPin, FiDollarSign, FiSearch, FiStar, FiUsers, FiShield, FiCompass, FiAward, FiChevronDown, FiChevronRight } from 'react-icons/fi'
 import { FaWhatsapp } from 'react-icons/fa'
 import { MdFlightTakeoff } from 'react-icons/md'
 import { TRAVEL_IMAGES } from '@/lib/travel-images'
+import { DESTINATION_REGIONS } from '@/lib/navigation-data'
 
 const DEFAULT_HERO = TRAVEL_IMAGES.hero
-
-const DESTINATIONS = [
-  { label: 'Anywhere in the world', value: '' },
-  { label: 'Dubai, UAE',    value: 'dubai' },
-  { label: 'Maldives',     value: 'maldives' },
-  { label: 'Japan',        value: 'japan' },
-  { label: 'Thailand',     value: 'thailand' },
-  { label: 'Bali, Indonesia', value: 'bali' },
-  { label: 'Turkey',       value: 'turkey' },
-  { label: 'Singapore',    value: 'singapore' },
-  { label: 'France',       value: 'france' },
-  { label: 'Egypt',        value: 'egypt' },
-  { label: 'Australia',    value: 'australia' },
-  { label: 'Malaysia',     value: 'malaysia' },
-  { label: 'South Korea',  value: 'south-korea' },
-]
 
 const BUDGET_LEVELS = [
   { label: 'Essential', sublabel: 'Up to LKR 200K',  value: '0-200000' },
@@ -48,6 +33,117 @@ const STATS = [
   { icon: FiStar, value: '4.9/5', label: 'Average rating' },
   { icon: FiShield, value: 'SLTDA', label: 'Licensed agency' },
 ]
+
+function DestinationPicker({
+  value,
+  onChange,
+}: {
+  value: string
+  onChange: (value: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const [activeRegion, setActiveRegion] = useState(DESTINATION_REGIONS[0].region)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const activeRegionData = DESTINATION_REGIONS.find(region => region.region === activeRegion)
+  const selected = DESTINATION_REGIONS
+    .flatMap(region => region.destinations)
+    .find(destination => destination.slug === value)
+
+  useEffect(() => {
+    const closeOnOutsideClick = (event: MouseEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) setOpen(false)
+    }
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false)
+    }
+
+    document.addEventListener('mousedown', closeOnOutsideClick)
+    document.addEventListener('keydown', closeOnEscape)
+    return () => {
+      document.removeEventListener('mousedown', closeOnOutsideClick)
+      document.removeEventListener('keydown', closeOnEscape)
+    }
+  }, [])
+
+  const selectDestination = (slug: string) => {
+    onChange(slug)
+    setOpen(false)
+  }
+
+  return (
+    <div ref={containerRef} className="relative">
+      <button
+        type="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        onClick={() => setOpen(current => !current)}
+        className="flex w-full items-center justify-between rounded-lg border border-[#d8ded9] bg-white px-4 py-3 text-left text-sm font-semibold text-[#17211f] outline-none transition hover:border-[#007f89] focus:border-[#007f89] focus:ring-4 focus:ring-[#007f89]/10"
+      >
+        <span className="flex min-w-0 items-center gap-2">
+          <FiMapPin className="shrink-0 text-[#3f8f64]" size={15} />
+          <span className="truncate">{selected?.label ?? 'Anywhere in the world'}</span>
+        </span>
+        <FiChevronDown
+          size={15}
+          className={`shrink-0 text-[#52615d] transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+
+      {open && (
+        <div
+          role="listbox"
+          aria-label="Choose a destination"
+          className="absolute left-0 right-0 top-full z-40 mt-2 grid max-h-72 grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] overflow-hidden rounded-lg border border-gray-100 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.16)]"
+        >
+          <div className="overflow-y-auto bg-white py-2">
+            <button
+              type="button"
+              role="option"
+              aria-selected={value === ''}
+              onClick={() => selectDestination('')}
+              className={`w-full border-b border-gray-50 px-3 py-2.5 text-left text-xs font-bold transition-colors ${value === '' ? 'bg-[#edf8f6] text-[#3f8f64]' : 'text-[#3f8f64] hover:bg-[#edf8f6]'}`}
+            >
+              All Destinations
+            </button>
+            {DESTINATION_REGIONS.map(region => (
+              <button
+                key={region.region}
+                type="button"
+                onMouseEnter={() => setActiveRegion(region.region)}
+                onFocus={() => setActiveRegion(region.region)}
+                onClick={() => setActiveRegion(region.region)}
+                className={`flex w-full items-center justify-between px-3 py-2.5 text-left text-xs transition-colors sm:text-sm ${activeRegion === region.region ? 'bg-[#edf8f6] font-semibold text-[#3f8f64]' : 'text-gray-700 hover:bg-gray-50'}`}
+              >
+                <span>{region.region}</span>
+                <FiChevronRight size={12} className="shrink-0 opacity-50" />
+              </button>
+            ))}
+          </div>
+
+          {activeRegionData && (
+            <div className="overflow-y-auto border-l border-slate-100 bg-slate-50 px-2 py-3">
+              <p className="mb-2 px-2 text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                {activeRegionData.region}
+              </p>
+              {activeRegionData.destinations.map(destination => (
+                <button
+                  key={destination.slug}
+                  type="button"
+                  role="option"
+                  aria-selected={value === destination.slug}
+                  onClick={() => selectDestination(destination.slug)}
+                  className={`block w-full rounded-lg px-3 py-2 text-left text-xs font-medium transition-colors sm:text-sm ${value === destination.slug ? 'bg-white font-semibold text-[#3f8f64] shadow-sm' : 'text-gray-600 hover:bg-white hover:text-[#3f8f64]'}`}
+                >
+                  {destination.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string }) {
   const [destination, setDestination] = useState('')
@@ -126,19 +222,16 @@ export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string })
             </div>
 
             <div className="space-y-4">
-              <label className="block">
-                <span className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#52615d]">
+              <div>
+                <span id="hero-destination-label" className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#52615d]">
                   <FiMapPin size={13} />
                   Destination
                 </span>
-                <select
+                <DestinationPicker
                   value={destination}
-                  onChange={e => setDestination(e.target.value)}
-                  className="w-full min-w-0 rounded-lg border border-[#d8ded9] bg-white px-4 py-3 text-sm font-semibold text-[#17211f] outline-none transition focus:border-[#007f89] focus:ring-4 focus:ring-[#007f89]/10"
-                >
-                  {DESTINATIONS.map(d => <option key={d.value} value={d.value}>{d.label}</option>)}
-                </select>
-              </label>
+                  onChange={setDestination}
+                />
+              </div>
 
               <div>
                 <span className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.16em] text-[#52615d]">

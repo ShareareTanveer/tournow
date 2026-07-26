@@ -183,7 +183,7 @@ export default function SearchableCreatableSelect({
           <button
             type="button"
             onClick={() => commit(query)}
-            className="mb-1 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold text-indigo-600 hover:bg-indigo-50"
+            className="mb-1 flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm font-medium text-indigo-600 hover:bg-indigo-50"
           >
             <FiPlus size={14} /> Add &quot;{query.trim()}&quot;
           </button>
@@ -196,7 +196,7 @@ export default function SearchableCreatableSelect({
               key={option}
               type="button"
               onClick={() => commit(option)}
-              className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition-colors ${
+              className={`flex w-full items-center gap-2 rounded-lg px-3 py-2.5 text-left text-sm transition-colors ${
                 isSelected ? styles.active : 'text-gray-600 hover:bg-gray-50'
               }`}
             >
@@ -207,7 +207,7 @@ export default function SearchableCreatableSelect({
             </button>
           )
         }) : (
-          <p className="px-3 py-6 text-center text-xs text-gray-400">No matching options.</p>
+          <p className="px-3 py-6 text-center text-sm text-gray-400">No matching options.</p>
         )}
       </div>
     </div>,
@@ -216,8 +216,8 @@ export default function SearchableCreatableSelect({
 
   return (
     <div ref={rootRef} className="admin-creatable-select relative" data-open={open ? 'true' : 'false'}>
-      <label className="mb-1.5 block text-xs font-semibold text-gray-500">{label}</label>
-      {hint && <p className="mb-1 text-xs text-gray-400">{hint}</p>}
+      <label className="mb-1.5 block text-[13px] font-semibold text-gray-600">{label}</label>
+      {hint && <p className="mb-1.5 text-[13px] leading-5 text-gray-500">{hint}</p>}
       <div className={`rounded-xl border border-gray-200 bg-white p-2 transition-colors ${styles.ring}`}>
         <button
           type="button"
@@ -233,7 +233,7 @@ export default function SearchableCreatableSelect({
         {selected.length > 0 && (
           <div className="mt-2 flex flex-wrap gap-1.5">
             {selected.map(item => (
-              <span key={item} className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${styles.chip}`}>
+              <span key={item} className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[13px] font-medium ${styles.chip}`}>
                 {item}
                 <button type="button" onClick={() => remove(item)} className="rounded-full hover:text-red-500">
                   <FiX size={11} />

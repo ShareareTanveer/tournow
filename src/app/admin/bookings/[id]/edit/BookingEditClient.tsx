@@ -256,7 +256,7 @@ export default function BookingEditClient({ booking, type }: { booking: Booking;
   }
 
   return (
-    <div className="space-y-6 max-w-6xl">
+    <div className="w-full space-y-6">
 
       {/* Breadcrumb info */}
       <div className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-2xl">

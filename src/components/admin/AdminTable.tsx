@@ -262,7 +262,7 @@ export default function AdminTable<T = any>({
                   setSortDir(d as 'asc' | 'desc')
                   setPage(1)
                 }}
-                className="border border-gray-200 rounded-lg px-2 py-1.5 text-xs bg-white focus:outline-none focus:border-indigo-300 cursor-pointer"
+                className="cursor-pointer rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-indigo-300 focus:outline-none"
               >
                 {visibleColumns.filter(c => c.sortable).flatMap(c => [
                   <option key={`${c.key}:desc`} value={`${c.key}:desc`}>{c.label} ↓</option>,
@@ -277,7 +277,7 @@ export default function AdminTable<T = any>({
             <button
               type="button"
               onClick={() => setColumnMenuOpen(open => !open)}
-              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-semibold text-gray-600 shadow-sm transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
+              className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-600 shadow-sm transition-colors hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
               aria-expanded={columnMenuOpen}
             >
               <FiSliders size={12} className="text-gray-400" />
@@ -290,7 +290,7 @@ export default function AdminTable<T = any>({
             {columnMenuOpen && (
               <div className="absolute right-0 z-30 mt-2 w-64 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-xl shadow-slate-200/70">
                 <div className="flex items-center justify-between border-b border-gray-100 px-3 py-2">
-                  <p className="text-xs font-bold uppercase tracking-wide text-gray-500">Table columns</p>
+                  <p className="text-sm font-semibold text-gray-700">Table columns</p>
                   <button
                     type="button"
                     onClick={resetColumns}
@@ -326,12 +326,12 @@ export default function AdminTable<T = any>({
           </div>
 
           {/* Page size */}
-          <div className="flex items-center gap-1.5 text-xs text-gray-500">
+          <div className="flex items-center gap-1.5 text-sm text-gray-500">
             <FiSliders size={12} className="text-gray-400" />
             <select
               value={pageSize}
               onChange={e => { setPageSize(Number(e.target.value)); setPage(1) }}
-              className="border border-gray-200 rounded-lg px-2 py-1.5 text-xs bg-white focus:outline-none focus:border-indigo-300 cursor-pointer"
+              className="cursor-pointer rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm focus:border-indigo-300 focus:outline-none"
             >
               {PAGE_SIZES.map(n => <option key={n} value={n}>{n} / page</option>)}
             </select>
@@ -344,7 +344,7 @@ export default function AdminTable<T = any>({
         {filterOptions && filterOptions.length > 1 && (
           useSelectFilter ? (
             <div className="flex items-center gap-2">
-              <label htmlFor="admin-table-filter" className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+              <label htmlFor="admin-table-filter" className="text-sm font-medium text-gray-600">
                 Filter
               </label>
               <select
@@ -373,7 +373,7 @@ export default function AdminTable<T = any>({
                   <button
                     key={opt}
                     onClick={() => handleTab(opt)}
-                    className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg whitespace-nowrap transition-colors shrink-0 ${
+                    className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                       activeTab === opt
                         ? 'bg-indigo-500 text-white'
                         : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700'
@@ -401,7 +401,7 @@ export default function AdminTable<T = any>({
               {visibleColumns.map(col => (
                 <th
                   key={col.key}
-                  className={`px-5 py-3 text-[11px] font-semibold text-gray-400 uppercase tracking-wider select-none ${
+                  className={`select-none px-5 py-3 text-xs font-semibold text-gray-500 ${
                     col.align === 'right' ? 'text-right' : col.align === 'center' ? 'text-center' : 'text-left'
                   } ${col.sortable ? 'cursor-pointer hover:text-gray-600' : ''} ${col.width ?? ''}`}
                   onClick={col.sortable ? () => handleSort(col.key) : undefined}
@@ -448,7 +448,7 @@ export default function AdminTable<T = any>({
       {/* ── Pagination ── */}
       {totalPages > 1 || sorted.length > 0 ? (
         <div className="px-5 py-3 border-t border-gray-100 flex items-center justify-between gap-4 flex-wrap">
-          <p className="text-xs text-gray-400">
+          <p className="text-sm text-gray-500">
             {sorted.length === 0 ? 'No results' : (
               <>
                 Showing <strong className="text-gray-600">{(safePage - 1) * pageSize + 1}</strong>–<strong className="text-gray-600">{Math.min(safePage * pageSize, sorted.length)}</strong> of <strong className="text-gray-600">{sorted.length}</strong>

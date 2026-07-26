@@ -207,7 +207,7 @@ export default function AiSettingsForm({ initial }: Props) {
   }
 
   return (
-    <div className="admin-editor-form admin-form-narrow space-y-5">
+    <div className="admin-editor-form space-y-5">
       {globalError && (
         <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl p-3 text-sm text-red-700">
           <FiAlertCircle size={15} className="shrink-0" /> {globalError}
@@ -233,12 +233,12 @@ export default function AiSettingsForm({ initial }: Props) {
                 : 'border-dashed border-gray-200 bg-white'
           }`}>
             {/* ── Header ── */}
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 <div className={`w-2.5 h-2.5 rounded-full transition-colors ${
                   row.isActive ? 'bg-emerald-500' : row.configured ? 'bg-gray-400' : 'bg-gray-200'
                 }`} />
-                <span className="font-bold text-gray-800">{p.label}</span>
+                <span className="text-base font-semibold text-gray-900">{p.label}</span>
                 {row.isPrimary && (
                   <span className="flex items-center gap-1 text-[11px] font-bold bg-violet-100 text-violet-700 px-2 py-0.5 rounded-full">
                     <FiStar size={10} /> Primary
@@ -251,7 +251,7 @@ export default function AiSettingsForm({ initial }: Props) {
               <div className="flex items-center gap-3">
                 {row.configured && (
                   <>
-                    <label className="flex items-center gap-1.5 text-xs text-gray-500 cursor-pointer select-none">
+                    <label className="flex cursor-pointer select-none items-center gap-1.5 text-sm text-gray-600">
                       <input
                         type="checkbox"
                         checked={row.isActive}
@@ -260,7 +260,7 @@ export default function AiSettingsForm({ initial }: Props) {
                       />
                       Active
                     </label>
-                    <label className="flex items-center gap-1.5 text-xs text-gray-500 cursor-pointer select-none">
+                    <label className="flex cursor-pointer select-none items-center gap-1.5 text-sm text-gray-600">
                       <input
                         type="checkbox"
                         checked={row.isPrimary}
@@ -275,7 +275,7 @@ export default function AiSettingsForm({ initial }: Props) {
             </div>
 
             {/* ── Fields ── */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+            <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-2">
               {/* API Key */}
               <div>
                 <label className="text-xs font-semibold text-gray-500 block mb-1">API Key</label>

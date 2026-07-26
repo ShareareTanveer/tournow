@@ -99,7 +99,7 @@ export default function PerkForm({ perk }: Props) {
   }
 
   return (
-    <div className="max-w-3xl space-y-6">
+    <div className="w-full space-y-6">
       {/* Back */}
       <Link href="/admin/perks"
         className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-800 font-medium transition-colors">

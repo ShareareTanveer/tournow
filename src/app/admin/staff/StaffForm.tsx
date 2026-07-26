@@ -31,9 +31,9 @@ export default function StaffForm({ member }: { member?: any }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="admin-editor-form admin-form-narrow space-y-5">
+    <form onSubmit={handleSubmit} className="admin-editor-form space-y-5">
       <div className="admin-form-panel bg-white rounded-2xl p-6 border border-gray-200 space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1.5">Full Name *</label>
             <input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -50,7 +50,7 @@ export default function StaffForm({ member }: { member?: any }) {
           <textarea rows={4} value={form.bio} onChange={(e) => setForm({ ...form, bio: e.target.value })}
             className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-indigo-400 resize-none" />
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <label className="block text-xs font-semibold text-gray-500 mb-1.5">Email</label>
             <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}

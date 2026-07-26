@@ -19,7 +19,7 @@ export default async function AiSettingsPage() {
       title="AI Provider Config"
       subtitle="Configure AI providers for content and SEO generation"
     >
-      <div className="max-w-2xl">
+      <div className="w-full">
         <AiSettingsForm initial={masked as Parameters<typeof AiSettingsForm>[0]['initial']} />
       </div>
     </AdminShell>

@@ -2677,3 +2677,163 @@ body {
     border-radius: 0.9rem !important;
   }
 }
+
+/* Admin typography and layout polish */
+.admin-ui {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+
+.admin-content-inner,
+.admin-editor-form,
+.admin-form-narrow {
+  width: 100%;
+  max-width: none;
+}
+
+.admin-ui .font-black {
+  font-weight: 700 !important;
+}
+
+.admin-ui .font-bold {
+  font-weight: 650 !important;
+}
+
+.admin-ui .text-xs {
+  font-size: 0.8125rem !important;
+  line-height: 1.45 !important;
+}
+
+.admin-topbar h1 {
+  font-size: clamp(1.35rem, 1.7vw, 1.65rem);
+  font-weight: 680;
+  letter-spacing: -0.025em;
+}
+
+.admin-topbar p {
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.admin-sidebar {
+  width: 272px;
+}
+
+.admin-sidebar-link {
+  min-height: 42px;
+  color: #b5c3c1;
+  font-size: 0.875rem;
+  font-weight: 550;
+  letter-spacing: 0;
+}
+
+.admin-sidebar-group {
+  min-height: 38px;
+  color: #879895;
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.055em;
+  text-transform: none;
+}
+
+.admin-sidebar-link.is-active {
+  font-weight: 650;
+}
+
+.admin-form-panel {
+  padding: clamp(1.15rem, 2vw, 1.5rem) !important;
+}
+
+.admin-ui form label,
+.admin-creatable-select > label {
+  color: #475569 !important;
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+.admin-ui input:not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]),
+.admin-ui textarea,
+.admin-ui select {
+  min-height: 44px;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.admin-ui textarea {
+  min-height: auto;
+}
+
+.admin-ui input::placeholder,
+.admin-ui textarea::placeholder {
+  color: #94a3b8;
+  opacity: 1;
+}
+
+.admin-form-tabs button,
+.admin-ui form > .flex.gap-1.bg-gray-100 button {
+  min-height: 42px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.admin-data-table {
+  width: 100%;
+  border-radius: 1rem !important;
+}
+
+.admin-data-table > div:first-child {
+  padding: 1rem 1.15rem !important;
+}
+
+.admin-data-table input,
+.admin-data-table select {
+  min-height: 40px !important;
+  font-size: 0.875rem !important;
+}
+
+.admin-data-table th {
+  padding: 0.8rem 1.15rem !important;
+  color: #526175 !important;
+  font-size: 0.75rem !important;
+  font-weight: 650 !important;
+  letter-spacing: 0.025em !important;
+  text-transform: none !important;
+}
+
+.admin-data-table tbody td {
+  padding: 0.8rem 1.15rem !important;
+  color: #334155;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.admin-data-table tbody tr:hover {
+  background: #f7faf9 !important;
+}
+
+.admin-item-title {
+  max-width: 24rem;
+  font-size: 0.9rem;
+  font-weight: 620;
+  line-height: 1.35;
+}
+
+.admin-item-meta {
+  max-width: 24rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.admin-ui button,
+.admin-ui a {
+  letter-spacing: 0;
+}
+
+@media (min-width: 1280px) {
+  .admin-content {
+    padding: 1.75rem 2rem;
+  }
+}

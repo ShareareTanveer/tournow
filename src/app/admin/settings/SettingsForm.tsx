@@ -97,7 +97,7 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
   ] as const
 
   return (
-    <form onSubmit={handleSubmit} className="admin-editor-form admin-form-narrow space-y-5">
+    <form onSubmit={handleSubmit} className="admin-editor-form space-y-5">
       {/* Tabs */}
       <div className="admin-form-tabs flex gap-1 bg-gray-100 rounded-xl p-1 flex-wrap">
         {TABS.map((t) => (
@@ -189,7 +189,7 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
             <p className="text-xs text-gray-400">Changes apply site-wide on next page load. Colors update in the browser immediately after saving.</p>
             <div>
               <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Brand (Primary)</p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {tc('brand', 'Brand Color', '#0a83f5')}
                 {tc('brandDark', 'Brand Dark', '#d97706')}
                 {tc('brandLight', 'Brand Light BG', '#fffbeb')}
@@ -198,14 +198,14 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
             </div>
             <div>
               <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Accent (Teal)</p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {tc('teal', 'Teal', '#0d9488')}
                 {tc('tealDark', 'Teal Dark', '#0f766e')}
               </div>
             </div>
             <div>
               <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Dark Tones</p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {tc('dark', 'Dark BG', '#0f172a')}
                 {tc('darkMuted', 'Dark Muted', '#1e293b')}
                 {tc('navy', 'Navy', '#1e3a5f')}
@@ -213,7 +213,7 @@ export default function SettingsForm({ settings }: { settings: Record<string, st
             </div>
             <div>
               <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Base</p>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {tc('background', 'Page Background', '#ffffff')}
                 {tc('foreground', 'Body Text', '#1e293b')}
               </div>

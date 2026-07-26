@@ -74,8 +74,6 @@ const TOUR_REGIONS = [
 const MORE_LINKS = [
   { label: "News", href: "/news" },
   { label: "Blog", href: "/blogs" },
-  { label: "Privilege Card", href: "/privilege-card" },
-  { label: "Wishful Wardrobe", href: "/wishful-wardrobe" },
   { label: "About Us", href: "/about" },
 ];
 

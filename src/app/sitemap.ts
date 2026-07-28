@@ -15,6 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${BASE}/packages-from-sri-lanka/family`,  lastModified: now, changeFrequency: 'daily', priority: 0.9 },
     { url: `${BASE}/tours-from-sri-lanka`,    lastModified: now, changeFrequency: 'daily',   priority: 0.9 },
     { url: `${BASE}/destinations`,            lastModified: now, changeFrequency: 'weekly',  priority: 0.8 },
+    { url: `${BASE}/offers`,                  lastModified: now, changeFrequency: 'daily',   priority: 0.8 },
     { url: `${BASE}/visas`,                   lastModified: now, changeFrequency: 'weekly',  priority: 0.7 },
     { url: `${BASE}/blogs`,                   lastModified: now, changeFrequency: 'daily',   priority: 0.7 },
     { url: `${BASE}/news`,                    lastModified: now, changeFrequency: 'daily',   priority: 0.6 },

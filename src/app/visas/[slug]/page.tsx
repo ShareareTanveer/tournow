@@ -1,9 +1,9 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import Script from 'next/script'
 import InquiryForm from '@/components/forms/InquiryForm'
 import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
+import VisaFee from '@/components/visas/VisaFee'
 import { buildMetadata, jsonLd, BASE_URL } from '@/lib/seo'
 
 type Props = { params: Promise<{ slug: string }> }
@@ -105,7 +105,7 @@ export default async function VisaDetailPage({ params }: Props) {
               <h3 className="font-bold text-gray-800 mb-4">Visa Details</h3>
               <div className="space-y-3 text-sm">
                 <div className="flex justify-between"><span className="text-gray-500">Processing Time</span><span className="font-medium">{visa.processingTime ?? 'Contact us'}</span></div>
-                <div className="flex justify-between"><span className="text-gray-500">Visa Fee</span><span className="font-medium">{visa.fee ?? 'Contact us'}</span></div>
+                <div className="flex justify-between"><span className="text-gray-500">Visa Fee</span><span className="font-medium"><VisaFee fee={visa.fee} /></span></div>
                 <div className="flex justify-between"><span className="text-gray-500">Type</span><span className="font-medium">{visa.isVisaFree ? 'Visa Free' : 'Visa Required'}</span></div>
               </div>
             </div>

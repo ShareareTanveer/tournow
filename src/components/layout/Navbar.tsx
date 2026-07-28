@@ -72,6 +72,7 @@ const TOUR_REGIONS = [
 ];
 
 const MORE_LINKS = [
+  { label: "Reviews", href: "/reviews" },
   { label: "News", href: "/news" },
   { label: "Blog", href: "/blogs" },
   { label: "About Us", href: "/about" },
@@ -523,8 +524,8 @@ export default function Navbar() {
             {/* Simple links */}
             {(
               [
-                ["Reviews", "/reviews"],
-                ["Visas", "/visas"],
+                ["Offers", "/offers"],
+                ["Visa & Tickets", "/visas"],
               ] as [string, string][]
             ).map(([label, href]) => (
               <NavLink
@@ -808,7 +809,8 @@ export default function Navbar() {
             {(
               [
                 ["Reviews", "/reviews"],
-                ["Visas", "/visas"],
+                ["Offers", "/offers"],
+                ["Visa & Tickets", "/visas"],
                 ["News", "/news"],
                 ["Blog", "/blogs"],
                 ["Privilege Card", "/privilege-card"],

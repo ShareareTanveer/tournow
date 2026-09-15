@@ -1,9 +1,19 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
 import PageHero, { getPageHeroImage } from '@/components/ui/PageHero'
+import VisaFee from '@/components/visas/VisaFee'
 import { FiCheckCircle, FiFileText, FiClock, FiDollarSign } from 'react-icons/fi'
 
 const BASE = process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.metrovoyage.com'
+
+type VisaListItem = {
+  slug: string
+  country: string
+  isVisaFree: boolean
+  processingTime?: string | null
+  fee?: string | null
+}
+
 export const metadata: Metadata = {
   title: 'Visa Services',
   description: 'Free visa consultation for Dubai, Malaysia, Schengen, Thailand and more. We handle your visa application end-to-end.',
@@ -12,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: { title: 'Visa Services | Metro Voyage', description: 'Free visa consultation. We handle Dubai, Malaysia, Schengen, Thailand & more.', url: `${BASE}/visas`, siteName: 'Metro Voyage', type: 'website' },
 }
 
-async function getVisas() {
+async function getVisas(): Promise<VisaListItem[]> {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/visas`, { next: { revalidate: 3600 } })
     if (!res.ok) return []
@@ -20,7 +30,7 @@ async function getVisas() {
   } catch { return [] }
 }
 
-const FALLBACK_VISAS = [
+const FALLBACK_VISAS: VisaListItem[] = [
   { slug: 'maldives', country: 'Maldives', isVisaFree: true, processingTime: 'On arrival', fee: 'Free' },
   { slug: 'thailand', country: 'Thailand', isVisaFree: true, processingTime: 'On arrival', fee: 'Free' },
   { slug: 'malaysia', country: 'Malaysia', isVisaFree: true, processingTime: 'On arrival', fee: 'Free' },
@@ -50,7 +60,7 @@ export default async function VisasPage() {
             <FiCheckCircle size={22} className="text-[#3f8f64]" /> Visa-Free Destinations
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {displayVisas.filter((v: any) => v.isVisaFree).map((visa: any) => (
+            {displayVisas.filter((v) => v.isVisaFree).map((visa) => (
               <Link key={visa.slug} href={`/visas/${visa.slug}`} className="bg-white rounded-lg p-5 shadow-sm border border-[#e5e8e4] hover:shadow-md transition-shadow card-hover">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-bold text-[#101817]">{visa.country}</h3>
@@ -58,7 +68,7 @@ export default async function VisasPage() {
                 </div>
                 <div className="space-y-2 text-sm text-[#52615d]">
                   <p className="flex items-center gap-1.5"><FiClock size={12} /> {visa.processingTime}</p>
-                  <p className="flex items-center gap-1.5"><FiDollarSign size={12} /> {visa.fee}</p>
+                  <p className="flex items-center gap-1.5"><FiDollarSign size={12} /> <VisaFee fee={visa.fee} /></p>
                 </div>
               </Link>
             ))}
@@ -70,7 +80,7 @@ export default async function VisasPage() {
             <FiFileText size={22} className="text-[#5f4b8b]" /> Visa Required - We Assist
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {displayVisas.filter((v: any) => !v.isVisaFree).map((visa: any) => (
+            {displayVisas.filter((v) => !v.isVisaFree).map((visa) => (
               <Link key={visa.slug} href={`/visas/${visa.slug}`} className="bg-white rounded-lg p-5 shadow-sm border border-[#e5e8e4] hover:shadow-md transition-shadow card-hover">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-bold text-[#101817]">{visa.country}</h3>
@@ -78,7 +88,7 @@ export default async function VisasPage() {
                 </div>
                 <div className="space-y-2 text-sm text-[#52615d]">
                   <p className="flex items-center gap-1.5"><FiClock size={12} /> {visa.processingTime}</p>
-                  <p className="flex items-center gap-1.5"><FiDollarSign size={12} /> {visa.fee}</p>
+                  <p className="flex items-center gap-1.5"><FiDollarSign size={12} /> <VisaFee fee={visa.fee} /></p>
                 </div>
               </Link>
             ))}

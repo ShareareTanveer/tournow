@@ -22,19 +22,19 @@ interface Props {
 }
 
 const CARD_ACCENTS = [
-  { from: '#b85c38', to: '#c99a45' },
-  { from: '#007f89', to: '#3f8f64' },
-  { from: '#2f6f9f', to: '#007f89' },
-  { from: '#5f4b8b', to: '#2f6f9f' },
-  { from: '#3f8f64', to: '#c99a45' },
+  { from: '#0395d5', to: '#39ac44' },
+  { from: '#0395d5', to: '#39ac44' },
+  { from: '#2f6f9f', to: '#0395d5' },
+  { from: '#0395d5', to: '#2f6f9f' },
+  { from: '#39ac44', to: '#39ac44' },
 ]
 
 const DEFAULT_PERKS: Perk[] = [
-  { id: '1', title: 'FREE Visa Consultation',        description: 'Expert visa guidance at zero cost — travel smarter with less stress.',             imageUrl: TRAVEL_IMAGES.editorial,  iconName: 'FiShield',    iconColor: '#b85c38', bgColor: '#fdf2f8' },
-  { id: '2', title: 'Big Families, Bigger Perks',    description: 'Families of 5+ enjoy complimentary tours at top destinations worldwide.',          imageUrl: TRAVEL_IMAGES.family,   iconName: 'FiUsers',     iconColor: '#007f89', bgColor: '#e6fafb' },
-  { id: '3', title: 'Corporate Travel to Your Door', description: 'Tailored travel consultations for businesses, delivered right at your office.',    imageUrl: TRAVEL_IMAGES.corporate,   iconName: 'FiBriefcase', iconColor: '#3f8f64', bgColor: '#f0fdf4' },
-  { id: '4', title: 'Children Stay Free',            description: 'Kids under 12 stay free on select packages when travelling with 2 adults.',        imageUrl: TRAVEL_IMAGES.holiday,   iconName: 'FiHeart',     iconColor: '#b85c38', bgColor: '#fef2f2' },
-  { id: '5', title: 'Best Price Guarantee',          description: "Find a lower price elsewhere and we'll match it — no hidden fees, ever.",         imageUrl: TRAVEL_IMAGES.special,      iconName: 'FiAward',     iconColor: '#007f89', bgColor: '#f0fdf9' },
+  { id: '1', title: 'FREE Visa Consultation',        description: 'Expert visa guidance at zero cost — travel smarter with less stress.',             imageUrl: TRAVEL_IMAGES.editorial,  iconName: 'FiShield',    iconColor: '#0395d5', bgColor: '#fdf2f8' },
+  { id: '2', title: 'Big Families, Bigger Perks',    description: 'Families of 5+ enjoy complimentary tours at top destinations worldwide.',          imageUrl: TRAVEL_IMAGES.family,   iconName: 'FiUsers',     iconColor: '#0395d5', bgColor: '#e6fafb' },
+  { id: '3', title: 'Corporate Travel to Your Door', description: 'Tailored travel consultations for businesses, delivered right at your office.',    imageUrl: TRAVEL_IMAGES.corporate,   iconName: 'FiBriefcase', iconColor: '#39ac44', bgColor: '#f0fdf4' },
+  { id: '4', title: 'Children Stay Free',            description: 'Kids under 12 stay free on select packages when travelling with 2 adults.',        imageUrl: TRAVEL_IMAGES.holiday,   iconName: 'FiHeart',     iconColor: '#0395d5', bgColor: '#fef2f2' },
+  { id: '5', title: 'Best Price Guarantee',          description: "Find a lower price elsewhere and we'll match it — no hidden fees, ever.",         imageUrl: TRAVEL_IMAGES.special,      iconName: 'FiAward',     iconColor: '#0395d5', bgColor: '#f0fdf9' },
 ]
 
 export default function PerksSection({ perks }: Props) {
@@ -49,7 +49,7 @@ export default function PerksSection({ perks }: Props) {
 
         <div className="flex items-end justify-between mb-12 gap-4">
           <div>
-            <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.18em] text-[#f0d492]">
+            <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.18em] text-[#8ee596]">
               <FiZap size={10} /> Exclusive Offers
             </div>
             <h2 className="text-3xl sm:text-5xl font-black text-white">
@@ -64,7 +64,7 @@ export default function PerksSection({ perks }: Props) {
               onClick={() => setActive(i => Math.max(0, i - 1))}
               disabled={active === 0}
               aria-label="Previous perks"
-              className="w-10 h-10 rounded-lg border border-white/15 flex items-center justify-center text-white/70 hover:border-[#f0d492] hover:text-[#f0d492] disabled:opacity-30 transition-all"
+              className="w-10 h-10 rounded-lg border border-white/15 flex items-center justify-center text-white/70 hover:border-[#8ee596] hover:text-[#8ee596] disabled:opacity-30 transition-all"
             >
               <FiArrowLeft size={16} />
             </button>
@@ -72,7 +72,7 @@ export default function PerksSection({ perks }: Props) {
               onClick={() => setActive(i => Math.min(maxIndex, i + 1))}
               disabled={active >= maxIndex}
               aria-label="Next perks"
-              className="w-10 h-10 rounded-lg border border-white/15 flex items-center justify-center text-white/70 hover:border-[#f0d492] hover:text-[#f0d492] disabled:opacity-30 transition-all"
+              className="w-10 h-10 rounded-lg border border-white/15 flex items-center justify-center text-white/70 hover:border-[#8ee596] hover:text-[#8ee596] disabled:opacity-30 transition-all"
             >
               <FiArrowRight size={16} />
             </button>
@@ -155,13 +155,13 @@ export default function PerksSection({ perks }: Props) {
                 className="h-2 rounded-full transition-all duration-300"
                 style={{
                   width: i === active ? '28px' : '8px',
-                  background: i === active ? '#f0d492' : 'rgba(255,255,255,0.24)',
+                  background: i === active ? '#8ee596' : 'rgba(255,255,255,0.24)',
                 }}
               />
             ))}
           </div>
           <Link href="/perks"
-            className="flex items-center gap-1.5 text-sm font-bold text-[#f0d492] hover:underline">
+            className="flex items-center gap-1.5 text-sm font-bold text-[#8ee596] hover:underline">
             All perks <FiArrowRight size={13} />
           </Link>
         </div>

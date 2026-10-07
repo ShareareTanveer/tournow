@@ -24,8 +24,8 @@ export default function PackageInquirySection({
         <button
           onClick={() => setModalOpen(true)}
           className="w-full py-3 rounded-lg font-black text-sm transition-all duration-200 
-             border-[#007f89] text-[#007f89] border
-             hover:bg-[#edf8f6] hover:shadow-md 
+             border-[#0395d5] text-[#0395d5] border
+             hover:bg-[#eaf7fc] hover:shadow-md
              active:scale-[0.98]"
         >
           Send Inquiry

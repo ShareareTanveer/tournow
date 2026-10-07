@@ -207,7 +207,7 @@ export default async function PackageDetailPage({ params }: Props) {
               <div className="p-5 border-b border-[#edf0ed]">
                 <p className="text-xs text-[#8a9691] mb-0.5">From</p>
                 <div className="flex items-end gap-2 flex-wrap">
-                  <span className="text-3xl font-black leading-none text-[#007f89]">
+                  <span className="text-3xl font-black leading-none text-[#0395d5]">
                     LKR {pkg.price?.toLocaleString()}
                   </span>
                   {pkg.oldPrice && (
@@ -287,7 +287,7 @@ export default async function PackageDetailPage({ params }: Props) {
               <p className="text-xs text-[#52615d] mb-3">Travel experts available 8 AM - 10 PM daily.</p>
               <div className="space-y-2">
                 <a href="tel:+94704545455"
-                  className="flex items-center justify-center gap-2 text-white text-sm font-black py-2.5 rounded-lg transition-all hover:bg-[#063c43] bg-[#007f89]">
+                  className="flex items-center justify-center gap-2 text-white text-sm font-black py-2.5 rounded-lg transition-all hover:bg-[#0878ab] bg-[#0395d5]">
                   <FiPhone size={14} /> +94 70 454 5455
                 </a>
                 <a href="https://wa.me/94704545455" target="_blank" rel="noopener noreferrer"

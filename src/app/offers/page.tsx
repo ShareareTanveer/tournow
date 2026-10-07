@@ -75,12 +75,12 @@ export default async function OffersPage() {
           <section>
             <div className="flex items-end justify-between gap-4 mb-6">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007f89] mb-2">
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#0395d5] mb-2">
                   Packages
                 </p>
                 <h2 className="text-2xl font-black text-[#101817]">Package Offers</h2>
               </div>
-              <Link href="/packages-from-sri-lanka" className="text-sm font-bold text-[#007f89] hover:underline">
+              <Link href="/packages-from-sri-lanka" className="text-sm font-bold text-[#0395d5] hover:underline">
                 View all packages
               </Link>
             </div>
@@ -96,12 +96,12 @@ export default async function OffersPage() {
           <section className={packages.length > 0 ? 'mt-14' : ''}>
             <div className="flex items-end justify-between gap-4 mb-6">
               <div>
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#007f89] mb-2">
+                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#0395d5] mb-2">
                   Tours
                 </p>
                 <h2 className="text-2xl font-black text-[#101817]">Tour Offers</h2>
               </div>
-              <Link href="/tours-from-sri-lanka/south-east-asia" className="text-sm font-bold text-[#007f89] hover:underline">
+              <Link href="/tours-from-sri-lanka/south-east-asia" className="text-sm font-bold text-[#0395d5] hover:underline">
                 View all tours
               </Link>
             </div>

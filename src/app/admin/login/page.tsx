@@ -63,7 +63,7 @@ export default function AdminLoginPage() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="admin@metrovoyage.com"
-                className="w-full bg-white/[0.06] border border-white/[0.10] text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#007f89] focus:ring-2 focus:ring-[#007f89]/20 transition-all placeholder-gray-600"
+                className="w-full bg-white/[0.06] border border-white/[0.10] text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0395d5] focus:ring-2 focus:ring-[#0395d5]/20 transition-all placeholder-gray-600"
               />
             </div>
 
@@ -75,7 +75,7 @@ export default function AdminLoginPage() {
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 placeholder="••••••••"
-                className="w-full bg-white/[0.06] border border-white/[0.10] text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#007f89] focus:ring-2 focus:ring-[#007f89]/20 transition-all placeholder-gray-600"
+                className="w-full bg-white/[0.06] border border-white/[0.10] text-white rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#0395d5] focus:ring-2 focus:ring-[#0395d5]/20 transition-all placeholder-gray-600"
               />
             </div>
 
@@ -88,7 +88,7 @@ export default function AdminLoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#007f89] hover:bg-[#063c43] disabled:opacity-60 text-white font-semibold py-3 rounded-xl transition-colors mt-2"
+              className="w-full bg-[#0395d5] hover:bg-[#0878ab] disabled:opacity-60 text-white font-semibold py-3 rounded-xl transition-colors mt-2"
             >
               {loading ? 'Signing in…' : 'Sign In'}
             </button>

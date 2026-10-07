@@ -29,11 +29,11 @@ export default function NewsletterSection() {
     <section className="relative overflow-hidden bg-[#fbfaf7] py-20 sm:py-24">
       <div className="max-w-5xl mx-auto px-4">
         <div className="overflow-hidden rounded-lg border border-[#e5e8e4] bg-white shadow-[0_22px_70px_rgba(16,24,23,0.08)]">
-          <div className="h-1.5 w-full" style={{ background: 'linear-gradient(90deg, #007f89, #c99a45, #3f8f64)' }} />
+          <div className="h-1.5 w-full" style={{ background: 'linear-gradient(90deg, #0395d5, #39ac44, #39ac44)' }} />
 
           <div className="p-8 text-center md:p-14">
             <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-lg text-white"
-              style={{ background: 'linear-gradient(135deg, #007f89, #3f8f64)' }}>
+              style={{ background: 'linear-gradient(135deg, #0395d5, #39ac44)' }}>
               <MdFlightTakeoff size={28} />
             </div>
 
@@ -50,10 +50,10 @@ export default function NewsletterSection() {
             </p>
 
             {success ? (
-              <div className="max-w-md mx-auto py-6 px-8 rounded-lg border border-[#d8eee9] flex items-center justify-center gap-3 bg-[#edf8f6]">
+              <div className="max-w-md mx-auto py-6 px-8 rounded-lg border border-[#d5eef8] flex items-center justify-center gap-3 bg-[#eaf7fc]">
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center"
-                  style={{ background: 'rgba(0,127,137,0.15)' }}>
-                  <FiCheckCircle size={20} style={{ color: '#007f89' }} />
+                  style={{ background: 'rgba(3,149,213,0.15)' }}>
+                  <FiCheckCircle size={20} style={{ color: '#0395d5' }} />
                 </div>
                 <div className="text-left">
                   <p className="text-[#101817] font-bold text-sm">You&apos;re in!</p>
@@ -72,7 +72,7 @@ export default function NewsletterSection() {
                       onChange={e => setForm({ ...form, email: e.target.value })}
                       placeholder="your@email.com"
                       className="w-full pl-10 pr-4 py-3.5 rounded-lg text-sm text-[#101817] placeholder-[#9ca7a2] outline-none transition-all bg-[#fbfaf7] border border-[#d8ded9]"
-                      onFocus={e => { e.currentTarget.style.borderColor = 'rgba(0,127,137,0.6)'; e.currentTarget.style.background = '#fff' }}
+                      onFocus={e => { e.currentTarget.style.borderColor = 'rgba(3,149,213,0.6)'; e.currentTarget.style.background = '#fff' }}
                       onBlur={e => { e.currentTarget.style.borderColor = '#d8ded9'; e.currentTarget.style.background = '#fbfaf7' }}
                     />
                   </div>
@@ -85,7 +85,7 @@ export default function NewsletterSection() {
                       onChange={e => setForm({ ...form, whatsapp: e.target.value })}
                       placeholder="WhatsApp (optional)"
                       className="w-full pl-10 pr-4 py-3.5 rounded-lg text-sm text-[#101817] placeholder-[#9ca7a2] outline-none transition-all bg-[#fbfaf7] border border-[#d8ded9]"
-                      onFocus={e => { e.currentTarget.style.borderColor = 'rgba(0,127,137,0.6)'; e.currentTarget.style.background = '#fff' }}
+                      onFocus={e => { e.currentTarget.style.borderColor = 'rgba(3,149,213,0.6)'; e.currentTarget.style.background = '#fff' }}
                       onBlur={e => { e.currentTarget.style.borderColor = '#d8ded9'; e.currentTarget.style.background = '#fbfaf7' }}
                     />
                   </div>
@@ -96,8 +96,8 @@ export default function NewsletterSection() {
                   disabled={loading}
                   className="w-full sm:w-auto mx-auto flex items-center justify-center gap-2.5 text-white font-black px-8 py-3.5 rounded-lg transition-all hover:-translate-y-0.5 disabled:opacity-60 text-sm"
                   style={{
-                    background: 'linear-gradient(135deg, #007f89, #3f8f64)',
-                    boxShadow: '0 12px 30px rgba(0,127,137,0.24)',
+                    background: 'linear-gradient(135deg, #0395d5, #39ac44)',
+                    boxShadow: '0 12px 30px rgba(3,149,213,0.24)',
                   }}
                 >
                   {loading ? "Subscribing..." : (<>Get Deals Now <FiSend size={14} /></>)}

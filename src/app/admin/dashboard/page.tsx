@@ -173,7 +173,7 @@ function PanelHeader({
           <p className="mt-0.5 truncate text-xs text-slate-500">{subtitle}</p>
         </div>
       </div>
-      <Link href={href} className="shrink-0 text-xs font-semibold text-[#007f89] hover:text-[#063c43]">
+      <Link href={href} className="shrink-0 text-xs font-semibold text-[#0395d5] hover:text-[#0878ab]">
         View all
       </Link>
     </div>
@@ -289,16 +289,16 @@ export default async function DashboardPage() {
                 </div>
               </div>
               <div className="mt-5 h-2 overflow-hidden rounded-full bg-white/10">
-                <div className="h-full rounded-full bg-[#f0d492]" style={{ width: `${conversionRate}%` }} />
+                <div className="h-full rounded-full bg-[#8ee596]" style={{ width: `${conversionRate}%` }} />
               </div>
               <div className="mt-5 grid grid-cols-2 gap-3">
                 <Link href="/admin/bookings" className="rounded-2xl border border-white/10 bg-white/[0.06] p-4 transition hover:bg-white/[0.1]">
-                  <FiCheckCircle size={16} className="text-[#f0d492]" />
+                  <FiCheckCircle size={16} className="text-[#8ee596]" />
                   <p className="mt-3 text-xl font-semibold">{stats?.confirmedBookings ?? 0}</p>
                   <p className="text-xs text-white/50">Confirmed</p>
                 </Link>
                 <Link href="/admin/bookings" className="rounded-2xl border border-white/10 bg-white/[0.06] p-4 transition hover:bg-white/[0.1]">
-                  <FiBookOpen size={16} className="text-[#f0d492]" />
+                  <FiBookOpen size={16} className="text-[#8ee596]" />
                   <p className="mt-3 text-xl font-semibold">{stats?.totalBookings ?? 0}</p>
                   <p className="text-xs text-white/50">Total requests</p>
                 </Link>
@@ -381,7 +381,7 @@ export default async function DashboardPage() {
                 stats.recentInquiries.map((inquiry: any) => (
                   <div key={inquiry.id} className="flex items-center justify-between gap-4 px-5 py-4 transition hover:bg-slate-50">
                     <div className="flex min-w-0 items-center gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#edf8f6] text-sm font-semibold text-[#007f89]">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#eaf7fc] text-sm font-semibold text-[#0395d5]">
                         {initials(inquiry.name)}
                       </div>
                       <div className="min-w-0">

@@ -76,7 +76,7 @@ export default async function AboutPage() {
           ))}
         </div>
 
-        <div className="bg-[#edf8f6] rounded-lg p-6 border border-[#d8eee9]">
+        <div className="bg-[#eaf7fc] rounded-lg p-6 border border-[#d5eef8]">
           <h3 className="font-bold text-[#101817] mb-4">Our Credentials</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm">
             <div><p className="font-bold text-[var(--brand)] text-lg">SLTDA</p><p className="text-[#52615d] text-xs">Licensed</p></div>
@@ -108,7 +108,7 @@ export default async function AboutPage() {
         </div>
 
         <div className="text-center">
-          <Link href="/consultation" className="inline-block bg-[#007f89] text-white font-black px-8 py-4 rounded-lg hover:bg-[#063c43] transition-colors">
+          <Link href="/consultation" className="inline-block bg-[#0395d5] text-white font-black px-8 py-4 rounded-lg hover:bg-[#0878ab] transition-colors">
             Book a Free Consultation
           </Link>
         </div>

@@ -30,7 +30,7 @@ export default function Footer() {
       <div className="border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 py-5 text-xs text-white/[0.52] sm:px-6">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <span className="font-semibold text-[#f0d492]">Metro Voyage travel desk is open daily, 9 AM - 10 PM.</span>
+            <span className="font-semibold text-[#8ee596]">Metro Voyage travel desk is open daily, 9 AM - 10 PM.</span>
             <span>SLTDA Licensed · CAA Certified · Reg: PV 00250114</span>
           </div>
         </div>
@@ -86,7 +86,7 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="hover:text-[#f0d492] transition-colors"
+                    className="hover:text-[#8ee596] transition-colors"
                   >
                     {label}
                   </Link>
@@ -113,7 +113,7 @@ export default function Footer() {
                 <li key={href}>
                   <Link
                     href={href}
-                    className="hover:text-[#f0d492] transition-colors"
+                    className="hover:text-[#8ee596] transition-colors"
                   >
                     {label}
                   </Link>
@@ -130,10 +130,10 @@ export default function Footer() {
               <li>
                 <a
                   href="tel:+94704545455"
-                  className="flex items-start gap-3 hover:text-[#f0d492] transition-colors group"
+                  className="flex items-start gap-3 hover:text-[#8ee596] transition-colors group"
                 >
                   <div className="w-8 h-8 rounded-lg bg-white/[0.08] flex items-center justify-center shrink-0 group-hover:bg-white/[0.14] transition-colors">
-                    <FiPhone className="text-[#f0d492] text-sm" />
+                    <FiPhone className="text-[#8ee596] text-sm" />
                   </div>
                   <span className="leading-relaxed pt-1">+94 70 454 5455</span>
                 </a>
@@ -141,10 +141,10 @@ export default function Footer() {
               <li>
                 <a
                   href="mailto:contact@metrovoyage.com"
-                  className="flex items-start gap-3 hover:text-[#f0d492] transition-colors group"
+                  className="flex items-start gap-3 hover:text-[#8ee596] transition-colors group"
                 >
                   <div className="w-8 h-8 rounded-lg bg-white/[0.08] flex items-center justify-center shrink-0 group-hover:bg-white/[0.14] transition-colors">
-                    <FiMail className="text-[#f0d492] text-sm" />
+                    <FiMail className="text-[#8ee596] text-sm" />
                   </div>
                   <span className="leading-relaxed pt-1">
                     contact@metrovoyage.com
@@ -153,7 +153,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-white/[0.08] flex items-center justify-center shrink-0">
-                  <FiMapPin className="text-[#f0d492] text-sm" />
+                  <FiMapPin className="text-[#8ee596] text-sm" />
                 </div>
                 <span className="text-white/[0.56] leading-relaxed pt-1">
                   Level 2, 9/1, Deal Place A,
@@ -163,7 +163,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-white/[0.08] flex items-center justify-center shrink-0">
-                  <FiClock className="text-[#f0d492] text-sm" />
+                  <FiClock className="text-[#8ee596] text-sm" />
                 </div>
                 <span className="text-white/[0.56] leading-relaxed pt-1">
                   9 AM - 10 PM, Daily
@@ -201,7 +201,7 @@ export default function Footer() {
               <Link
                 key={href}
                 href={href}
-                className="hover:text-[#f0d492] transition-colors"
+                className="hover:text-[#8ee596] transition-colors"
               >
                 {label}
               </Link>

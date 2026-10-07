@@ -36,11 +36,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const COST_COLOR: Record<string, string> = {
-  Budget:  'bg-[#edf8f6] text-[#3f8f64] border-[#d8eee9]',
-  Economy: 'bg-[#edf8f6] text-[#007f89] border-[#d8eee9]',
+  Budget:  'bg-[#eaf7fc] text-[#39ac44] border-[#d5eef8]',
+  Economy: 'bg-[#eaf7fc] text-[#0395d5] border-[#d5eef8]',
   Comfort: 'bg-[#eef4f5] text-[#2f6f9f] border-[#d9e7ea]',
-  Premium: 'bg-[#f0eef7] text-[#5f4b8b] border-[#e2ddf0]',
-  Luxury:  'bg-[#f9f1df] text-[#b85c38] border-[#eeddbb]',
+  Premium: 'bg-[#f0eef7] text-[#0395d5] border-[#e2ddf0]',
+  Luxury:  'bg-[#f9f1df] text-[#0395d5] border-[#eeddbb]',
 }
 
 export default async function DestinationDetailPage({ params }: Props) {
@@ -162,7 +162,7 @@ export default async function DestinationDetailPage({ params }: Props) {
             <div className="ml-auto px-6 py-3 shrink-0">
               <Link
                 href="/consultation"
-                className="flex items-center gap-2 bg-[#007f89] text-white text-sm font-black px-5 py-2.5 rounded-lg hover:bg-[#063c43] transition-colors whitespace-nowrap shadow-sm"
+                className="flex items-center gap-2 bg-[#0395d5] text-white text-sm font-black px-5 py-2.5 rounded-lg hover:bg-[#0878ab] transition-colors whitespace-nowrap shadow-sm"
               >
                 <FiPhone size={13} /> Book Free Consultation
               </Link>
@@ -210,7 +210,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                   <div className="p-5">
                     <p className="font-bold text-[#101817] text-base mb-1">Plan a trip to {dest.name}</p>
                     <p className="text-sm text-[#52615d] mb-4 leading-relaxed">Get a personalised package from our travel experts, tailored to your budget and dates.</p>
-                    <Link href="/consultation" className="block text-center bg-[#007f89] text-white text-sm font-black py-3 rounded-lg hover:bg-[#063c43] transition-colors shadow-sm">
+                    <Link href="/consultation" className="block text-center bg-[#0395d5] text-white text-sm font-black py-3 rounded-lg hover:bg-[#0878ab] transition-colors shadow-sm">
                       Book Free Consultation
                     </Link>
                     <a href="tel:+94704545455" className="mt-2 flex items-center justify-center gap-2 text-sm text-[#52615d] hover:text-[#101817] transition-colors py-2">
@@ -220,11 +220,11 @@ export default async function DestinationDetailPage({ params }: Props) {
                 </div>
 
                 <div className="bg-[#f4f1ea] border border-[#e5ded1] rounded-lg p-5">
-                  <p className="text-xs font-bold text-[#b85c38] uppercase tracking-wide mb-3">Why Book With Us</p>
+                  <p className="text-xs font-bold text-[#0395d5] uppercase tracking-wide mb-3">Why Book With Us</p>
                   <ul className="space-y-2">
                     {['Best price guarantee', 'Free itinerary planning', 'Expert local knowledge', '24/7 travel support'].map(item => (
                       <li key={item} className="flex items-center gap-2 text-sm text-[#52615d]">
-                        <FiCheckCircle size={13} className="text-[#c99a45] shrink-0" /> {item}
+                        <FiCheckCircle size={13} className="text-[#39ac44] shrink-0" /> {item}
                       </li>
                     ))}
                   </ul>
@@ -242,7 +242,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                 <SectionHeading>Packages to {dest.name}</SectionHeading>
                 <p className="text-sm text-gray-500 mt-1">{dest.packages.length} handpicked packages to choose from</p>
               </div>
-              <Link href={`/packages?destination=${slug}`} className="hidden sm:flex items-center gap-1.5 text-sm font-bold text-[#007f89] hover:text-[#063c43] transition-colors">
+              <Link href={`/packages?destination=${slug}`} className="hidden sm:flex items-center gap-1.5 text-sm font-bold text-[#0395d5] hover:text-[#0878ab] transition-colors">
                 View all <FiArrowRight size={14} />
               </Link>
             </div>
@@ -287,7 +287,7 @@ export default async function DestinationDetailPage({ params }: Props) {
                 Let our experts craft the perfect itinerary for you. Free consultation, best prices, and unforgettable memories.
               </p>
               <div className="flex flex-wrap gap-3">
-                <Link href="/consultation" className="flex items-center gap-2 bg-[#007f89] text-white font-black px-7 py-3.5 rounded-lg hover:bg-[#063c43] transition-colors shadow-lg">
+                <Link href="/consultation" className="flex items-center gap-2 bg-[#0395d5] text-white font-black px-7 py-3.5 rounded-lg hover:bg-[#0878ab] transition-colors shadow-lg">
                   <FiPhone size={15} /> Book Free Consultation
                 </Link>
                 {hasPackages && (

@@ -58,7 +58,7 @@ export default function TourCard({
         </div>
 
         {region && (
-          <span className="absolute bottom-3 left-3 text-white text-[10px] font-black uppercase tracking-[0.14em] px-2.5 py-1 rounded-full bg-[#007f89]">
+          <span className="absolute bottom-3 left-3 text-white text-[10px] font-black uppercase tracking-[0.14em] px-2.5 py-1 rounded-full bg-[#0395d5]">
             {region}
           </span>
         )}
@@ -68,7 +68,7 @@ export default function TourCard({
         {countries ? (
           <div className="flex flex-wrap gap-1 mb-2">
             {countries.slice(0, 4).map((c) => (
-              <span key={c} className="text-[10px] font-bold text-[#007f89] bg-[#edf8f6] border border-[#d8eee9] px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+              <span key={c} className="text-[10px] font-bold text-[#0395d5] bg-[#eaf7fc] border border-[#d5eef8] px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
                 <FiMapPin size={8} /> {c}
               </span>
             ))}
@@ -80,7 +80,7 @@ export default function TourCard({
           </div>
         ) : primaryDestination && (
           <p className="text-xs text-[#52615d] mb-1.5 flex items-center gap-1">
-            <FiMapPin size={10} className="text-[#007f89]" />
+            <FiMapPin size={10} className="text-[#0395d5]" />
             {primaryDestination.name}, {primaryDestination.region}
           </p>
         )}
@@ -93,7 +93,7 @@ export default function TourCard({
           <ul className="space-y-0.5 mb-3">
             {highlights.slice(0, 2).map((h, i) => (
               <li key={i} className="text-[11px] text-[#52615d] flex items-start gap-1">
-                <span className="mt-0.5 shrink-0 text-[#3f8f64]">✓</span>
+                <span className="mt-0.5 shrink-0 text-[#39ac44]">✓</span>
                 <span className="line-clamp-1">{h}</span>
               </li>
             ))}
@@ -103,7 +103,7 @@ export default function TourCard({
         <div className="flex items-center justify-between pt-3 border-t border-[#edf0ed]">
           <div>
             <span className="text-[10px] text-[#8a9691] font-bold uppercase tracking-[0.14em]">From</span>
-            <p className="font-black text-base leading-tight text-[#007f89]">
+            <p className="font-black text-base leading-tight text-[#0395d5]">
               {format(price)}
             </p>
             {oldPrice && (
@@ -111,7 +111,7 @@ export default function TourCard({
             )}
             {paxType && <span className="text-[10px] text-[#8a9691]">{paxType}</span>}
           </div>
-          <span className="flex items-center gap-1 rounded-lg border border-[#007f89] px-3 py-2 text-xs font-black text-[#007f89] transition-colors group-hover:bg-[#007f89] group-hover:text-white">
+          <span className="flex items-center gap-1 rounded-lg border border-[#0395d5] px-3 py-2 text-xs font-black text-[#0395d5] transition-colors group-hover:bg-[#0395d5] group-hover:text-white">
             Explore <FiArrowRight size={11} />
           </span>
         </div>

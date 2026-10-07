@@ -3,21 +3,21 @@
 :root {
   --background: #fbfaf7;
   --foreground: #17211f;
-  --brand: #007f89;
-  --brand-green: #3f8f64;
-  --brand-dark: #063c43;
-  --brand-light: #edf8f6;
-  --brand-muted: #d8eee9;
-  --teal: #007f89;
-  --teal-dark: #063c43;
+  --brand: #0395d5;
+  --brand-green: #39ac44;
+  --brand-dark: #0878ab;
+  --brand-light: #eaf7fc;
+  --brand-muted: #d5eef8;
+  --teal: #0395d5;
+  --teal-dark: #0878ab;
   --dark: #101817;
   --dark-mid: #24302e;
   --dark-muted: #52615d;
   --navy: #12313a;
-  --violet: #5f4b8b;
+  --violet: #0395d5;
   --sand: #f4efe6;
-  --clay: #b85c38;
-  --gold: #c99a45;
+  --clay: #0395d5;
+  --gold: #39ac44;
   --glass-bg: rgba(255,255,255,0.06);
   --glass-border: rgba(255,255,255,0.12);
 }
@@ -49,13 +49,13 @@ body {
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #f0fafb; }
-::-webkit-scrollbar-thumb { background: #007f89; border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: #0395d5; border-radius: 3px; }
 
 /* ── GRADIENTS ─────────────────────────────────── */
-.brand-gradient { background: linear-gradient(135deg, #007f89 0%, #3f8f64 100%); }
-.teal-gradient  { background: linear-gradient(135deg, #007f89 0%, #063c43 100%); }
+.brand-gradient { background: linear-gradient(135deg, #0395d5 0%, #39ac44 100%); }
+.teal-gradient  { background: linear-gradient(135deg, #0395d5 0%, #0878ab 100%); }
 .hero-gradient  { background: linear-gradient(160deg, #101817 0%, #12313a 48%, #273b31 100%); }
-.gold-gradient  { background: linear-gradient(135deg, #c99a45 0%, #b85c38 100%); }
+.gold-gradient  { background: linear-gradient(135deg, #39ac44 0%, #0395d5 100%); }
 .card-gradient  { background: linear-gradient(180deg, transparent 25%, rgba(16,24,23,0.92) 100%); }
 
 /* ── GLASS ─────────────────────────────────── */
@@ -108,7 +108,7 @@ body {
   inset: 0;
   border-radius: inherit;
   padding: 1.5px;
-  background: linear-gradient(135deg, #007f89, #c99a45, #3f8f64);
+  background: linear-gradient(135deg, #0395d5, #39ac44, #39ac44);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
@@ -123,13 +123,13 @@ body {
 .display-text { font-weight: 900; letter-spacing: 0; line-height: 1.0; }
 
 .gradient-text {
-  background: linear-gradient(135deg, #007f89 0%, #3f8f64 55%, #c99a45 100%);
+  background: linear-gradient(135deg, #0395d5 0%, #39ac44 55%, #39ac44 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .gradient-text-warm {
-  background: linear-gradient(135deg, #c99a45 0%, #b85c38 100%);
+  background: linear-gradient(135deg, #39ac44 0%, #0395d5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -149,21 +149,21 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(0,127,137,0.08);
-  color: #007f89;
+  background: rgba(3,149,213,0.08);
+  color: #0395d5;
   font-size: 0.67rem;
   font-weight: 800;
   letter-spacing: 0.13em;
   text-transform: uppercase;
   padding: 5px 14px;
   border-radius: 999px;
-  border: 1px solid rgba(0,127,137,0.18);
+  border: 1px solid rgba(3,149,213,0.18);
   margin-bottom: 10px;
 }
 
 /* ── GLOW EFFECTS ─────────────────────────────────── */
-.glow-teal   { box-shadow: 0 0 40px rgba(0,127,137,0.24), 0 0 100px rgba(0,127,137,0.10); }
-.glow-green  { box-shadow: 0 0 40px rgba(63,143,100,0.24),  0 0 100px rgba(63,143,100,0.10); }
+.glow-teal   { box-shadow: 0 0 40px rgba(3,149,213,0.24), 0 0 100px rgba(3,149,213,0.10); }
+.glow-green  { box-shadow: 0 0 40px rgba(57,172,68,0.24),  0 0 100px rgba(57,172,68,0.10); }
 .glow-blue   { box-shadow: 0 0 40px rgba(10,131,245,0.30), 0 0 100px rgba(10,131,245,0.12); }
 .glow-violet { box-shadow: 0 0 40px rgba(124,58,237,0.30), 0 0 100px rgba(124,58,237,0.12); }
 
@@ -230,7 +230,7 @@ body {
 
 /* Admin workspace */
 .admin-ui {
-  --admin-accent: #007f89;
+  --admin-accent: #0395d5;
   --admin-accent-dark: #05616a;
   --admin-ink: #16302e;
   --admin-sidebar: #ffffff;
@@ -285,7 +285,7 @@ body {
   font-size: 0.75rem;
   font-weight: 900;
   letter-spacing: 0.08em;
-  background: linear-gradient(135deg, #078991, #4b9b70);
+  background: linear-gradient(135deg, #0395d5, #4b9b70);
   box-shadow: 0 10px 24px rgba(0, 127, 137, 0.26);
 }
 
@@ -305,7 +305,7 @@ body {
 .admin-sidebar-collapse:hover {
   color: #067b82;
   border-color: #bcd9d5;
-  background: #edf8f6;
+  background: #eaf7fc;
 }
 
 .admin-sidebar.is-collapsed .admin-sidebar-collapse {
@@ -362,7 +362,7 @@ body {
 
 .admin-sidebar-link.is-active {
   color: #fff;
-  background: linear-gradient(135deg, #078991, #278c6b);
+  background: linear-gradient(135deg, #0395d5, #278c6b);
   box-shadow: 0 8px 20px rgba(0, 127, 137, 0.18);
 }
 
@@ -419,13 +419,13 @@ body {
 
 .admin-sidebar-icon-button:hover {
   color: #087f83;
-  background: #edf8f6;
+  background: #eaf7fc;
   transform: translateY(-1px);
 }
 
 .admin-sidebar-icon-button.is-active {
   color: #fff;
-  background: linear-gradient(135deg, #078991, #438e65);
+  background: linear-gradient(135deg, #0395d5, #438e65);
   box-shadow: 0 9px 22px rgba(0, 127, 137, 0.2);
 }
 
@@ -890,8 +890,8 @@ body {
 
 .admin-booking-counter-control button:hover {
   color: #fff;
-  border-color: #078991;
-  background: #078991;
+  border-color: #0395d5;
+  background: #0395d5;
 }
 
 .admin-booking-counter-control > span {
@@ -920,7 +920,7 @@ body {
   min-height: 44px;
   padding-inline: 1.25rem;
   border-radius: 0.75rem;
-  background: linear-gradient(135deg, #078991, #278c6b) !important;
+  background: linear-gradient(135deg, #0395d5, #278c6b) !important;
   box-shadow: 0 8px 18px rgba(0, 127, 137, 0.18);
 }
 
@@ -950,7 +950,7 @@ body {
   inset: 0 auto auto 0;
   width: 100%;
   height: 3px;
-  background: linear-gradient(90deg, #007f89, #3f8f64 58%, #c99a45);
+  background: linear-gradient(90deg, #0395d5, #39ac44 58%, #39ac44);
   opacity: 0.82;
 }
 
@@ -1049,7 +1049,7 @@ body {
 }
 
 .admin-editor-form .prose a {
-  color: #007f89;
+  color: #0395d5;
 }
 
 .admin-editor-form [class*="focus-within:border"] {
@@ -1080,7 +1080,7 @@ body {
 
 .admin-ui form > .flex.gap-1.bg-gray-100 button.bg-white {
   color: #fff;
-  background: linear-gradient(135deg, var(--admin-accent), #3f8f64);
+  background: linear-gradient(135deg, var(--admin-accent), #39ac44);
   box-shadow: 0 8px 18px rgba(0, 127, 137, 0.22);
 }
 
@@ -1089,7 +1089,7 @@ body {
 .admin-ui button.bg-indigo-600,
 .admin-ui a.bg-indigo-600 {
   border-color: transparent;
-  background: linear-gradient(135deg, var(--admin-accent), #3f8f64);
+  background: linear-gradient(135deg, var(--admin-accent), #39ac44);
   box-shadow: 0 8px 20px rgba(0, 127, 137, 0.18);
 }
 
@@ -1194,7 +1194,7 @@ body {
   inset: auto 1.25rem 0 1.25rem;
   height: 3px;
   border-radius: 999px 999px 0 0;
-  background: linear-gradient(90deg, #078991, #4b946a, #c99a45);
+  background: linear-gradient(90deg, #0395d5, #39ac44, #39ac44);
   opacity: 0;
   transition: opacity 180ms ease;
 }
@@ -2206,8 +2206,8 @@ body {
 
 /* Admin design system refresh */
 .admin-ui {
-  --admin-accent: #007f89;
-  --admin-accent-dark: #063c43;
+  --admin-accent: #0395d5;
+  --admin-accent-dark: #0878ab;
   --admin-ink: #0f172a;
   --admin-muted: #64748b;
   --admin-line: #e2e8f0;
@@ -2276,7 +2276,7 @@ body {
 }
 
 .admin-sidebar-group.is-active {
-  color: #f0d492;
+  color: #8ee596;
 }
 
 .admin-sidebar-group-items::before {
@@ -2285,7 +2285,7 @@ body {
 
 .admin-sidebar-badge {
   color: #0f1f1f;
-  background: #f0d492;
+  background: #8ee596;
 }
 
 .admin-sidebar-footer {

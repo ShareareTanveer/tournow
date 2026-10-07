@@ -16,8 +16,8 @@ interface DestinationCardProps {
 
 const COST_STYLE: Record<string, { bg: string; color: string; dot: string }> = {
   Budget:   { bg: 'rgba(16,185,129,0.12)', color: '#10b981', dot: '#10b981' },
-  Moderate: { bg: 'rgba(0,127,137,0.12)', color: '#007f89', dot: '#007f89' },
-  Luxury:   { bg: 'rgba(63,143,100,0.12)', color: '#3f8f64', dot: '#3f8f64' },
+  Moderate: { bg: 'rgba(3,149,213,0.12)', color: '#0395d5', dot: '#0395d5' },
+  Luxury:   { bg: 'rgba(57,172,68,0.12)', color: '#39ac44', dot: '#39ac44' },
 }
 
 export default function DestinationCard({
@@ -63,7 +63,7 @@ export default function DestinationCard({
       <div className="flex flex-1 flex-col bg-white px-4 py-3.5">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <div className="flex min-w-0 items-center gap-1.5 text-[11px] font-semibold text-[#52615d]">
-          <FiSun size={11} style={{ color: '#c99a45' }} />
+          <FiSun size={11} style={{ color: '#39ac44' }} />
           <span className="truncate">{bestSeason}</span>
           </div>
           <span className="flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-black"
@@ -72,7 +72,7 @@ export default function DestinationCard({
             {costLevel}
           </span>
         </div>
-        <span className="mt-auto flex items-center gap-1.5 text-xs font-black text-[#007f89] transition group-hover:gap-2.5">
+        <span className="mt-auto flex items-center gap-1.5 text-xs font-black text-[#0395d5] transition group-hover:gap-2.5">
           Explore destination <FiArrowRight size={11} />
         </span>
       </div>

@@ -130,7 +130,7 @@ export default async function TourDetailPage({ params }: Props) {
           )}
           {tour.region && (
             <span className="text-xs font-semibold px-2.5 py-1 rounded-full text-white"
-              style={{ background: 'linear-gradient(135deg, #007f89, #3f8f64)' }}>
+              style={{ background: 'linear-gradient(135deg, #0395d5, #39ac44)' }}>
               {tour.region}
             </span>
           )}
@@ -157,12 +157,12 @@ export default async function TourDetailPage({ params }: Props) {
           {/* Multi-destination pills */}
           {tour.multiDestinations?.length > 0 ? (
             <span className="flex items-center gap-1 flex-wrap">
-              <FiMapPin size={13} className="text-[#007f89]" />
+              <FiMapPin size={13} className="text-[#0395d5]" />
               {tour.multiDestinations.join(' · ')}
             </span>
           ) : tour.primaryDestination && (
             <span className="flex items-center gap-1">
-              <FiMapPin size={13} className="text-[#007f89]" />
+              <FiMapPin size={13} className="text-[#0395d5]" />
               {tour.primaryDestination.name}
             </span>
           )}
@@ -198,7 +198,7 @@ export default async function TourDetailPage({ params }: Props) {
               <div className="p-5 border-b border-[#edf0ed]">
                 <p className="text-xs text-[#8a9691] mb-0.5">From</p>
                 <div className="flex items-end gap-2 flex-wrap">
-                  <span className="text-3xl font-black leading-none text-[#007f89]">
+                  <span className="text-3xl font-black leading-none text-[#0395d5]">
                     LKR {tour.price?.toLocaleString()}
                   </span>
                   {tour.oldPrice && (
@@ -234,8 +234,8 @@ export default async function TourDetailPage({ params }: Props) {
 
               {/* Visa notes callout */}
               {tour.visaNotes && (
-                <div className="mx-5 my-3 p-3 bg-[#edf8f6] border border-[#d8eee9] rounded-lg">
-                  <p className="text-xs font-bold text-[#007f89] mb-0.5 flex items-center gap-1">
+                <div className="mx-5 my-3 p-3 bg-[#eaf7fc] border border-[#d5eef8] rounded-lg">
+                  <p className="text-xs font-bold text-[#0395d5] mb-0.5 flex items-center gap-1">
                     <FiFlag size={11} /> Visa Info
                   </p>
                   <p className="text-xs text-[#52615d] leading-relaxed">{tour.visaNotes}</p>
@@ -283,7 +283,7 @@ export default async function TourDetailPage({ params }: Props) {
               <p className="text-xs text-[#52615d] mb-3">Travel experts available 8 AM - 10 PM daily.</p>
               <div className="space-y-2">
                 <a href="tel:+94704545455"
-                  className="flex items-center justify-center gap-2 text-white text-sm font-black py-2.5 rounded-lg transition-all bg-[#007f89] hover:bg-[#063c43]">
+                  className="flex items-center justify-center gap-2 text-white text-sm font-black py-2.5 rounded-lg transition-all bg-[#0395d5] hover:bg-[#0878ab]">
                   <FiPhone size={14} /> +94 70 454 5455
                 </a>
                 <a href="https://wa.me/94704545455" target="_blank" rel="noopener noreferrer"

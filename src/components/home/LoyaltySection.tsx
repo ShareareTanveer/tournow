@@ -6,7 +6,7 @@ import SectionTag from '@/components/ui/SectionTag'
 
 const TIERS = [
   {
-    name: 'Bronze', pts: '0 - 999 pts', color: '#b85c38',
+    name: 'Bronze', pts: '0 - 999 pts', color: '#0395d5',
     glow: 'rgba(205,127,50,0.20)',
     perks: ['Welcome bonus points', 'Birthday discount', 'Member newsletter'],
   },
@@ -16,16 +16,16 @@ const TIERS = [
     perks: ['Priority support', '5% exclusive discount', 'Early access to deals'],
   },
   {
-    name: 'Gold', pts: '5,000+ pts', color: '#007f89',
+    name: 'Gold', pts: '5,000+ pts', color: '#0395d5',
     glow: 'rgba(0,173,181,0.25)',
     perks: ['VIP concierge service', 'Lounge access', 'Complimentary upgrades'],
   },
 ]
 
 const STEPS = [
-  { icon: FiGift,       step: '01', title: 'Register Free', desc: 'Sign up for your Privilege Card in 60 seconds.',  color: '#007f89' },
-  { icon: FiTrendingUp, step: '02', title: 'Earn Points',   desc: 'Earn on every booking, referral, and review.',    color: '#3f8f64' },
-  { icon: FiStar,       step: '03', title: 'Unlock Perks',  desc: 'Redeem for discounts, upgrades & VIP benefits.',  color: '#c99a45' },
+  { icon: FiGift,       step: '01', title: 'Register Free', desc: 'Sign up for your Privilege Card in 60 seconds.',  color: '#0395d5' },
+  { icon: FiTrendingUp, step: '02', title: 'Earn Points',   desc: 'Earn on every booking, referral, and review.',    color: '#39ac44' },
+  { icon: FiStar,       step: '03', title: 'Unlock Perks',  desc: 'Redeem for discounts, upgrades & VIP benefits.',  color: '#39ac44' },
 ]
 
 export default function LoyaltySection() {
@@ -83,7 +83,7 @@ export default function LoyaltySection() {
               {i === 2 && (
                 <div className="absolute top-4 right-4">
                   <span className="text-[9px] font-black uppercase tracking-wider px-2 py-1 rounded-full text-white"
-                    style={{ background: 'linear-gradient(135deg, #007f89, #3f8f64)' }}>
+                    style={{ background: 'linear-gradient(135deg, #0395d5, #39ac44)' }}>
                     Most Popular
                   </span>
                 </div>
@@ -120,8 +120,8 @@ export default function LoyaltySection() {
             href="/privilege-card"
             className="inline-flex items-center gap-2.5 text-white font-black px-8 py-4 rounded-lg transition-all hover:-translate-y-0.5 text-sm"
             style={{
-              background: 'linear-gradient(135deg, #007f89, #3f8f64)',
-              boxShadow: '0 16px 40px rgba(0,127,137,0.25)',
+              background: 'linear-gradient(135deg, #0395d5, #39ac44)',
+              boxShadow: '0 16px 40px rgba(3,149,213,0.25)',
             }}
           >
             Get Your Privilege Card - It&apos;s Free

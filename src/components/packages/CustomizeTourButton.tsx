@@ -36,7 +36,7 @@ export default function CustomizeTourButton({ packageId, packageTitle }: Props) 
     <>
       <button
         onClick={() => setOpen(true)}
-        className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-lg font-black text-sm transition-all border hover:shadow-md border-[#007f89] text-[#063c43] bg-[#edf8f6]"
+        className="w-full flex items-center justify-center gap-2 py-3 px-5 rounded-lg font-black text-sm transition-all border hover:shadow-md border-[#0395d5] text-[#0878ab] bg-[#eaf7fc]"
       >
         <FiEdit2 size={14} /> Customize This Tour
       </button>
@@ -63,7 +63,7 @@ export default function CustomizeTourButton({ packageId, packageTitle }: Props) 
                 <h3 className="font-bold text-[#101817] mb-2">Request Submitted!</h3>
                 <p className="text-sm text-[#52615d] mb-5">Our team will review your customization request and get back to you within 24 hours.</p>
                 <button onClick={() => { setOpen(false); setStatus('idle') }}
-                  className="text-sm font-black px-6 py-2.5 rounded-lg bg-[#007f89] text-white transition-all hover:bg-[#063c43]">
+                  className="text-sm font-black px-6 py-2.5 rounded-lg bg-[#0395d5] text-white transition-all hover:bg-[#0878ab]">
                   Done
                 </button>
               </div>
@@ -119,7 +119,7 @@ export default function CustomizeTourButton({ packageId, packageTitle }: Props) 
                 )}
 
                 <button type="submit" disabled={status === 'loading'}
-                  className="w-full py-3 rounded-lg bg-[#007f89] text-white font-black text-sm transition-all hover:bg-[#063c43] disabled:opacity-60">
+                  className="w-full py-3 rounded-lg bg-[#0395d5] text-white font-black text-sm transition-all hover:bg-[#0878ab] disabled:opacity-60">
                   {status === 'loading' ? 'Sending...' : 'Submit Request'}
                 </button>
               </form>
@@ -128,7 +128,7 @@ export default function CustomizeTourButton({ packageId, packageTitle }: Props) 
         </div>
       )}
 
-      <style>{`.input-base { width: 100%; border: 1px solid #d8ded9; border-radius: 8px; padding: 8px 12px; font-size: 0.875rem; outline: none; transition: border-color 0.15s; background: #fbfaf7; color: #101817; } .input-base:focus { border-color: #007f89; }`}</style>
+      <style>{`.input-base { width: 100%; border: 1px solid #d8ded9; border-radius: 8px; padding: 8px 12px; font-size: 0.875rem; outline: none; transition: border-color 0.15s; background: #fbfaf7; color: #101817; } .input-base:focus { border-color: #0395d5; }`}</style>
     </>
   )
 }

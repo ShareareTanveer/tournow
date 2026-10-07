@@ -138,7 +138,7 @@ export default async function WhatsAppLogsPage() {
 
                   {(responseText || requestText) && (
                     <details className="group mt-4 border-t border-slate-100 pt-4">
-                      <summary className="cursor-pointer select-none text-sm font-medium text-[#007f89] hover:text-[#063c43]">
+                      <summary className="cursor-pointer select-none text-sm font-medium text-[#0395d5] hover:text-[#0878ab]">
                         View technical details
                       </summary>
                       <div className="mt-4 grid min-w-0 gap-4 xl:grid-cols-2">

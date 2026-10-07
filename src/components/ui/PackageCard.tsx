@@ -24,13 +24,13 @@ interface PackageCardProps {
 const STAR_MAP: Record<string, number> = { THREE: 3, FOUR: 4, FIVE: 5 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-  FAMILY:    '#007f89',
-  HONEYMOON: '#b85c38',
-  SOLO:      '#3f8f64',
+  FAMILY:    '#0395d5',
+  HONEYMOON: '#0395d5',
+  SOLO:      '#39ac44',
   SQUAD:     '#2f6f9f',
   CORPORATE: '#64748b',
-  SPECIAL:   '#c99a45',
-  HOLIDAY:   '#5f4b8b',
+  SPECIAL:   '#39ac44',
+  HOLIDAY:   '#0395d5',
 }
 
 export default function PackageCard({
@@ -50,7 +50,7 @@ export default function PackageCard({
   const { format } = useCurrency()
   const stars = STAR_MAP[starRating] ?? 4
   const img = images[0] || getTravelImage(destination?.name ?? category)
-  const catColor = CATEGORY_COLORS[category ?? ''] ?? '#007f89'
+  const catColor = CATEGORY_COLORS[category ?? ''] ?? '#0395d5'
 
   return (
     <Link
@@ -70,7 +70,7 @@ export default function PackageCard({
 
         {isFeatured && (
           <div className="absolute top-3 left-3">
-            <span className="text-[10px] font-black uppercase tracking-[0.14em] px-2.5 py-1 rounded-full text-[#101817] bg-[#f0d492]">
+            <span className="text-[10px] font-black uppercase tracking-[0.14em] px-2.5 py-1 rounded-full text-[#101817] bg-[#8ee596]">
               Top Rated
             </span>
           </div>
@@ -112,7 +112,7 @@ export default function PackageCard({
         <div className="flex items-end justify-between">
           <div>
             <p className="text-[10px] text-[#8a9691] font-bold uppercase tracking-[0.14em] mb-1">From</p>
-            <p className="text-xl font-black leading-none" style={{ color: '#007f89' }}>
+            <p className="text-xl font-black leading-none" style={{ color: '#0395d5' }}>
               {format(price)}
             </p>
             {oldPrice && (
@@ -125,7 +125,7 @@ export default function PackageCard({
             )}
           </div>
 
-          <span className="flex items-center gap-1.5 rounded-lg border border-[#007f89] px-4 py-2 text-xs font-black text-[#007f89] transition-all duration-300 group-hover:bg-[#007f89] group-hover:text-white">
+          <span className="flex items-center gap-1.5 rounded-lg border border-[#0395d5] px-4 py-2 text-xs font-black text-[#0395d5] transition-all duration-300 group-hover:bg-[#0395d5] group-hover:text-white">
             View <FiArrowRight size={11} />
           </span>
         </div>

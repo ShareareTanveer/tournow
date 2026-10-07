@@ -57,14 +57,14 @@ export default async function VisasPage() {
       <div className="max-w-7xl mx-auto px-4 py-12 sm:px-6">
         <div className="mb-12">
           <h2 className="text-3xl font-black text-[#101817] mb-6 flex items-center gap-2">
-            <FiCheckCircle size={22} className="text-[#3f8f64]" /> Visa-Free Destinations
+            <FiCheckCircle size={22} className="text-[#39ac44]" /> Visa-Free Destinations
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {displayVisas.filter((v) => v.isVisaFree).map((visa) => (
               <Link key={visa.slug} href={`/visas/${visa.slug}`} className="bg-white rounded-lg p-5 shadow-sm border border-[#e5e8e4] hover:shadow-md transition-shadow card-hover">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-bold text-[#101817]">{visa.country}</h3>
-                  <span className="text-xs bg-[#edf8f6] text-[#3f8f64] px-2 py-1 rounded-full font-bold">Visa Free</span>
+                  <span className="text-xs bg-[#eaf7fc] text-[#39ac44] px-2 py-1 rounded-full font-bold">Visa Free</span>
                 </div>
                 <div className="space-y-2 text-sm text-[#52615d]">
                   <p className="flex items-center gap-1.5"><FiClock size={12} /> {visa.processingTime}</p>
@@ -77,14 +77,14 @@ export default async function VisasPage() {
 
         <div>
           <h2 className="text-3xl font-black text-[#101817] mb-6 flex items-center gap-2">
-            <FiFileText size={22} className="text-[#5f4b8b]" /> Visa Required - We Assist
+            <FiFileText size={22} className="text-[#0395d5]" /> Visa Required - We Assist
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {displayVisas.filter((v) => !v.isVisaFree).map((visa) => (
               <Link key={visa.slug} href={`/visas/${visa.slug}`} className="bg-white rounded-lg p-5 shadow-sm border border-[#e5e8e4] hover:shadow-md transition-shadow card-hover">
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-bold text-[#101817]">{visa.country}</h3>
-                  <span className="text-xs bg-[#f0eef7] text-[#5f4b8b] px-2 py-1 rounded-full font-bold">We Assist</span>
+                  <span className="text-xs bg-[#f0eef7] text-[#0395d5] px-2 py-1 rounded-full font-bold">We Assist</span>
                 </div>
                 <div className="space-y-2 text-sm text-[#52615d]">
                   <p className="flex items-center gap-1.5"><FiClock size={12} /> {visa.processingTime}</p>
@@ -95,11 +95,11 @@ export default async function VisasPage() {
           </div>
         </div>
 
-        <div className="mt-12 rounded-lg p-8 text-center bg-[#edf8f6] border border-[#d8eee9]">
+        <div className="mt-12 rounded-lg p-8 text-center bg-[#eaf7fc] border border-[#d5eef8]">
           <h3 className="text-2xl font-black text-[#101817] mb-2">Free Visa Consultation</h3>
           <p className="text-[#52615d] mb-6">Not sure about your visa requirements? Our experts will guide you through the entire process.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/consultation" className="bg-[#007f89] text-white font-black px-8 py-3 rounded-lg hover:bg-[#063c43] transition-colors">Book Free Consultation</Link>
+            <Link href="/consultation" className="bg-[#0395d5] text-white font-black px-8 py-3 rounded-lg hover:bg-[#0878ab] transition-colors">Book Free Consultation</Link>
             <a href="https://wa.me/94704545455" target="_blank" rel="noopener noreferrer" className="bg-[#25d366] hover:bg-[#1fb85a] text-white font-black px-8 py-3 rounded-lg transition-colors">WhatsApp Us</a>
           </div>
         </div>

@@ -28,17 +28,17 @@ import { DESTINATION_REGIONS } from "@/lib/navigation-data";
 
 const PACKAGE_CATEGORIES = [
   { label: "Family Packages",       slug: "family",    desc: "Perfect for the whole family",   icon: FiUsers,     color: "#2f6f9f" },
-  { label: "Honeymoon Packages",    slug: "honeymoon", desc: "Romantic getaways for two",       icon: FiHeart,     color: "#b85c38" },
-  { label: "Solo Packages",         slug: "solo",      desc: "Explore the world your way",      icon: FiUser,      color: "#5f4b8b" },
-  { label: "Squad Packages",        slug: "squad",     desc: "Travel with your crew",           icon: FiSmile,     color: "#3f8f64" },
+  { label: "Honeymoon Packages",    slug: "honeymoon", desc: "Romantic getaways for two",       icon: FiHeart,     color: "#0395d5" },
+  { label: "Solo Packages",         slug: "solo",      desc: "Explore the world your way",      icon: FiUser,      color: "#0395d5" },
+  { label: "Squad Packages",        slug: "squad",     desc: "Travel with your crew",           icon: FiSmile,     color: "#39ac44" },
   { label: "Corporate Packages",    slug: "corporate", desc: "MICE & business travel",          icon: FiBriefcase, color: "#64748b" },
-  { label: "Special Packages",      slug: "special",   desc: "VIP & exclusive experiences",     icon: FiStar,      color: "#c99a45" },
-  { label: "2026 Holiday Packages", slug: "holiday",   desc: "Seasonal specials",               icon: FiSun,       color: "#007f89" },
+  { label: "Special Packages",      slug: "special",   desc: "VIP & exclusive experiences",     icon: FiStar,      color: "#39ac44" },
+  { label: "2026 Holiday Packages", slug: "holiday",   desc: "Seasonal specials",               icon: FiSun,       color: "#0395d5" },
 ];
 
 const TOUR_REGIONS = [
   {
-    label: "South East Asia", slug: "south-east-asia", color: "#007f89",
+    label: "South East Asia", slug: "south-east-asia", color: "#0395d5",
     countries: ["Singapore", "Thailand", "Malaysia", "Bali", "Vietnam", "Cambodia"],
   },
   {
@@ -46,27 +46,27 @@ const TOUR_REGIONS = [
     countries: ["Dubai", "Abu Dhabi", "Qatar", "Oman", "Jordan", "Saudi Arabia"],
   },
   {
-    label: "Europe",          slug: "europe",          color: "#5f4b8b",
+    label: "Europe",          slug: "europe",          color: "#0395d5",
     countries: ["France", "Italy", "Switzerland", "Spain", "Greece", "Turkey"],
   },
   {
-    label: "Far East",        slug: "far-east",        color: "#b85c38",
+    label: "Far East",        slug: "far-east",        color: "#0395d5",
     countries: ["Japan", "South Korea", "China", "Hong Kong", "Taiwan"],
   },
   {
-    label: "South Asia",      slug: "south-asia",      color: "#3f8f64",
+    label: "South Asia",      slug: "south-asia",      color: "#39ac44",
     countries: ["India", "Nepal", "Bhutan", "Maldives", "Sri Lanka"],
   },
   {
-    label: "Africa",          slug: "africa",          color: "#c99a45",
+    label: "Africa",          slug: "africa",          color: "#39ac44",
     countries: ["Egypt", "Kenya", "Tanzania", "South Africa", "Morocco"],
   },
   {
-    label: "Americas",        slug: "americas",        color: "#5f4b8b",
+    label: "Americas",        slug: "americas",        color: "#0395d5",
     countries: ["USA", "Canada", "Brazil", "Peru", "Argentina"],
   },
   {
-    label: "Pacific",         slug: "pacific",         color: "#007f89",
+    label: "Pacific",         slug: "pacific",         color: "#0395d5",
     countries: ["Australia", "New Zealand", "Fiji", "Hawaii"],
   },
 ];
@@ -79,7 +79,6 @@ const MORE_LINKS = [
 ];
 
 export default function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [packagesOpen, setPackagesOpen] = useState(false);
   const [toursOpen, setToursOpen] = useState(false);
@@ -114,13 +113,6 @@ export default function Navbar() {
   };
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 40);
-    fn();
-    window.addEventListener("scroll", fn, { passive: true });
-    return () => window.removeEventListener("scroll", fn);
-  }, []);
-
-  useEffect(() => {
     const id = window.setTimeout(() => {
       setMobileOpen(false);
       setPackagesOpen(false);
@@ -142,13 +134,13 @@ export default function Navbar() {
     (r) => r.region === activeRegion,
   );
 
-  const amber = "#007f89";
-  const teal = "#3f8f64";
+  const amber = "#0395d5";
+  const teal = "#39ac44";
 
-  const isDarkNav = !scrolled
-  const textColor = isDarkNav ? "#ffffff" : "#17211f";
-  const dividerColor = isDarkNav ? "rgba(255,255,255,0.16)" : "#e2e8e4";
-  const hoverBg = isDarkNav ? "rgba(255,255,255,0.10)" : "rgba(16,24,23,0.06)";
+  const isDarkNav = false
+  const textColor = "#17211f";
+  const dividerColor = "#e2e8e4";
+  const hoverBg = "rgba(16,24,23,0.06)";
 
   return (
     <>
@@ -162,10 +154,10 @@ export default function Navbar() {
           className="mx-auto flex w-full max-w-full items-center justify-between rounded-lg border px-4 py-2.5 shadow-[0_18px_60px_rgba(0,0,0,0.12)] transition-all duration-500 sm:px-5 xl:max-w-7xl"
           style={{
             pointerEvents: "auto",
-            background: isDarkNav ? "rgba(16,24,23,0.66)" : "rgba(255,255,255,0.96)",
+            background: "rgba(255,255,255,0.97)",
             backdropFilter: "blur(24px)",
             WebkitBackdropFilter: "blur(24px)",
-            borderColor: isDarkNav ? "rgba(255,255,255,0.16)" : "rgba(16,24,23,0.08)",
+            borderColor: "rgba(16,24,23,0.08)",
           }}
         >
           <Link href="/" className="flex items-center gap-3 shrink-0">
@@ -269,14 +261,14 @@ export default function Navbar() {
                               <Icon size={14} style={{ color: cat.color }} />
                             </div>
                             <div>
-                              <p className="text-sm font-semibold text-gray-800 group-hover/item:text-[#007f89] transition-colors leading-none mb-0.5">
+              <p className="text-sm font-semibold text-gray-800 group-hover/item:text-[#0395d5] transition-colors leading-none mb-0.5">
                                 {cat.label}
                               </p>
                               <p className="text-xs text-gray-400">{cat.desc}</p>
                             </div>
                             <FiChevronRight
                               size={12}
-                              className="ml-auto text-gray-300 group-hover/item:text-[#007f89] transition-colors"
+              className="ml-auto text-gray-300 group-hover/item:text-[#0395d5] transition-colors"
                             />
                           </Link>
                         )
@@ -342,7 +334,7 @@ export default function Navbar() {
                           className="w-full text-left px-4 py-2.5 text-sm flex items-center justify-between transition-colors"
                           style={
                             activeTourRegion === r.label
-                              ? { background: "#edf8f6", color: amber, fontWeight: 600 }
+                              ? { background: "#eaf7fc", color: amber, fontWeight: 600 }
                               : { color: "#374151" }
                           }
                           onClick={() => { window.location.href = `/tours-from-sri-lanka/${r.slug}` }}
@@ -465,7 +457,7 @@ export default function Navbar() {
                           style={
                             activeRegion === r.region
                               ? {
-                                  background: "#edf8f6",
+                                  background: "#eaf7fc",
                                   color: teal,
                                   fontWeight: 600,
                                 }
@@ -581,12 +573,12 @@ export default function Navbar() {
                       <Link
                         key={link.href}
                         href={link.href}
-                        className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-[#edf8f6] hover:text-[#007f89] transition-colors group/m font-medium"
+                        className="flex items-center justify-between px-4 py-2.5 text-sm text-gray-700 hover:bg-[#eaf7fc] hover:text-[#0395d5] transition-colors group/m font-medium"
                       >
                         {link.label}
                         <FiChevronRight
                           size={12}
-                          className="text-gray-300 group-hover/m:text-[#007f89] transition-colors"
+                          className="text-gray-300 group-hover/m:text-[#0395d5] transition-colors"
                         />
                       </Link>
                     ))}
@@ -606,7 +598,7 @@ export default function Navbar() {
             <CurrencySelector dark={isDarkNav} />
             <Link
               href="/consultation"
-              className="hidden xl:inline-flex items-center gap-2 rounded-lg bg-[#007f89] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[#063c43]"
+              className="hidden xl:inline-flex items-center gap-2 rounded-lg bg-[#0395d5] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[#0878ab]"
             >
               <FiPhone size={14} /> Plan Trip
             </Link>
@@ -629,7 +621,7 @@ export default function Navbar() {
                 style={{ borderColor: isDarkNav ? "rgba(255,255,255,0.18)" : "#e2e8e4", color: textColor }}
               >
                 <div className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-[10px] font-bold shrink-0"
-                  style={{ background: 'linear-gradient(135deg, #007f89, #3f8f64)' }}>
+                  style={{ background: 'linear-gradient(135deg, #0395d5, #39ac44)' }}>
                   {customerUser.name?.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()}
                 </div>
                 <span className="hidden xl:inline">{customerUser.name?.split(' ')[0]}</span>
@@ -690,7 +682,7 @@ export default function Navbar() {
           <div className="p-4 space-y-1">
             <Link
               href="/"
-              className="flex items-center px-3 py-3 text-sm font-semibold text-gray-700 hover:text-[#007f89] hover:bg-[#edf8f6] rounded-lg transition-colors"
+              className="flex items-center px-3 py-3 text-sm font-semibold text-gray-700 hover:text-[#0395d5] hover:bg-[#eaf7fc] rounded-lg transition-colors"
             >
               Home
             </Link>
@@ -698,7 +690,7 @@ export default function Navbar() {
             <div>
               <button
                 onClick={() => setMobilePackages(!mobilePackages)}
-                className="w-full flex items-center justify-between px-3 py-3 text-sm font-semibold text-gray-700 hover:text-[#007f89] hover:bg-[#edf8f6] rounded-lg transition-colors"
+                className="w-full flex items-center justify-between px-3 py-3 text-sm font-semibold text-gray-700 hover:text-[#0395d5] hover:bg-[#eaf7fc] rounded-lg transition-colors"
               >
                 <span className="flex items-center gap-2">
                   <FiPackage size={14} style={{ color: amber }} /> Packages
@@ -719,7 +711,7 @@ export default function Navbar() {
                     <Link
                       key={cat.slug}
                       href={`/packages-from-sri-lanka/${cat.slug}`}
-                      className="block px-3 py-2 text-sm text-gray-600 hover:text-[#007f89] rounded-lg transition-colors"
+                      className="block px-3 py-2 text-sm text-gray-600 hover:text-[#0395d5] rounded-lg transition-colors"
                     >
                       {cat.label}
                     </Link>
@@ -821,7 +813,7 @@ export default function Navbar() {
               <Link
                 key={href}
                 href={href}
-              className="flex items-center px-3 py-3 text-sm font-semibold text-gray-700 hover:text-[#007f89] hover:bg-[#edf8f6] rounded-lg transition-colors"
+              className="flex items-center px-3 py-3 text-sm font-semibold text-gray-700 hover:text-[#0395d5] hover:bg-[#eaf7fc] rounded-lg transition-colors"
               >
                 {label}
               </Link>
@@ -835,7 +827,7 @@ export default function Navbar() {
             >
               <div
                 className="w-9 h-9 rounded-lg flex items-center justify-center"
-                style={{ background: "rgba(0,127,137,0.10)" }}
+                style={{ background: "rgba(3,149,213,0.10)" }}
               >
                 <FiPhone size={15} style={{ color: amber }} />
               </div>
@@ -847,7 +839,7 @@ export default function Navbar() {
               style={{
                 background:
                   "linear-gradient(135deg, var(--brand), var(--brand-dark))",
-                boxShadow: "0 10px 28px rgba(0,127,137,0.22)",
+                boxShadow: "0 10px 28px rgba(3,149,213,0.22)",
               }}
             >
               Book Free Consultation

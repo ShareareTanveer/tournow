@@ -52,7 +52,7 @@ export default async function HomePage() {
               <p className="text-[#52615d] text-sm leading-6">Hand-picked escapes with the strongest value, logistics, and traveller feedback.</p>
             </div>
             <Link href="/packages-from-sri-lanka/family"
-              className="hidden sm:flex items-center gap-2 text-sm font-bold px-5 py-3 rounded-lg border border-[#d8ded9] hover:border-[#007f89] text-[#52615d] hover:text-[#007f89] transition-all">
+              className="hidden sm:flex items-center gap-2 text-sm font-bold px-5 py-3 rounded-lg border border-[#d8ded9] hover:border-[#0395d5] text-[#52615d] hover:text-[#0395d5] transition-all">
               View all <FiArrowRight size={13} />
             </Link>
           </div>
@@ -65,7 +65,7 @@ export default async function HomePage() {
 
           <div className="text-center mt-10">
             <Link href="/packages-from-sri-lanka/family"
-              className="inline-flex items-center gap-2 font-black px-8 py-3.5 rounded-lg bg-[#007f89] text-white text-sm transition-all hover:-translate-y-0.5 hover:bg-[#063c43]">
+              className="inline-flex items-center gap-2 font-black px-8 py-3.5 rounded-lg bg-[#0395d5] text-white text-sm transition-all hover:-translate-y-0.5 hover:bg-[#0878ab]">
               Explore All Packages <FiArrowRight size={14} />
             </Link>
           </div>
@@ -84,7 +84,7 @@ export default async function HomePage() {
               <p className="max-w-xl text-sm leading-6 text-[#52615d]">Explore high-demand destinations selected for scenery, access, and seasonal value.</p>
             </div>
             <Link href="/destinations"
-              className="hidden shrink-0 items-center gap-2 rounded-lg border border-[#d8ded9] px-5 py-3 text-sm font-bold text-[#52615d] transition-all hover:border-[#007f89] hover:text-[#007f89] sm:flex">
+              className="hidden shrink-0 items-center gap-2 rounded-lg border border-[#d8ded9] px-5 py-3 text-sm font-bold text-[#52615d] transition-all hover:border-[#0395d5] hover:text-[#0395d5] sm:flex">
               All destinations <FiArrowRight size={13} />
             </Link>
           </div>
@@ -97,7 +97,7 @@ export default async function HomePage() {
 
           <div className="mt-8 text-center sm:hidden">
             <Link href="/destinations"
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#d8ded9] px-5 py-3 text-sm font-bold text-[#52615d] transition-all hover:border-[#007f89] hover:text-[#007f89]">
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#d8ded9] px-5 py-3 text-sm font-bold text-[#52615d] transition-all hover:border-[#0395d5] hover:text-[#0395d5]">
               All destinations <FiArrowRight size={13} />
             </Link>
           </div>
@@ -161,18 +161,18 @@ export default async function HomePage() {
 
                     <div className="p-6 flex flex-col flex-1">
                       <div className="flex items-center gap-3 mb-3">
-                        <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#edf8f6] text-[#007f89]">{featured.category}</span>
+                        <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-[#eaf7fc] text-[#0395d5]">{featured.category}</span>
                         {featured.readingTime && (
                           <span className="flex items-center gap-1 text-xs text-[#8a9691]">
                             <FiClock size={11} /> {featured.readingTime} min read
                           </span>
                         )}
                       </div>
-                      <h3 className="font-black text-[#101817] text-xl mb-2 leading-tight group-hover:text-[#007f89] transition-colors line-clamp-2">{featured.title}</h3>
+                      <h3 className="font-black text-[#101817] text-xl mb-2 leading-tight group-hover:text-[#0395d5] transition-colors line-clamp-2">{featured.title}</h3>
                       <p className="text-sm text-[#52615d] leading-relaxed line-clamp-2 flex-1">{featured.excerpt}</p>
                       <div className="flex items-center justify-between mt-5">
                         <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0 bg-[#007f89]">
+                          <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0 bg-[#0395d5]">
                             {featured.author?.[0] ?? 'M'}
                           </div>
                           <span className="text-xs text-[#52615d]">{featured.author}</span>
@@ -200,8 +200,8 @@ export default async function HomePage() {
                           )}
                         </div>
                         <div className="flex-1 min-w-0 py-0.5">
-                          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#007f89]">{blog.category}</span>
-                          <h4 className="font-bold text-[#101817] text-sm leading-tight mt-0.5 line-clamp-2 group-hover:text-[#007f89] transition-colors">{blog.title}</h4>
+                          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[#0395d5]">{blog.category}</span>
+                          <h4 className="font-bold text-[#101817] text-sm leading-tight mt-0.5 line-clamp-2 group-hover:text-[#0395d5] transition-colors">{blog.title}</h4>
                           <div className="flex items-center gap-2 mt-1.5 text-xs text-[#8a9691]">
                             {blog.readingTime && <span className="flex items-center gap-0.5"><FiClock size={10} /> {blog.readingTime}m</span>}
                             <span>{blog.author}</span>
@@ -211,7 +211,7 @@ export default async function HomePage() {
                     ))}
 
                     <Link href="/blogs"
-                      className="flex items-center justify-center gap-2 border border-dashed border-[#d8ded9] hover:border-[#007f89] rounded-lg py-5 text-sm font-bold text-[#8a9691] hover:text-[#007f89] transition-all group">
+                      className="flex items-center justify-center gap-2 border border-dashed border-[#d8ded9] hover:border-[#0395d5] rounded-lg py-5 text-sm font-bold text-[#8a9691] hover:text-[#0395d5] transition-all group">
                       <FiBookOpen size={16} /> View all stories <FiArrowRight size={13} className="group-hover:translate-x-1 transition-transform" />
                     </Link>
                   </div>
@@ -238,7 +238,7 @@ export default async function HomePage() {
                 key={review.id ?? review.name}
                 className="group relative bg-white p-6 rounded-lg border border-[#e5e8e4] hover:-translate-y-1 hover:shadow-[0_24px_54px_rgba(16,24,23,0.12)] shadow-[0_8px_30px_rgba(16,24,23,0.06)] transition-all duration-300"
               >
-                <div className="text-4xl font-black leading-none mb-3 text-[#c99a45]/25 select-none">&ldquo;</div>
+                <div className="text-4xl font-black leading-none mb-3 text-[#39ac44]/25 select-none">&ldquo;</div>
                 <div className="flex gap-0.5 mb-3">
                   {Array.from({ length: 5 }).map((_, j) => (
                     <FiStar key={j} size={12} className={j < review.rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-100'} />
@@ -246,7 +246,7 @@ export default async function HomePage() {
                 </div>
                 <p className="text-[#52615d] text-sm leading-relaxed mb-5 line-clamp-3">{review.body}</p>
                 <div className="flex items-center gap-3 pt-4 border-t border-[#edf0ed]">
-                  <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-black text-sm shrink-0 bg-[#007f89]">
+                  <div className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-black text-sm shrink-0 bg-[#0395d5]">
                     {review.name.charAt(0)}
                   </div>
                   <div>
@@ -259,7 +259,7 @@ export default async function HomePage() {
           </div>
           <div className="text-center mt-10">
             <Link href="/reviews"
-              className="inline-flex items-center gap-2 text-sm font-bold px-6 py-3 rounded-lg border border-[#d8ded9] text-[#52615d] hover:border-[#007f89] hover:text-[#007f89] transition-all">
+              className="inline-flex items-center gap-2 text-sm font-bold px-6 py-3 rounded-lg border border-[#d8ded9] text-[#52615d] hover:border-[#0395d5] hover:text-[#0395d5] transition-all">
               Read all reviews <FiArrowRight size={13} />
             </Link>
           </div>
@@ -269,7 +269,7 @@ export default async function HomePage() {
       {/* Consultation CTA */}
       <section className="bg-[#101817] py-20 text-white sm:py-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 text-center">
-          <div className="mb-5 inline-flex rounded-full border border-white/15 bg-white/10 px-3.5 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-[#f0d492]">
+          <div className="mb-5 inline-flex rounded-full border border-white/15 bg-white/10 px-3.5 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-[#8ee596]">
             Free Consultation
           </div>
           <h2 className="text-3xl sm:text-5xl font-black mb-5 leading-tight">

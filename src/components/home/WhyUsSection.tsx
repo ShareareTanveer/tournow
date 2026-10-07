@@ -51,7 +51,7 @@ export default function WhyUsSection() {
     <section className="py-24 bg-[#101817] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 relative">
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 bg-white/10 text-[#f0d492] text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full border border-white/10 mb-4">
+          <div className="inline-flex items-center gap-2 bg-white/10 text-[#8ee596] text-xs font-bold tracking-widest uppercase px-4 py-2 rounded-full border border-white/10 mb-4">
             Why Metro Voyage
           </div>
           <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
@@ -66,13 +66,13 @@ export default function WhyUsSection() {
           {PERKS.map(({ icon: Icon, title, desc, color }) => (
             <div
               key={title}
-              className="group flex gap-4 p-6 rounded-lg bg-white/5 hover:bg-white/[0.08] border border-white/[0.08] hover:border-[#f0d492]/30 transition-all duration-300 hover:-translate-y-1"
+              className="group flex gap-4 p-6 rounded-lg bg-white/5 hover:bg-white/[0.08] border border-white/[0.08] hover:border-[#8ee596]/30 transition-all duration-300 hover:-translate-y-1"
             >
               <div className={`w-12 h-12 rounded-lg bg-linear-to-br ${color} flex items-center justify-center shrink-0 shadow-lg group-hover:scale-105 transition-transform duration-300`}>
                 <Icon className="text-white text-lg" />
               </div>
               <div>
-                <h3 className="font-bold text-white mb-1.5 group-hover:text-[#f0d492] transition-colors">{title}</h3>
+                <h3 className="font-bold text-white mb-1.5 group-hover:text-[#8ee596] transition-colors">{title}</h3>
                 <p className="text-sm text-gray-400 leading-relaxed">{desc}</p>
               </div>
             </div>

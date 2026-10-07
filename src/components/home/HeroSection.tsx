@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -86,10 +86,11 @@ function DestinationPicker({
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
-        onClick={() => setOpen(current => {
-          onOpenChange(!current)
-          return !current
-        })}
+        onClick={() => {
+          const nextOpen = !open
+          setOpen(nextOpen)
+          onOpenChange(nextOpen)
+        }}
         className="flex w-full items-center justify-between rounded-lg border border-[#d8ded9] bg-white px-4 py-3 text-left text-sm font-semibold text-[#17211f] outline-none transition hover:border-[#0395d5] focus:border-[#0395d5] focus:ring-4 focus:ring-[#0395d5]/10"
       >
         <span className="flex min-w-0 items-center gap-2">
@@ -167,6 +168,10 @@ export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string })
   const bgImage = heroImageUrl || DEFAULT_HERO
   const budget = BUDGET_LEVELS[budgetIndex]
   const selectorOpen = budgetOpen || destinationOpen
+  const handleDestinationOpenChange = useCallback((open: boolean) => {
+    setDestinationOpen(open)
+    if (open) setBudgetOpen(false)
+  }, [])
 
   const handleSearch = () => {
     const params = new URLSearchParams()
@@ -232,7 +237,7 @@ export default function HeroSection({ heroImageUrl }: { heroImageUrl?: string })
             <div className="grid min-w-0 gap-3 md:grid-cols-2 md:items-end xl:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)_auto] xl:items-center">
               <div className="min-w-0 rounded-2xl border border-[#e5e8e4] bg-[#fbfaf7] p-1.5 lg:border-transparent lg:bg-transparent">
                 <span className="mb-1 flex items-center gap-2 px-2 text-[10px] font-black uppercase tracking-[0.16em] text-[#8a9691]"><FiMapPin size={12} /> Destination</span>
-                <DestinationPicker value={destination} onChange={setDestination} onOpenChange={open => { setDestinationOpen(open); if (open) setBudgetOpen(false) }} />
+                <DestinationPicker value={destination} onChange={setDestination} onOpenChange={handleDestinationOpenChange} />
               </div>
               <div className="relative min-w-0 rounded-2xl border border-[#e5e8e4] bg-[#fbfaf7] p-1.5 lg:border-transparent lg:bg-transparent">
                 <span className="mb-1 flex items-center gap-2 px-2 text-[10px] font-black uppercase tracking-[0.16em] text-[#8a9691]"><FiDollarSign size={12} /> Budget Style</span>
